@@ -4,32 +4,31 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import static com.cju.cuhaapi.member.MemberDto.*;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/members")
 public class MemberController {
 
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     /**
-     * id 값으로 멤버를 조회하는 메서드
-     * @return Member
+     * 멤버 조회
      */
     @GetMapping("/{id}")
     public Member memberInfo(@PathVariable Long id) {
-        Member member = memberRepository.findById(id).orElseThrow();
+        Member member = memberService.getMember(id);
         return member;
     }
 
     /**
-     *
-     * @param joinReq
-     * @return
+     * 회원가입
      */
     @PostMapping
-    public String join(@ModelAttribute MemberDto.JoinReq joinReq) {
-        log.info("joinReq={}", joinReq);
+    public String join(@RequestBody JoinReq joinReq) {
+        memberService.saveMember(joinReq);
         return "ok";
     }
 }
