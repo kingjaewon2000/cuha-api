@@ -9,6 +9,28 @@ public class MemberDto {
     @Getter
     @Setter
     @NoArgsConstructor
+    public static class LoginReq {
+        private String username;
+        private String password;
+
+        @Builder
+        public LoginReq(String username, String password) {
+            this.username = username;
+            this.password = password;
+        }
+
+        @Override
+        public String toString() {
+            return "LoginReq{" +
+                    "username='" + username + '\'' +
+                    ", password='" + password + '\'' +
+                    '}';
+        }
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
     public static class JoinReq {
         private String username;
         private String password;

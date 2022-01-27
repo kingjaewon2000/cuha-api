@@ -1,6 +1,5 @@
 package com.cju.cuhaapi.member;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,14 +15,14 @@ public class Password {
     private int failCount;
 
     @Column
-    private String password;
+    private String value;
 
     @Column
     private LocalDateTime lastModifiedDate;
 
-    public Password(String password) {
+    public Password(String value) {
         this.failCount = 0;
-        this.password = password;
+        this.value = value;
         this.lastModifiedDate = LocalDateTime.now();
     }
 }

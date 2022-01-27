@@ -32,6 +32,9 @@ public class Member implements Auditable {
     @Column
     private String name;
 
+    @Column
+    private String refreshToken;
+
     @Embedded
     private Audit audit;
 
