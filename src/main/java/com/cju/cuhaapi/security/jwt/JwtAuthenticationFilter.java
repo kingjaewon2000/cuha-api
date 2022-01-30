@@ -1,12 +1,15 @@
 package com.cju.cuhaapi.security.jwt;
 
-import com.cju.cuhaapi.exception.ExceptionMessage;
+import com.cju.cuhaapi.error.ErrorResponse;
 import com.cju.cuhaapi.member.MemberDto.LoginReq;
 import com.cju.cuhaapi.security.auth.PrincipalDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -25,6 +28,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final JwtProvider jwtProvider;
     private final AuthenticationManager authenticationManager;
+    private final ObjectMapper objectMapper;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -65,13 +69,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        log.info("unsuccessfulAuthentication");
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
+            throws IOException, ServletException {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), failed.getMessage());
+        String result = objectMapper.writeValueAsString(errorResponse);
 
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE + "; charset=UTF-8");
         PrintWriter writer = response.getWriter();
-        ObjectMapper objectMapper = new ObjectMapper();
-        ExceptionMessage usernameNotFoundException = new ExceptionMessage(401, "UsernameNotFoundException");
-        String jsonString = objectMapper.writeValueAsString(usernameNotFoundException);
-        writer.println(jsonString);
+        writer.print(result);
     }
 }

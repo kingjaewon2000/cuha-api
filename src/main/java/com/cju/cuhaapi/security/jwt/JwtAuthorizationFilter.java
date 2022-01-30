@@ -1,11 +1,8 @@
 package com.cju.cuhaapi.security.jwt;
 
-import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.cju.cuhaapi.exception.ExceptionMessage;
 import com.cju.cuhaapi.member.Member;
 import com.cju.cuhaapi.member.MemberRepository;
 import com.cju.cuhaapi.security.auth.PrincipalDetails;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 @Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
@@ -42,25 +38,17 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return ;
         }
 
-        try {
-            String token = header.replace("Bearer ", "");
-            String username = jwtProvider.getUsernameFromToken(token);
+        String token = header.replace("Bearer ", "");
+        String username = jwtProvider.getUsernameFromToken(token);
 
-            if (username != null) {
-                Member member = memberRepository.findByUsername(username);
+        if (username != null) {
+            Member member = memberRepository.findByUsername(username);
 
-                PrincipalDetails principalDetails = new PrincipalDetails(member);
-                Authentication authentication =
-                        new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                chain.doFilter(request, response);
-            }
-        } catch (TokenExpiredException e) {
-            PrintWriter writer = response.getWriter();
-            ObjectMapper objectMapper = new ObjectMapper();
-            ExceptionMessage tokenExpiredException = new ExceptionMessage(403, "TokenExpiredException");
-            String jsonString = objectMapper.writeValueAsString(tokenExpiredException);
-            writer.println(jsonString);
+            PrincipalDetails principalDetails = new PrincipalDetails(member);
+            Authentication authentication =
+                    new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            chain.doFilter(request, response);
         }
     }
 }
