@@ -1,9 +1,8 @@
 package com.cju.cuhaapi.member;
 
-import com.cju.cuhaapi.member.MemberDto.JoinRequest;
+import com.cju.cuhaapi.error.exception.DuplicateUsernameException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -11,21 +10,31 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemberService {
 
-    private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
 
     public Member getMember(Long id) {
-        return memberRepository.findById(id).orElseThrow();
+        return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("ID값이 잘못 지정되었습니다."));
     }
 
-    public void saveMember(JoinRequest joinRequest) {
-        Password password = new Password(passwordEncoder.encode(joinRequest.getPassword()));
-        Member member = Member.builder()
-                .username(joinRequest.getUsername())
-                .password(password)
-                .name(joinRequest.getName())
-                .build();
+    public Member saveMember(Member member) {
+        // 아이디 중복 체크
+        String username = member.getUsername();
+        if(isDuplicateUsername(username)) {
+            throw new DuplicateUsernameException("아이디가 중복되었습니다.");
+        }
 
-        memberRepository.save(member);
+        // 회원가입 로직
+        Member savedMember = memberRepository.save(member);
+
+        return savedMember;
+    }
+
+    public boolean isDuplicateUsername(String username) {
+        Member member = memberRepository.findByUsername(username);
+        if (member == null) {
+            return false;
+        }
+
+        return true;
     }
 }

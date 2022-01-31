@@ -1,55 +1,60 @@
 package com.cju.cuhaapi.member;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import javax.validation.constraints.NotNull;
 
 public class MemberDto {
+
     @Getter
     @Setter
+    @ToString
     @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class LoginRequest {
+        @NotNull
         private String username;
+        @NotNull
         private String password;
-
-        @Builder
-        public LoginRequest(String username, String password) {
-            this.username = username;
-            this.password = password;
-        }
-
-        @Override
-        public String toString() {
-            return "LoginRequest{" +
-                    "username='" + username + '\'' +
-                    ", password='" + password + '\'' +
-                    '}';
-        }
     }
 
     @Getter
     @Setter
+    @ToString
     @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class JoinRequest {
+        @NotNull
         private String username;
+        @NotNull
         private String password;
+        @NotNull
         private String name;
 
-        @Builder
-        public JoinRequest(String username, String password, String name) {
-            this.username = username;
-            this.password = password;
-            this.name = name;
-        }
+        private boolean isMale;
+        private String email;
+        private String phoneNumber;
+        private String studentNumber;
+        private String department;
+    }
 
-        @Override
-        public String toString() {
-            return "JoinRequest{" +
-                    "username='" + username + '\'' +
-                    ", password='" + password + '\'' +
-                    ", name='" + name + '\'' +
-                    '}';
-        }
+    @Getter
+    @Setter
+    @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class UpdateRequest {
+        private String password;
+
+        private String name;
+
+        private boolean isMale;
+        private String email;
+        private String phoneNumber;
+        private String studentNumber;
+        private String department;
     }
 }

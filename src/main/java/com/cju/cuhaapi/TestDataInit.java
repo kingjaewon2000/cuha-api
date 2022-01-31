@@ -1,10 +1,10 @@
 package com.cju.cuhaapi;
 
+import com.cju.cuhaapi.member.Department;
 import com.cju.cuhaapi.member.Member;
 import com.cju.cuhaapi.member.MemberRepository;
 import com.cju.cuhaapi.member.Password;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -14,7 +14,6 @@ import javax.annotation.PostConstruct;
 public class TestDataInit {
 
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @PostConstruct
     public void init() {
@@ -22,12 +21,13 @@ public class TestDataInit {
         String PASSWORD = "root";
         String NAME = "김태형";
 
-        String encodedPassword = passwordEncoder.encode(PASSWORD);
-
         Member member = Member.builder()
                 .username(USERNAME)
-                .password(new Password(encodedPassword))
+                .password(new Password(PASSWORD))
                 .name(NAME)
+                .isMale(true)
+                .studentNumber("2019010109")
+                .department(Department.DIGITAL_SECURITY)
                 .build();
 
         memberRepository.save(member);

@@ -5,6 +5,7 @@ import com.cju.cuhaapi.security.jwt.JwtAuthenticationFilter;
 import com.cju.cuhaapi.security.jwt.JwtAuthorizationFilter;
 import com.cju.cuhaapi.security.jwt.JwtExceptionHandlerFilter;
 import com.cju.cuhaapi.security.jwt.JwtProvider;
+import com.cju.cuhaapi.utils.PasswordEncoderUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +34,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtExceptionHandlerFilter filter;
 
     @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+    public JwtProvider getJwtProvider() {
+        return new JwtProvider();
     }
 
     @Bean
-    public JwtProvider getJwtProvider() {
-        return new JwtProvider();
+    public PasswordEncoder getPasswordEncoder() {
+        return PasswordEncoderUtils.getInstance().getPasswordEncoder();
     }
 
 //    @Bean
@@ -66,7 +67,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                .antMatchers("/v1/members/**").access("hasRole('ROLE_USER')")
+                .antMatchers("/v1/members/**").permitAll()
+                .antMatchers("/v1/member").access("hasRole('ROLE_USER')")
                 .anyRequest().permitAll();
 
         http

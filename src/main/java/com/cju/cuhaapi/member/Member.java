@@ -3,14 +3,14 @@ package com.cju.cuhaapi.member;
 import com.cju.cuhaapi.audit.Audit;
 import com.cju.cuhaapi.audit.AuditListener;
 import com.cju.cuhaapi.audit.Auditable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
 @Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -29,8 +29,25 @@ public class Member implements Auditable {
     @Embedded
     private Password password;
 
-    @Column
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private boolean isMale;
+
+    @ColumnDefault("'example@cju.ac.kr'")
+    @Column
+    private String email;
+
+    @ColumnDefault("'010-0000-0000'")
+    @Column
+    private String phoneNumber;
+
+    @Column(nullable = false)
+    private String studentNumber;
+
+    @Column(nullable = false)
+    private Department department;
 
     @Column
     private String refreshToken;
