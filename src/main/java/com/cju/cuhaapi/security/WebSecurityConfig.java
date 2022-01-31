@@ -7,8 +7,11 @@ import com.cju.cuhaapi.security.jwt.JwtExceptionHandlerFilter;
 import com.cju.cuhaapi.security.jwt.JwtProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -39,6 +42,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtProvider();
     }
 
+//    @Bean
+//    public JwtAuthenticationFilter getJwtAuthenticationFilter() throws Exception {
+//        JwtAuthenticationFilter jwtAuthenticationFilter =
+//                new JwtAuthenticationFilter(getJwtProvider(), objectMapper);
+//        jwtAuthenticationFilter.setFilterProcessesUrl("/v1/members/login");
+//        return jwtAuthenticationFilter;
+//    }
+//
+//    @Bean
+//    public JwtAuthorizationFilter getJwtAuthorizationFilter() throws Exception {
+//        JwtAuthorizationFilter jwtAuthorizationFilter =
+//                new JwtAuthorizationFilter(getJwtProvider(), memberRepository);
+//        return jwtAuthorizationFilter;
+//    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
@@ -48,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                .antMatchers("/user/**").access("hasRole('ROLE_USER')")
+                .antMatchers("/v1/members/**").access("hasRole('ROLE_USER')")
                 .anyRequest().permitAll();
 
         http

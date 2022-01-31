@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -23,12 +22,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Slf4j
-@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final JwtProvider jwtProvider;
     private final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper;
+
+    public JwtAuthenticationFilter(JwtProvider jwtProvider, AuthenticationManager authenticationManager, ObjectMapper objectMapper) {
+        setFilterProcessesUrl("/v1/members/login");
+        this.jwtProvider = jwtProvider;
+        this.authenticationManager = authenticationManager;
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {

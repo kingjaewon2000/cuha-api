@@ -9,7 +9,7 @@ import static com.cju.cuhaapi.member.MemberDto.*;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/members")
+@RequestMapping("/v1/members")
 public class MemberController {
 
     private final MemberService memberService;
