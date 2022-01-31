@@ -19,6 +19,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(logInterceptor())
                 .order(1)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/css/**", "/javascripts/**");
+                .excludePathPatterns("/swagger*/**", "/v3/**");
     }
 }

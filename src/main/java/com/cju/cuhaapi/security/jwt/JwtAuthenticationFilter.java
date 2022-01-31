@@ -1,10 +1,9 @@
 package com.cju.cuhaapi.security.jwt;
 
 import com.cju.cuhaapi.error.ErrorResponse;
-import com.cju.cuhaapi.member.MemberDto.LoginReq;
+import com.cju.cuhaapi.member.MemberDto.LoginRequest;
 import com.cju.cuhaapi.security.auth.PrincipalDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,11 +40,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            LoginReq loginReq = objectMapper.readValue(request.getInputStream(), LoginReq.class);
-            log.info("MemberDto.loginReq = {}", loginReq);
+            LoginRequest loginRequest = objectMapper.readValue(request.getInputStream(), LoginRequest.class);
+            log.info("MemberDto.loginReq = {}", loginRequest);
 
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                    new UsernamePasswordAuthenticationToken(loginReq.getUsername(), loginReq.getPassword());
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
 
             Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();

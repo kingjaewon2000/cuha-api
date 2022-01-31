@@ -9,19 +9,19 @@ public class MemberDto {
     @Getter
     @Setter
     @NoArgsConstructor
-    public static class LoginReq {
+    public static class LoginRequest {
         private String username;
         private String password;
 
         @Builder
-        public LoginReq(String username, String password) {
+        public LoginRequest(String username, String password) {
             this.username = username;
             this.password = password;
         }
 
         @Override
         public String toString() {
-            return "LoginReq{" +
+            return "LoginRequest{" +
                     "username='" + username + '\'' +
                     ", password='" + password + '\'' +
                     '}';
@@ -31,13 +31,13 @@ public class MemberDto {
     @Getter
     @Setter
     @NoArgsConstructor
-    public static class JoinReq {
+    public static class JoinRequest {
         private String username;
         private String password;
         private String name;
 
         @Builder
-        public JoinReq(String username, String password, String name) {
+        public JoinRequest(String username, String password, String name) {
             this.username = username;
             this.password = password;
             this.name = name;
@@ -45,7 +45,7 @@ public class MemberDto {
 
         @Override
         public String toString() {
-            return "JoinReq{" +
+            return "JoinRequest{" +
                     "username='" + username + '\'' +
                     ", password='" + password + '\'' +
                     ", name='" + name + '\'' +

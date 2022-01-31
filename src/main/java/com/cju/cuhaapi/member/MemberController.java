@@ -18,7 +18,7 @@ public class MemberController {
      * 멤버 조회
      */
     @GetMapping("/{id}")
-    public Member memberInfo(@PathVariable Long id) {
+    public Member info(@PathVariable Long id) {
         Member member = memberService.getMember(id);
         return member;
     }
@@ -27,8 +27,8 @@ public class MemberController {
      * 회원가입
      */
     @PostMapping
-    public String join(@RequestBody JoinReq joinReq) {
-        memberService.saveMember(joinReq);
+    public String join(@RequestBody JoinRequest joinRequest) {
+        memberService.saveMember(joinRequest);
         return "ok";
     }
 }

@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.member;
 
-import com.cju.cuhaapi.member.MemberDto.JoinReq;
+import com.cju.cuhaapi.member.MemberDto.JoinRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,12 +18,12 @@ public class MemberService {
         return memberRepository.findById(id).orElseThrow();
     }
 
-    public void saveMember(JoinReq joinReq) {
-        Password password = new Password(passwordEncoder.encode(joinReq.getPassword()));
+    public void saveMember(JoinRequest joinRequest) {
+        Password password = new Password(passwordEncoder.encode(joinRequest.getPassword()));
         Member member = Member.builder()
-                .username(joinReq.getUsername())
+                .username(joinRequest.getUsername())
                 .password(password)
-                .name(joinReq.getName())
+                .name(joinRequest.getName())
                 .build();
 
         memberRepository.save(member);
