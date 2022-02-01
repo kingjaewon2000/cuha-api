@@ -10,8 +10,6 @@ public class MemberDto {
     @Setter
     @ToString
     @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
     public static class LoginRequest {
         @NotNull
         private String username;
@@ -23,8 +21,6 @@ public class MemberDto {
     @Setter
     @ToString
     @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
     public static class JoinRequest {
         @NotNull
         private String username;
@@ -44,11 +40,7 @@ public class MemberDto {
     @Setter
     @ToString
     @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class UpdateRequest {
-        private String password;
-
+    public static class UpdateInfoRequest {
         private String name;
 
         private boolean isMale;
@@ -56,5 +48,35 @@ public class MemberDto {
         private String phoneNumber;
         private String studentNumber;
         private String department;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    @NoArgsConstructor
+    public static class UpdatePasswordRequest {
+        private String password;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    @NoArgsConstructor
+    public static class InfoResponse {
+        private String username;
+        private String name;
+        private boolean isMale;
+        private String email;
+        private String phoneNumber;
+        private String studentNumber;
+        private Department department;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    @NoArgsConstructor
+    public static class IdResponse {
+        private Long id;
     }
 }

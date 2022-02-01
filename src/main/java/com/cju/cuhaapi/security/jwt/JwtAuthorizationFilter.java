@@ -16,6 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.cju.cuhaapi.security.jwt.JwtConstants.TOKEN_TYPE;
+import static com.cju.cuhaapi.security.jwt.JwtConstants.TOKEN_TYPE_PREFIX;
+
 @Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
@@ -33,12 +36,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         log.info("JwtAuthorizationFilter");
 
         String header = request.getHeader("Authorization");
-        if (header == null || !header.startsWith("Bearer")) {
+        if (header == null || !header.startsWith(TOKEN_TYPE)) {
             chain.doFilter(request, response);
             return ;
         }
 
-        String token = header.replace("Bearer ", "");
+        String token = header.replace(TOKEN_TYPE_PREFIX, "");
         String username = jwtProvider.getUsernameFromToken(token);
 
         if (username != null) {

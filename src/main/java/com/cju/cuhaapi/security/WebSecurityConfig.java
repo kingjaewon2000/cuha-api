@@ -1,28 +1,25 @@
 package com.cju.cuhaapi.security;
 
 import com.cju.cuhaapi.member.MemberRepository;
-import com.cju.cuhaapi.security.jwt.JwtAuthenticationFilter;
-import com.cju.cuhaapi.security.jwt.JwtAuthorizationFilter;
-import com.cju.cuhaapi.security.jwt.JwtExceptionHandlerFilter;
-import com.cju.cuhaapi.security.jwt.JwtProvider;
+import com.cju.cuhaapi.security.jwt.*;
 import com.cju.cuhaapi.utils.PasswordEncoderUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.filter.CorsFilter;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -58,24 +55,40 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //        return jwtAuthorizationFilter;
 //    }
 
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return ((request, response, e) -> {
+            throw e;
+        });
+    }
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return new JwtAuthenticationEntryPoint();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
         http
-                .formLogin().disable()
-                .httpBasic().disable()
-                .authorizeRequests()
-                .antMatchers("/v1/members/**").permitAll()
-                .antMatchers("/v1/member").access("hasRole('ROLE_USER')")
-                .anyRequest().permitAll();
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint())
+                .accessDeniedHandler(accessDeniedHandler());
 
         http
                 .addFilter(new JwtAuthenticationFilter(getJwtProvider(), authenticationManager(), objectMapper))
                 .addFilter(new JwtAuthorizationFilter(getJwtProvider(), authenticationManager(), memberRepository))
                 .addFilterBefore(filter, LogoutFilter.class)
                 .addFilter(corsFilter);
+
+        http
+                .formLogin().disable()
+                .httpBasic().disable()
+                .authorizeRequests()
+                .antMatchers("/v1/members/login", "/v1/members/join").not().authenticated()
+                .antMatchers("/v1/members/**").authenticated()
+                .anyRequest().permitAll();
     }
 
     @Override

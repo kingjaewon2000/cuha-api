@@ -5,6 +5,7 @@ import com.cju.cuhaapi.audit.AuditListener;
 import com.cju.cuhaapi.audit.Auditable;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
@@ -15,6 +16,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @EntityListeners(AuditListener.class)
+@DynamicInsert
 @Entity
 public class Member implements Auditable {
 

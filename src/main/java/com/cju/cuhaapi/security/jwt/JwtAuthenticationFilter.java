@@ -1,11 +1,11 @@
 package com.cju.cuhaapi.security.jwt;
 
-import com.cju.cuhaapi.error.ErrorResponse;
 import com.cju.cuhaapi.member.MemberDto.LoginRequest;
 import com.cju.cuhaapi.security.auth.PrincipalDetails;
+import com.cju.cuhaapi.security.jwt.JwtResponseDto.Token;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import static com.cju.cuhaapi.security.jwt.JwtConstants.*;
 
 @Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -51,6 +53,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             log.info("username = {}", principalDetails.getUsername());
 
             return authentication;
+        } catch (JsonParseException e) {
+            throw new IllegalArgumentException("JSON 형식이 옳바르지 않습니다.");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -65,23 +69,28 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // Access Token 발급
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
         String accessToken = jwtProvider.createAccessToken(principalDetails.getMember().getId(), principalDetails.getMember().getUsername(), principalDetails.getMember().getName());
-        response.addHeader("Authorization", "Bearer " + accessToken);
+//        response.addHeader("Authorization", "Bearer " + accessToken);
 
         // Refresh Token 발급
         String refreshToken = jwtProvider.createRefreshToken();
-        response.addHeader("REFRESH_TOKEN", refreshToken);
+//        response.addHeader("REFRESH_TOKEN", refreshToken);
+
+        // 응답
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+        PrintWriter writer = response.getWriter();
+        JwtResponseDto responseDto = new JwtResponseDto(200,
+                new Token(TOKEN_TYPE_PREFIX + accessToken,
+                        TOKEN_TYPE_PREFIX + refreshToken));
+        String responseData = objectMapper.writeValueAsString(responseDto);
+
+        writer.print(responseData);
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
             throws IOException, ServletException {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), failed.getMessage());
-        String result = objectMapper.writeValueAsString(errorResponse);
-
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE + "; charset=UTF-8");
-        PrintWriter writer = response.getWriter();
-        writer.print(result);
+        throw failed;
     }
 }

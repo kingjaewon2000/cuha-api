@@ -4,6 +4,7 @@ import com.cju.cuhaapi.member.Member;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class PrincipalDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(() -> "ROLE_USER");
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         return authorities;
     }
 
