@@ -1,6 +1,7 @@
 package com.cju.cuhaapi.member;
 
 import com.cju.cuhaapi.security.auth.PrincipalDetails;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -23,6 +24,7 @@ public class MemberController {
     /**
      * 멤버 조회
      */
+    @ApiOperation(value = "멤버 조회", notes = "현재 로그인중인 회원의 정보를 조회합니다.")
     @GetMapping
     public InfoResponse info(Authentication authentication) {
         // 인증된 멤버
@@ -40,6 +42,7 @@ public class MemberController {
     /**
      * 회원가입
      */
+    @ApiOperation(value = "회원가입", notes = "회원을 저장합니다.")
     @PostMapping("/join")
     public InfoResponse join(@Validated @RequestBody JoinRequest joinRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -57,6 +60,7 @@ public class MemberController {
     /**
      * 멤버 정보 변경
      */
+    @ApiOperation(value = "멤버 정보 변경", notes = "현재 로그인중인 회원의 정보를 변경합니다.")
     @PatchMapping
     public InfoResponse updateInfo(Authentication authentication, @RequestBody UpdateInfoRequest updateInfoRequest) {
         // 인증된 멤버
@@ -76,6 +80,7 @@ public class MemberController {
     /**
      * 비밀번호 변경
      */
+    @ApiOperation(value = "비밀번호 변경", notes = "현재 로그인중인 회원의 비밀번호를 변경합니다.")
     @PatchMapping("/password")
     public IdResponse updatePassword(Authentication authentication, @RequestBody UpdatePasswordRequest updatePasswordRequest) {
         // 인증된 멤버
@@ -96,6 +101,7 @@ public class MemberController {
     /**
      * 회원탈퇴
      */
+    @ApiOperation(value = "회원탈퇴", notes = "현재 로그인중인 회원을 탈퇴합니다.")
     @DeleteMapping
     public IdResponse delete(Authentication authentication) {
         // 인증된 멤버
