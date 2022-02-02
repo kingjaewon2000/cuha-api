@@ -4,6 +4,7 @@ import lombok.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class JwtResponseDto {
     private int code;
@@ -11,6 +12,7 @@ public class JwtResponseDto {
 
     @Getter
     @Setter
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class Token {
         private String accessToken;

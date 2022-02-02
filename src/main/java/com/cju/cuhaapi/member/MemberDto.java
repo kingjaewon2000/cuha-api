@@ -11,6 +11,8 @@ public class MemberDto {
     @Setter
     @ToString
     @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class LoginRequest {
         @ApiModelProperty(value = "아이디", required = true, example = "cuha")
         @NotNull
@@ -25,6 +27,8 @@ public class MemberDto {
     @Setter
     @ToString
     @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class JoinRequest {
         @ApiModelProperty(value = "아이디", required = true, example = "cuha")
         @NotNull
@@ -58,6 +62,8 @@ public class MemberDto {
     @Setter
     @ToString
     @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class UpdateInfoRequest {
         @ApiModelProperty(value = "이름", required = true, example = "김태형")
         private String name;
@@ -92,6 +98,8 @@ public class MemberDto {
     @Setter
     @ToString
     @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class InfoResponse {
         @ApiModelProperty(value = "아이디", example = "cuha")
         private String username;
