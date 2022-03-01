@@ -70,8 +70,6 @@ public class MemberDto {
     @AllArgsConstructor
     @Builder
     public static class UpdateInfoRequest {
-        private MultipartFile profileFile;
-
         @ApiModelProperty(value = "이름", required = true, example = "김태형")
         private String name;
 

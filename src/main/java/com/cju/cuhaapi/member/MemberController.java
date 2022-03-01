@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -80,15 +81,15 @@ public class MemberController {
      * 멤버 정보 변경
      */
     @ApiOperation(value = "멤버 정보 변경", notes = "현재 로그인중인 회원의 정보를 변경합니다.")
-    @PatchMapping
+    @PatchMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
     public InfoResponse updateInfo(Authentication authentication,
-                                   @ModelAttribute UpdateInfoRequest updateInfoRequest) throws IOException {
+                                   @RequestPart(name = "json") UpdateInfoRequest updateInfoRequest,
+                                   @RequestPart(required = false) MultipartFile profileFile) throws IOException {
         // 인증된 멤버
         PrincipalDetails principalDetails = ((PrincipalDetails)authentication.getPrincipal());
         Member authMember = principalDetails.getMember();
 
         // 프로필 업로드
-        MultipartFile profileFile = updateInfoRequest.getProfileFile();
         Profile profile = null;
 
         if (profileFile != null) {
