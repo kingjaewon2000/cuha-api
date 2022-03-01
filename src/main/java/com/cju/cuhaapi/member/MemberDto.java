@@ -2,6 +2,7 @@ package com.cju.cuhaapi.member;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 
@@ -38,12 +39,16 @@ public class MemberDto {
         @NotNull
         private String password;
 
+        @ApiModelProperty(value = "이전 비밀번호", required = true, example = "cju")
+        @NotNull
+        private String repeatPassword;
+
         @ApiModelProperty(value = "이름", required = true, example = "김태형")
         @NotNull
         private String name;
 
         @ApiModelProperty(value = "성별", required = true, notes = "필수값", example = "true")
-        private boolean isMale;
+        private Boolean isMale;
 
         @ApiModelProperty(value = "이메일", example = "example@cju.ac.kr")
         private String email;
@@ -54,7 +59,7 @@ public class MemberDto {
         @ApiModelProperty(value = "학번", required = true, example = "2019010109")
         private String studentNumber;
 
-        @ApiModelProperty(value = "학과", required = true, example = "디지털보안학과")
+        @ApiModelProperty(value = "학과", required = true, example = "DIGITAL_SECURITY")
         private String department;
     }
 
@@ -65,12 +70,13 @@ public class MemberDto {
     @AllArgsConstructor
     @Builder
     public static class UpdateInfoRequest {
+        private MultipartFile profileFile;
+
         @ApiModelProperty(value = "이름", required = true, example = "김태형")
         private String name;
 
-
         @ApiModelProperty(value = "성별", required = true, notes = "필수값", example = "true")
-        private boolean isMale;
+        private Boolean isMale;
 
         @ApiModelProperty(value = "이메일", example = "example@cju.ac.kr")
         private String email;
@@ -81,7 +87,7 @@ public class MemberDto {
         @ApiModelProperty(value = "학번", required = true, example = "2019010109")
         private String studentNumber;
 
-        @ApiModelProperty(value = "학과", required = true, example = "디지털보안전공")
+        @ApiModelProperty(value = "학과", required = true, example = "DIGITAL_SECURITY")
         private String department;
     }
 
@@ -90,8 +96,14 @@ public class MemberDto {
     @ToString
     @NoArgsConstructor
     public static class UpdatePasswordRequest {
-        @ApiModelProperty(value = "비밀번호", required = true, example = "cju")
+        @ApiModelProperty(value = "이전 비밀번호", required = true, example = "cju")
+        private String oldPassword;
+
+        @ApiModelProperty(value = "비밀번호", required = true, example = "cju2022")
         private String password;
+
+        @ApiModelProperty(value = "이전 비밀번호", required = true, example = "cju2022")
+        private String repeatPassword;
     }
 
     @Getter
@@ -101,6 +113,9 @@ public class MemberDto {
     @AllArgsConstructor
     @Builder
     public static class InfoResponse {
+        @ApiModelProperty(value = "프로필")
+        private String profileFilename;
+
         @ApiModelProperty(value = "아이디", example = "cuha")
         private String username;
 
@@ -108,7 +123,7 @@ public class MemberDto {
         private String name;
 
         @ApiModelProperty(value = "성별", example = "true")
-        private boolean isMale;
+        private Boolean isMale;
 
         @ApiModelProperty(value = "이메일", example = "example@cju.ac.kr")
         private String email;
@@ -119,7 +134,7 @@ public class MemberDto {
         @ApiModelProperty(value = "학번", example = "2019010109")
         private String studentNumber;
 
-        @ApiModelProperty(value = "학과", example = "디지털보안전공")
+        @ApiModelProperty(value = "학과", example = "DIGITAL_SECURITY")
         private Department department;
     }
 

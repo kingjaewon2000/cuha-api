@@ -86,8 +86,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                .antMatchers("/v1/members/login", "/v1/members/join").not().authenticated()
-                .antMatchers("/v1/members/**").authenticated()
+//                .antMatchers("/v1/members/login", "/v1/members/join", "/v1/members/").not().authenticated()
+                .antMatchers("/v1/members", "/v1/members/password").authenticated()
                 .anyRequest().permitAll();
     }
 

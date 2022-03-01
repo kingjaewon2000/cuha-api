@@ -11,9 +11,14 @@ import org.springframework.stereotype.Service;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final ProfileRepository profileRepository;
 
     public Member getMember(Long id) {
         return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("ID값이 잘못 지정되었습니다."));
+    }
+
+    public Member getMemberByUsername(String username) {
+        return memberRepository.findByUsername(username);
     }
 
     public Member saveMember(Member member) {
@@ -72,8 +77,13 @@ public class MemberService {
     }
 
     private void setMemberInfo(Member source, Member destination) {
+        Profile profile = source.getProfile();
+        if (!(profile == null || profile.equals(""))) {
+            profileRepository.save(profile);
+            destination.setProfile(source.getProfile());
+        }
         destination.setName(source.getName());
-        destination.setMale(source.isMale());
+        destination.setIsMale(source.getIsMale());
         destination.setEmail(source.getEmail());
         destination.setPhoneNumber(source.getPhoneNumber());
         destination.setStudentNumber(source.getStudentNumber());
@@ -81,6 +91,13 @@ public class MemberService {
     }
 
     private void setPassword(Member source, Member destination) {
+        String oldPassword = destination.getPassword().getValue();
+        String newPassword = source.getPassword().getValue();
+
+        if (oldPassword.equals(newPassword)) {
+            throw new IllegalArgumentException("이전 패스워드와 새로운 패스워드가 같습니다.");
+        }
+
         destination.setPassword(source.getPassword());
     }
 }

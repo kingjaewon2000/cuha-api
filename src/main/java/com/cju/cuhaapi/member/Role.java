@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -20,5 +22,5 @@ public class Role {
     private Long id;
 
     @Column
-    private String value;
+    private String role;
 }

@@ -8,6 +8,9 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,7 +38,7 @@ public class Member implements Auditable {
     private String name;
 
     @Column(nullable = false)
-    private boolean isMale;
+    private Boolean isMale;
 
     @ColumnDefault("'example@cju.ac.kr'")
     @Column
@@ -50,6 +53,14 @@ public class Member implements Auditable {
 
     @Column(nullable = false)
     private Department department;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
+    @ManyToOne
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
 
     @Column
     private String refreshToken;
