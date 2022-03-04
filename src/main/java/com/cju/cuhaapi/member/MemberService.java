@@ -12,6 +12,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
+    private final DefaultProfile defaultProfile;
 
     public Member getMember(Long id) {
         return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("ID값이 잘못 지정되었습니다."));
@@ -26,6 +27,11 @@ public class MemberService {
         String username = member.getUsername();
         if(isDuplicateUsername(username)) {
             throw new DuplicateUsernameException("아이디가 중복되었습니다.");
+        }
+
+        if (member.getProfile() == null) {
+            Profile defaultProfile = this.defaultProfile.getProfile();
+            member.setProfile(defaultProfile);
         }
 
         // 회원가입 로직

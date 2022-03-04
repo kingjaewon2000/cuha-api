@@ -83,7 +83,7 @@ public class MemberController {
     @ApiOperation(value = "멤버 정보 변경", notes = "현재 로그인중인 회원의 정보를 변경합니다.")
     @PatchMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
     public InfoResponse updateInfo(Authentication authentication,
-                                   @RequestPart(name = "json") UpdateInfoRequest updateInfoRequest,
+                                   @RequestPart("json") UpdateInfoRequest updateInfoRequest,
                                    @RequestPart(required = false) MultipartFile profileFile) throws IOException {
         // 인증된 멤버
         PrincipalDetails principalDetails = ((PrincipalDetails)authentication.getPrincipal());
@@ -165,6 +165,7 @@ public class MemberController {
         return response;
     }
 
+    @ApiOperation(value = "프로필", notes = "파일 이름에 해당하는 프로필을 가져옵니다.")
     @GetMapping("/profiles/{filename}")
     public Resource downloadProfile(@PathVariable String filename) throws MalformedURLException {
         return new UrlResource("file:" + getFullPath(filename));

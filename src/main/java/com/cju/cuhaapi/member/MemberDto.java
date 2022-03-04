@@ -133,7 +133,7 @@ public class MemberDto {
         private String studentNumber;
 
         @ApiModelProperty(value = "학과", example = "DIGITAL_SECURITY")
-        private Department department;
+        private String department;
     }
 
     @Getter

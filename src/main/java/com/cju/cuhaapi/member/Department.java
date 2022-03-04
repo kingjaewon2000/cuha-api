@@ -1,5 +1,8 @@
 package com.cju.cuhaapi.member;
 
+import lombok.Getter;
+
+@Getter
 public enum Department {
     BIG_DATA("빅데이터전공"),
     AI("인공지능전공"),

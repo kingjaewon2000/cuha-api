@@ -12,7 +12,7 @@ public class TestDataInit {
 
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
-    private final ProfileRepository profileRepository;
+    private final DefaultProfile defaultProfile;
 
     @PostConstruct
     public void init() {
@@ -26,12 +26,7 @@ public class TestDataInit {
 
         roleRepository.save(role);
 
-        Profile profile = Profile.builder()
-                .originalFilename("no-profile.gif")
-                .newFilename("no-profile.gif")
-                .build();
-
-        profileRepository.save(profile);
+        Profile defaultProfile = this.defaultProfile.getProfile();
 
         Member member = Member.builder()
                 .username(USERNAME)
@@ -41,7 +36,7 @@ public class TestDataInit {
                 .studentNumber("2019010109")
                 .department(Department.DIGITAL_SECURITY)
                 .role(role)
-                .profile(profile)
+                .profile(defaultProfile)
                 .build();
 
         memberRepository.save(member);

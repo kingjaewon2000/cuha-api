@@ -47,6 +47,8 @@ public class BeanConfig {
         });
 
         modelMapper.typeMap(Member.class, InfoResponse.class).addMappings(mapping -> {
+            mapping.using((Converter<Department, String>) context -> context.getSource().getDescription())
+                    .map(Member::getDepartment, InfoResponse::setDepartment);
             mapping.using((Converter<Profile, String>) context -> context.getSource().getNewFilename())
                     .map(Member::getProfile, InfoResponse::setProfileFilename);
         });
