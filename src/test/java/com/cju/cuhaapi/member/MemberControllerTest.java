@@ -2,10 +2,11 @@ package com.cju.cuhaapi.member;
 
 import com.cju.cuhaapi.member.MemberDto.*;
 import com.cju.cuhaapi.security.jwt.JwtResponseDto;
-import com.cju.cuhaapi.security.jwt.JwtResponseDto.Token;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
