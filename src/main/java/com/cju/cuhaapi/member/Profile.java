@@ -23,7 +23,7 @@ public class Profile {
     private String originalFilename;
 
     @Column
-    private String newFilename;
+    private String filename;
 
     @Column
     private Long size;

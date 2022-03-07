@@ -37,6 +37,12 @@ public class ErrorController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
+    public ErrorResponse illegalStateException(IllegalStateException e) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
     public ErrorResponse httpMessageNotReadableException(HttpMessageNotReadableException e) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "JSON 형식이 옳바르지 않습니다.");
     }

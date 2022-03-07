@@ -1,10 +1,10 @@
 package com.cju.cuhaapi.member;
 
 import com.cju.cuhaapi.security.auth.PrincipalDetails;
+import com.cju.cuhaapi.utils.PasswordEncoderUtils;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.UUID;
 
+import static com.cju.cuhaapi.mapper.MemberMapper.INSTANCE;
 import static com.cju.cuhaapi.member.MemberDto.*;
 
 @Slf4j
@@ -29,7 +30,6 @@ import static com.cju.cuhaapi.member.MemberDto.*;
 @RequestMapping("/v1/members")
 public class MemberController {
 
-    private final ModelMapper modelMapper;
     private final MemberService memberService;
 
     @Value("${upload.path}")
@@ -47,8 +47,7 @@ public class MemberController {
 
         // 멤버 조회
         Member member = memberService.getMember(authMember.getId());
-
-        InfoResponse infoResponse = modelMapper.map(member, InfoResponse.class);
+        InfoResponse infoResponse = INSTANCE.toInfoResponse(member);
 
         return infoResponse;
     }
@@ -58,21 +57,16 @@ public class MemberController {
      */
     @ApiOperation(value = "회원가입", notes = "회원을 저장합니다.")
     @PostMapping("/join")
-    public InfoResponse join(@Validated @RequestBody JoinRequest joinRequest, BindingResult bindingResult) {
+    public InfoResponse join(@Validated @RequestBody JoinRequest joinRequest,
+                             BindingResult bindingResult) {
         // 입력 값 검증
         if (bindingResult.hasErrors()) {
             throw new IllegalArgumentException("모든 필드를 채워주셔야 합니다.");
         }
 
-        // 패스워드 검증
-        if (isNotEqualPassword(joinRequest.getPassword(), joinRequest.getRepeatPassword())) {
-            throw new IllegalArgumentException("패스워드와 패스워드 확인이 같지 않습니다.");
-        }
-
-        Member member = modelMapper.map(joinRequest, Member.class);
+        Member member = INSTANCE.joinRequestToEntity(joinRequest);
         Member savedMember = memberService.saveMember(member);
-
-        InfoResponse infoResponse = modelMapper.map(savedMember, InfoResponse.class);
+        InfoResponse infoResponse = INSTANCE.toInfoResponse(savedMember);
 
         return infoResponse;
     }
@@ -88,6 +82,7 @@ public class MemberController {
         // 인증된 멤버
         PrincipalDetails principalDetails = ((PrincipalDetails)authentication.getPrincipal());
         Member authMember = principalDetails.getMember();
+        Member findMember = memberService.getMember(authMember.getId());
 
         // 프로필 업로드
         Profile profile = null;
@@ -101,18 +96,18 @@ public class MemberController {
 
             profile = Profile.builder()
                     .originalFilename(profileFile.getOriginalFilename())
-                    .newFilename(filename)
+                    .filename(filename)
                     .size(profileFile.getSize())
                     .build();
+
+        } else {
+            profile = findMember.getProfile();
         }
 
-        // 멤버 정보 변경
-        Member member = modelMapper.map(updateInfoRequest, Member.class);
-        member.setId(authMember.getId());
-        member.setProfile(profile);
+        Member member = INSTANCE.updateProfileToEntity(profile, findMember);
+        member = INSTANCE.updateInfoRequestToEntity(updateInfoRequest, member);
         Member updatedMember = memberService.updateMember(member);
-
-        InfoResponse infoResponse = modelMapper.map(updatedMember, InfoResponse.class);
+        InfoResponse infoResponse = INSTANCE.toInfoResponse(updatedMember);
 
         return infoResponse;
     }
@@ -123,25 +118,31 @@ public class MemberController {
      */
     @ApiOperation(value = "비밀번호 변경", notes = "현재 로그인중인 회원의 비밀번호를 변경합니다.")
     @PatchMapping("/password")
-    public IdResponse updatePassword(Authentication authentication, @RequestBody UpdatePasswordRequest updatePasswordRequest) {
-        // 패스워드 검증
-        if (isNotEqualPassword(updatePasswordRequest.getPassword(), updatePasswordRequest.getRepeatPassword())) {
-            throw new IllegalArgumentException("패스워드와 패스워드 확인이 같지 않습니다.");
-        }
-
+    public InfoResponse updatePassword(Authentication authentication,
+                                       @RequestBody UpdatePasswordRequest updatePasswordRequest) {
         // 인증된 멤버
         PrincipalDetails principalDetails = ((PrincipalDetails)authentication.getPrincipal());
         Member authMember = principalDetails.getMember();
 
         // 비밀번호 변경
-        Member member = modelMapper.map(updatePasswordRequest, Member.class);
-        member.setId(authMember.getId());
-        memberService.updatePassword(member);
+        Member findMember = memberService.getMember(authMember.getId());
+        String passwordBefore = updatePasswordRequest.getPasswordBefore();
 
-        // 응답 객체 생성
-        IdResponse response = modelMapper.map(member, IdResponse.class);
+        Password password = findMember.getPassword();
+        String encodedPassword = password.getValue();
+        if (!isValidPassword(passwordBefore, encodedPassword)) {
+            throw new IllegalStateException("이전 패스워드와 다릅니다.");
+        }
+
+        Member member = INSTANCE.updatePasswordRequestToEntity(updatePasswordRequest, findMember);
+        Member updatedMember = memberService.updatePassword(member);
+        InfoResponse response = INSTANCE.toInfoResponse(updatedMember);
 
         return response;
+    }
+
+    private boolean isValidPassword(String passwordBefore, String encodedPassword) {
+        return PasswordEncoderUtils.getInstance().matchers(passwordBefore, encodedPassword);
     }
 
     /**
@@ -155,12 +156,10 @@ public class MemberController {
         Member authMember = principalDetails.getMember();
 
         // 회원탈퇴
-        Member member = new Member();
-        member.setId(authMember.getId());
-        memberService.deleteMember(member);
+        memberService.deleteMember(authMember.getId());
 
         // 응답 객체 생성
-        IdResponse response = modelMapper.map(member, IdResponse.class);
+        IdResponse response = new IdResponse(authMember.getId());
 
         return response;
     }
@@ -177,10 +176,6 @@ public class MemberController {
 
     private String getFullPath(String filename) {
         return uploadPath + "/" + filename;
-    }
-
-    private boolean isNotEqualPassword(String password, String repeatPassword) {
-        return !(password.equals(repeatPassword));
     }
 
 }

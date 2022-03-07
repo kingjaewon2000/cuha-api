@@ -1,38 +1,33 @@
 package com.cju.cuhaapi.member;
 
 import com.cju.cuhaapi.utils.PasswordEncoderUtils;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-@Getter
 @NoArgsConstructor
+@Getter
 @Embeddable
 public class Password {
     private static PasswordEncoderUtils passwordEncoderUtils = PasswordEncoderUtils.getInstance();
 
     @Column
-    private int failCount;
+    private final int failCount = 0;
 
     @Column(name = "password")
     private String value;
 
     @Column
-    private LocalDateTime lastModifiedDate;
+    private final LocalDateTime lastModifiedDate = LocalDateTime.now();
 
+    @Builder
     public Password(String value) {
-        this.failCount = 0;
-        this.value = passwordEncoderUtils.encode(value);
-        this.lastModifiedDate = LocalDateTime.now();
-    }
-
-    public void setValue(String value) {
         this.value = passwordEncoderUtils.encode(value);
     }
 }

@@ -1,19 +1,15 @@
 package com.cju.cuhaapi.member;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class DefaultProfile {
-    private final Profile profile;
+    private static final Profile profile = Profile.builder()
+            .originalFilename("no-profile.gif")
+            .filename("no-profile.gif")
+            .build();
 
-    public DefaultProfile() {
-        profile = Profile.builder()
-                .originalFilename("no-profile.gif")
-                .newFilename("no-profile.gif")
-                .build();
+    private DefaultProfile() {
     }
 
-    public Profile getProfile() {
+    public static Profile getProfile() {
         return profile;
     }
 }

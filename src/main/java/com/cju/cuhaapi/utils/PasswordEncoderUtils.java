@@ -26,4 +26,8 @@ public class PasswordEncoderUtils {
     public String encode(String password) {
         return passwordEncoder.encode(password);
     }
+
+    public boolean matchers(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
 }

@@ -1,15 +1,17 @@
 package com.cju.cuhaapi.common;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.Embeddable;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
 @Embeddable
 public class TimeEntity {
 

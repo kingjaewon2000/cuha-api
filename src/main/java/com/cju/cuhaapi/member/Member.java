@@ -1,18 +1,19 @@
 package com.cju.cuhaapi.member;
 
 import com.cju.cuhaapi.common.TimeEntity;
+import com.cju.cuhaapi.member.MemberDto.IdResponse;
+import com.cju.cuhaapi.member.MemberDto.InfoResponse;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@ToString
 @DynamicInsert
 @Entity
 public class Member {
@@ -43,7 +44,7 @@ public class Member {
     private String phoneNumber;
 
     @Column(nullable = false)
-    private String studentNumber;
+    private String studentId;
 
     @Column(nullable = false)
     private Department department;
@@ -60,5 +61,5 @@ public class Member {
     private String refreshToken;
 
     @Embedded
-    private TimeEntity timeEntity = new TimeEntity();
+    private TimeEntity timeEntity;
 }
