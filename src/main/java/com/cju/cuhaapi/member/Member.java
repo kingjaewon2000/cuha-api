@@ -1,8 +1,6 @@
 package com.cju.cuhaapi.member;
 
-import com.cju.cuhaapi.common.TimeEntity;
-import com.cju.cuhaapi.member.MemberDto.IdResponse;
-import com.cju.cuhaapi.member.MemberDto.InfoResponse;
+import com.cju.cuhaapi.common.BaseTime;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -61,5 +59,5 @@ public class Member {
     private String refreshToken;
 
     @Embedded
-    private TimeEntity timeEntity;
+    private BaseTime baseTime;
 }

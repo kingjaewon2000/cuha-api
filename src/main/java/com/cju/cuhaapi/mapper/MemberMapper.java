@@ -18,8 +18,8 @@ public interface MemberMapper {
 //            @Mapping(target = "profile", ignore = true),
 //            @Mapping(target = "refreshToken", ignore = true),
             @Mapping(source = "password", target = "password.value"),
-            @Mapping(target = "timeEntity.createdAt", expression = "java(java.time.LocalDateTime.now())"),
-            @Mapping(target = "timeEntity.updatedAt", expression = "java(java.time.LocalDateTime.now())")
+            @Mapping(target = "baseTime.createdAt", expression = "java(java.time.LocalDateTime.now())"),
+            @Mapping(target = "baseTime.updatedAt", expression = "java(java.time.LocalDateTime.now())")
     })
     Member joinRequestToEntity(JoinRequest request);
 
@@ -50,9 +50,10 @@ public interface MemberMapper {
             @Mapping(source = "member.studentId", target = "studentId"),
             @Mapping(source = "member.department", target = "department"),
             @Mapping(source = "member.role", target = "role"),
-            @Mapping(source = "request.profile", target = "profile"),
+            @Mapping(source = "request", target = "profile"),
             @Mapping(source = "member.refreshToken", target = "refreshToken"),
-            @Mapping(source = "member.timeEntity", target = "timeEntity")
+            @Mapping(source = "member.baseTime.createdAt", target = "baseTime.createdAt"),
+            @Mapping(target = "baseTime.updatedAt", expression = "java(java.time.LocalDateTime.now())")
     })
     Member updateProfileToEntity(Profile request, Member member);
 
@@ -69,7 +70,8 @@ public interface MemberMapper {
             @Mapping(source = "member.role", target = "role"),
             @Mapping(source = "member.profile", target = "profile"),
             @Mapping(source = "member.refreshToken", target = "refreshToken"),
-            @Mapping(source = "member.timeEntity", target = "timeEntity")
+            @Mapping(source = "member.baseTime.createdAt", target = "baseTime.createdAt"),
+            @Mapping(target = "baseTime.updatedAt", expression = "java(java.time.LocalDateTime.now())")
     })
     Member updateInfoRequestToEntity(UpdateInfoRequest request, Member member);
 
@@ -86,7 +88,7 @@ public interface MemberMapper {
             @Mapping(source = "member.role", target = "role"),
             @Mapping(source = "member.profile", target = "profile"),
             @Mapping(source = "member.refreshToken", target = "refreshToken"),
-            @Mapping(source = "member.timeEntity", target = "timeEntity")
+            @Mapping(source = "member.baseTime", target = "baseTime")
     })
     Member updatePasswordRequestToEntity(UpdatePasswordRequest request, Member member);
 

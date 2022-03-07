@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.post;
 
-import com.cju.cuhaapi.common.TimeEntity;
+import com.cju.cuhaapi.common.BaseTime;
 import com.cju.cuhaapi.member.Member;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -36,5 +36,5 @@ public class Post {
     private Member member;
 
     @Embedded
-    private TimeEntity timeEntity = new TimeEntity();
+    private BaseTime baseTime = new BaseTime();
 }

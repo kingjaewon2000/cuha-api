@@ -1,8 +1,7 @@
 package com.cju.cuhaapi;
 
-import com.cju.cuhaapi.common.TimeEntity;
+import com.cju.cuhaapi.common.BaseTime;
 import com.cju.cuhaapi.member.*;
-import com.cju.cuhaapi.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +36,7 @@ public class TestDataInit {
                 .department(Department.DIGITAL_SECURITY)
                 .role(role)
                 .profile(defaultProfile)
-                .timeEntity(new TimeEntity())
+                .baseTime(new BaseTime())
                 .build();
 
         memberRepository.save(member);
