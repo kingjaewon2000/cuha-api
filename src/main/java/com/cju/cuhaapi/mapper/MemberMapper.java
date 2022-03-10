@@ -13,10 +13,10 @@ public interface MemberMapper {
     MemberMapper INSTANCE = Mappers.getMapper(MemberMapper.class);
 
     @Mappings({
-//            @Mapping(target = "id", ignore = true),
-//            @Mapping(target = "role", ignore = true),
-//            @Mapping(target = "profile", ignore = true),
-//            @Mapping(target = "refreshToken", ignore = true),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "role", ignore = true),
+            @Mapping(target = "profile", ignore = true),
+            @Mapping(target = "refreshToken", ignore = true),
             @Mapping(source = "password", target = "password.value"),
             @Mapping(target = "baseTime.createdAt", expression = "java(java.time.LocalDateTime.now())"),
             @Mapping(target = "baseTime.updatedAt", expression = "java(java.time.LocalDateTime.now())")
@@ -24,17 +24,17 @@ public interface MemberMapper {
     Member joinRequestToEntity(JoinRequest request);
 
     @Mappings({
-//            @Mapping(target = "id", ignore = true),
-//            @Mapping(target = "name", ignore = true),
-//            @Mapping(target = "isMale", ignore = true),
-//            @Mapping(target = "email", ignore = true),
-//            @Mapping(target = "phoneNumber", ignore = true),
-//            @Mapping(target = "studentId", ignore = true),
-//            @Mapping(target = "department", ignore = true),
-//            @Mapping(target = "role", ignore = true),
-//            @Mapping(target = "profile", ignore = true),
-//            @Mapping(target = "refreshToken", ignore = true),
-//            @Mapping(target = "timeEntity", ignore = true),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "name", ignore = true),
+            @Mapping(target = "isMale", ignore = true),
+            @Mapping(target = "email", ignore = true),
+            @Mapping(target = "phoneNumber", ignore = true),
+            @Mapping(target = "studentId", ignore = true),
+            @Mapping(target = "department", ignore = true),
+            @Mapping(target = "role", ignore = true),
+            @Mapping(target = "profile", ignore = true),
+            @Mapping(target = "refreshToken", ignore = true),
+            @Mapping(target = "baseTime", ignore = true),
             @Mapping(source = "password", target = "password.value")
     })
     Member loginRequestToEntity(LoginRequest request);
@@ -92,5 +92,11 @@ public interface MemberMapper {
     })
     Member updatePasswordRequestToEntity(UpdatePasswordRequest request, Member member);
 
+    @Mappings({
+            @Mapping(source = "member.profile.filename", target = "profileImage"),
+            @Mapping(source = "member.baseTime.createdAt", target = "createdAt"),
+            @Mapping(source = "member.baseTime.updatedAt", target = "updatedAt"),
+            @Mapping(source = "member.password.lastModifiedDate", target = "lastModifiedDate")
+    })
     InfoResponse toInfoResponse(Member member);
 }

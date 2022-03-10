@@ -2,6 +2,8 @@ package com.cju.cuhaapi.security.jwt;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor

@@ -12,7 +12,6 @@ public class MemberDto {
     @Builder
     @Getter
     @Setter
-    @ToString
     public static class LoginRequest {
         @ApiModelProperty(value = "아이디", required = true, example = "cuha")
         @NotNull
@@ -28,7 +27,6 @@ public class MemberDto {
     @Builder
     @Getter
     @Setter
-    @ToString
     public static class JoinRequest {
         @ApiModelProperty(value = "아이디", required = true, example = "cuha")
         @NotNull
@@ -63,7 +61,6 @@ public class MemberDto {
     @Builder
     @Getter
     @Setter
-    @ToString
     public static class UpdateInfoRequest {
         @ApiModelProperty(value = "이름", required = true, example = "김태형")
         private String name;
@@ -89,7 +86,6 @@ public class MemberDto {
     @Builder
     @Getter
     @Setter
-    @ToString
     public static class UpdatePasswordRequest {
         @ApiModelProperty(value = "이전 비밀번호", required = true, example = "cju")
         private String passwordBefore;
@@ -102,8 +98,6 @@ public class MemberDto {
     @AllArgsConstructor
     @Builder
     @Getter
-    @Setter
-    @ToString
     public static class InfoResponse {
         @ApiModelProperty(value = "프로필")
         private String profileImage;
@@ -128,14 +122,21 @@ public class MemberDto {
 
         @ApiModelProperty(value = "학과", example = "DIGITAL_SECURITY")
         private String department;
+
+        @ApiModelProperty(value = "계정 생성 일")
+        private String createdAt;
+
+        @ApiModelProperty(value = "계정 수정 일")
+        private String updatedAt;
+
+        @ApiModelProperty(value = "패스워드 마지막 수정 일")
+        private String lastModifiedDate;
     }
 
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
     @Getter
-    @Setter
-    @ToString
     public static class IdResponse {
         @ApiModelProperty(value = "식별자", example = "1")
         private Long id;

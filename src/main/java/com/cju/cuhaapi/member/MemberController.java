@@ -46,7 +46,7 @@ public class MemberController {
         Member authMember = principalDetails.getMember();
 
         // 멤버 조회
-        Member member = memberService.getMember(authMember.getId());
+        Member member = memberService.findMember(authMember.getId());
         InfoResponse infoResponse = INSTANCE.toInfoResponse(member);
 
         return infoResponse;
@@ -82,7 +82,7 @@ public class MemberController {
         // 인증된 멤버
         PrincipalDetails principalDetails = ((PrincipalDetails)authentication.getPrincipal());
         Member authMember = principalDetails.getMember();
-        Member findMember = memberService.getMember(authMember.getId());
+        Member findMember = memberService.findMember(authMember.getId());
 
         // 프로필 업로드
         Profile profile = null;
@@ -125,7 +125,7 @@ public class MemberController {
         Member authMember = principalDetails.getMember();
 
         // 비밀번호 변경
-        Member findMember = memberService.getMember(authMember.getId());
+        Member findMember = memberService.findMember(authMember.getId());
         String passwordBefore = updatePasswordRequest.getPasswordBefore();
 
         Password password = findMember.getPassword();
@@ -156,10 +156,10 @@ public class MemberController {
         Member authMember = principalDetails.getMember();
 
         // 회원탈퇴
-        memberService.deleteMember(authMember.getId());
+        Member member = memberService.deleteMember(authMember.getId());
 
         // 응답 객체 생성
-        IdResponse response = new IdResponse(authMember.getId());
+        IdResponse response = new IdResponse(member.getId());
 
         return response;
     }

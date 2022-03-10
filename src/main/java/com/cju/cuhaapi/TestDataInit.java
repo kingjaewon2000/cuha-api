@@ -52,7 +52,7 @@ public class TestDataInit {
 
     private Category initCategory() {
         Category category = Category.builder()
-                .name("/notice")
+                .name("notice")
                 .description("공지사항")
                 .baseTime(new BaseTime())
                 .build();

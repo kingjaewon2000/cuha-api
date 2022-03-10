@@ -44,6 +44,9 @@ public class Post {
     @OneToMany(mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<LikePost> likePosts = new ArrayList<>();
+
     @Embedded
     private BaseTime baseTime;
 }

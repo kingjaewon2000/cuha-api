@@ -13,8 +13,9 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
 
-    public Member getMember(Long id) {
-        return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("ID값이 잘못 지정되었습니다."));
+    public Member findMember(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("ID값이 잘못 지정되었습니다."));
     }
 
     public Member saveMember(Member member) {
@@ -32,6 +33,11 @@ public class MemberService {
 
     public Member updateMember(Member member) {
         // 멤버 정보 변경 및 저장
+        Profile profile = member.getProfile();
+        if (profile != null) {
+            profileRepository.save(profile);
+        }
+
         Member updatedMember = memberRepository.save(member);
 
         return updatedMember;
@@ -46,7 +52,7 @@ public class MemberService {
 
     public Member deleteMember(Long id) {
         // ID값으로 멤버 가져오기.
-        Member findMember = getMember(id);
+        Member findMember = findMember(id);
 
         // 회원 탈퇴
         memberRepository.delete(findMember);

@@ -13,17 +13,37 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    public List<Post> getPosts() {
-        return postRepository.findAll();
+    public List<Post> findPosts(String category) {
+        return postRepository.findAllByCategoryName(category);
     }
 
-    public Post getPost(Long id) {
-        return postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("ID값이 잘못 지정되었습니다."));
+    public Post findPost(Long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("ID값이 잘못 지정되었습니다."));
     }
 
-    public Post createPost(Post post) {
+    public Post findPost(String name, Long id) {
+        return postRepository.findPostByCategoryNameAndId(name, id)
+                .orElseThrow(() -> new IllegalArgumentException("name값 혹은 ID값이 잘못 지정되었습니다."));
+    }
+
+    public Post createPost(Post post, String name) {
+//        post = PostMapper.INSTANCE.createRequestToEntity();
         Post createdPost = postRepository.save(post);
 
         return createdPost;
+    }
+
+    public Post updatePost(Post post) {
+        Post savedPost = postRepository.save(post);
+
+        return savedPost;
+    }
+
+    public Post deletePost(String name, Long id) {
+        Post findPost = findPost(name, id);
+        postRepository.delete(findPost);
+
+        return findPost;
     }
 }
