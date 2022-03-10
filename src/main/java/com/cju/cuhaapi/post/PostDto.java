@@ -2,28 +2,26 @@ package com.cju.cuhaapi.post;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 public class PostDto {
 
-    @Getter
-    @Setter
-    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
+    @Getter
+    @Setter
+    @ToString
     public static class CreateRequest {
         private String title;
         private String content;
     }
 
-    @Getter
-    @Setter
-    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class GetResponse {
+    @Getter
+    @Setter
+    @ToString
+    public static class PostResponse {
         private Long id;
         private String title;
         private String content;
