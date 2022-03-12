@@ -1,8 +1,23 @@
 package com.cju.cuhaapi;
 
-import com.cju.cuhaapi.common.BaseTime;
-import com.cju.cuhaapi.member.*;
-import com.cju.cuhaapi.post.*;
+import com.cju.cuhaapi.domain.post.entity.Comment;
+import com.cju.cuhaapi.domain.post.repository.CommentRepository;
+import com.cju.cuhaapi.domain.member.entity.Member;
+import com.cju.cuhaapi.domain.member.entity.Profile;
+import com.cju.cuhaapi.domain.member.entity.Role;
+import com.cju.cuhaapi.domain.member.etc.DefaultProfile;
+import com.cju.cuhaapi.domain.member.etc.DefaultRole;
+import com.cju.cuhaapi.domain.member.entity.Department;
+import com.cju.cuhaapi.domain.member.entity.Password;
+import com.cju.cuhaapi.domain.member.repository.MemberRepository;
+import com.cju.cuhaapi.domain.member.repository.ProfileRepository;
+import com.cju.cuhaapi.domain.member.repository.RoleRepository;
+import com.cju.cuhaapi.domain.post.entity.Category;
+import com.cju.cuhaapi.domain.post.entity.PostLike;
+import com.cju.cuhaapi.domain.post.entity.Post;
+import com.cju.cuhaapi.domain.post.repository.CategoryRepository;
+import com.cju.cuhaapi.domain.post.repository.PostLikeRepository;
+import com.cju.cuhaapi.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +32,8 @@ public class TestDataInit {
     private final ProfileRepository profileRepository;
     private final CategoryRepository categoryRepository;
     private final PostRepository postRepository;
-    private final LikeRepository likeRepository;
+    private final PostLikeRepository postLikeRepository;
+    private final CommentRepository commentRepository;
 
     @PostConstruct
     public void init() {
@@ -27,22 +43,28 @@ public class TestDataInit {
         Category category = initCategory();
         Post post = initPost(member, category);
 
-        LikePost likePost = LikePost.builder()
+        PostLike postLike = PostLike.builder()
                 .isLike(true)
                 .member(member)
                 .post(post)
-                .baseTime(new BaseTime())
                 .build();
-        likeRepository.save(likePost);
+        postLikeRepository.save(postLike);
+
+        Comment comment = Comment.builder()
+                .body("김치볶음밥")
+                .post(post)
+                .member(member)
+                .build();
+
+        commentRepository.save(comment);
     }
 
     private Post initPost(Member member, Category category) {
         Post post = Post.builder()
                 .title("제목")
-                .content("제목123")
+                .body("제목123")
                 .member(member)
                 .category(category)
-                .baseTime(new BaseTime())
                 .build();
 
         postRepository.save(post);
@@ -54,7 +76,6 @@ public class TestDataInit {
         Category category = Category.builder()
                 .name("notice")
                 .description("공지사항")
-                .baseTime(new BaseTime())
                 .build();
 
         categoryRepository.save(category);
@@ -72,7 +93,6 @@ public class TestDataInit {
                 .department(Department.DIGITAL_SECURITY)
                 .role(role)
                 .profile(profile)
-                .baseTime(new BaseTime())
                 .build();
 
         memberRepository.save(member);

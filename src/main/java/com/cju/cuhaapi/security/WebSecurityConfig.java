@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.security;
 
-import com.cju.cuhaapi.member.MemberRepository;
+import com.cju.cuhaapi.domain.member.repository.MemberRepository;
 import com.cju.cuhaapi.security.jwt.*;
 import com.cju.cuhaapi.utils.PasswordEncoderUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;

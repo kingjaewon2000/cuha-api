@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.security.jwt;
 
-import com.cju.cuhaapi.member.MemberDto.LoginRequest;
+import com.cju.cuhaapi.domain.member.dto.MemberDto.LoginRequest;
 import com.cju.cuhaapi.security.auth.PrincipalDetails;
 import com.cju.cuhaapi.security.jwt.JwtResponseDto.Token;
 import com.fasterxml.jackson.core.JsonParseException;

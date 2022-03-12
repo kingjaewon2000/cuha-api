@@ -1,7 +1,7 @@
 package com.cju.cuhaapi.security.jwt;
 
-import com.cju.cuhaapi.member.Member;
-import com.cju.cuhaapi.member.MemberRepository;
+import com.cju.cuhaapi.domain.member.entity.Member;
+import com.cju.cuhaapi.domain.member.repository.MemberRepository;
 import com.cju.cuhaapi.security.auth.PrincipalDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;

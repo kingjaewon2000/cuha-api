@@ -1,8 +1,8 @@
 package com.cju.cuhaapi.mapper;
 
-import com.cju.cuhaapi.member.Member;
-import com.cju.cuhaapi.member.MemberDto.*;
-import com.cju.cuhaapi.member.Profile;
+import com.cju.cuhaapi.domain.member.entity.Member;
+import com.cju.cuhaapi.domain.member.dto.MemberDto.*;
+import com.cju.cuhaapi.domain.member.entity.Profile;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -10,31 +10,15 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface MemberMapper {
+
     MemberMapper INSTANCE = Mappers.getMapper(MemberMapper.class);
 
     @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "role", ignore = true),
-            @Mapping(target = "profile", ignore = true),
-            @Mapping(target = "refreshToken", ignore = true),
             @Mapping(source = "password", target = "password.value"),
-            @Mapping(target = "baseTime.createdAt", expression = "java(java.time.LocalDateTime.now())"),
-            @Mapping(target = "baseTime.updatedAt", expression = "java(java.time.LocalDateTime.now())")
     })
     Member joinRequestToEntity(JoinRequest request);
 
     @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "name", ignore = true),
-            @Mapping(target = "isMale", ignore = true),
-            @Mapping(target = "email", ignore = true),
-            @Mapping(target = "phoneNumber", ignore = true),
-            @Mapping(target = "studentId", ignore = true),
-            @Mapping(target = "department", ignore = true),
-            @Mapping(target = "role", ignore = true),
-            @Mapping(target = "profile", ignore = true),
-            @Mapping(target = "refreshToken", ignore = true),
-            @Mapping(target = "baseTime", ignore = true),
             @Mapping(source = "password", target = "password.value")
     })
     Member loginRequestToEntity(LoginRequest request);
@@ -52,8 +36,6 @@ public interface MemberMapper {
             @Mapping(source = "member.role", target = "role"),
             @Mapping(source = "request", target = "profile"),
             @Mapping(source = "member.refreshToken", target = "refreshToken"),
-            @Mapping(source = "member.baseTime.createdAt", target = "baseTime.createdAt"),
-            @Mapping(target = "baseTime.updatedAt", expression = "java(java.time.LocalDateTime.now())")
     })
     Member updateProfileToEntity(Profile request, Member member);
 
@@ -70,8 +52,6 @@ public interface MemberMapper {
             @Mapping(source = "member.role", target = "role"),
             @Mapping(source = "member.profile", target = "profile"),
             @Mapping(source = "member.refreshToken", target = "refreshToken"),
-            @Mapping(source = "member.baseTime.createdAt", target = "baseTime.createdAt"),
-            @Mapping(target = "baseTime.updatedAt", expression = "java(java.time.LocalDateTime.now())")
     })
     Member updateInfoRequestToEntity(UpdateInfoRequest request, Member member);
 
@@ -98,5 +78,5 @@ public interface MemberMapper {
             @Mapping(source = "member.baseTime.updatedAt", target = "updatedAt"),
             @Mapping(source = "member.password.lastModifiedDate", target = "lastModifiedDate")
     })
-    InfoResponse toInfoResponse(Member member);
+    InfoResponse entityToInfoResponse(Member member);
 }

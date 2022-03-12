@@ -1,7 +1,7 @@
 package com.cju.cuhaapi.security.auth;
 
-import com.cju.cuhaapi.member.Member;
-import com.cju.cuhaapi.member.MemberRepository;
+import com.cju.cuhaapi.domain.member.entity.Member;
+import com.cju.cuhaapi.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,17 +1,11 @@
 package com.cju.cuhaapi.mapper;
 
-import com.cju.cuhaapi.member.Member;
-import com.cju.cuhaapi.member.MemberDto;
-import com.cju.cuhaapi.member.MemberDto.JoinRequest;
-import com.cju.cuhaapi.member.MemberDto.LoginRequest;
-import com.cju.cuhaapi.member.MemberDto.UpdateInfoRequest;
-import com.cju.cuhaapi.member.MemberDto.UpdatePasswordRequest;
-import com.cju.cuhaapi.member.Password;
-import com.cju.cuhaapi.utils.PasswordEncoderUtils;
+import com.cju.cuhaapi.domain.member.entity.Member;
+import com.cju.cuhaapi.domain.member.dto.MemberDto.JoinRequest;
+import com.cju.cuhaapi.domain.member.dto.MemberDto.LoginRequest;
+import com.cju.cuhaapi.domain.member.dto.MemberDto.UpdateInfoRequest;
+import com.cju.cuhaapi.domain.member.dto.MemberDto.UpdatePasswordRequest;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.core.parameters.P;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class MemberMapperTest {
 

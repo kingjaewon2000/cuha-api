@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.security.auth;
 
-import com.cju.cuhaapi.member.Member;
+import com.cju.cuhaapi.domain.member.entity.Member;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
