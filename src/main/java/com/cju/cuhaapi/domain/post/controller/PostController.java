@@ -70,16 +70,16 @@ public class PostController {
     public PostResponse create(Authentication authentication,
                                @PathVariable String category,
                                @RequestBody CreateRequest createRequest) {
-        // 인증된 멤버
+        // Authentication 멤버
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Member authMember = principalDetails.getMember();
 
         // 게시글 작성
         Category findCategory = categoryService.findByName(category);
         Post post = PostMapper.INSTANCE.createRequestToEntity(createRequest, authMember, findCategory);
-        Post createdPost = postService.createPost(post);
+        postService.createPost(post);
 
-        PostResponse postResponse = PostMapper.INSTANCE.entityToPostResponse(createdPost);
+        PostResponse postResponse = PostMapper.INSTANCE.entityToPostResponse(post);
 
         return postResponse;
     }
@@ -93,15 +93,15 @@ public class PostController {
                                @PathVariable String category,
                                @PathVariable Long id,
                                @RequestBody PostDto.UpdateRequest updateRequest) {
-        // 인증된 멤버
+        // Authentication 멤버
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Member authMember = principalDetails.getMember();
 
         // 게시글 수정
         Post findPost = postService.findPost(category, id);
         Post post = PostMapper.INSTANCE.updateRequestToEntity(updateRequest, findPost);
-        Post savedPost = postService.updatePost(post);
-        PostResponse postResponse = PostMapper.INSTANCE.entityToPostResponse(savedPost);
+        postService.updatePost(post);
+        PostResponse postResponse = PostMapper.INSTANCE.entityToPostResponse(post);
 
         return postResponse;
     }
@@ -149,17 +149,17 @@ public class PostController {
                                        @PathVariable String category,
                                        @PathVariable Long postId,
                                        @RequestBody SaveRequest saveRequest) {
-        // 인증된 멤버
+        // Authentication 멤버
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Member authMember = principalDetails.getMember();
 
         // 댓글 생성
         Post findPost = postService.findPost(category, postId);
         Comment comment = CommentMapper.INSTANCE.saveRequestToEntity(saveRequest, findPost, authMember);
-        Comment savedComment = commentService.saveComment(comment);
+        commentService.saveComment(comment);
 
         // Entity to CommentResponse
-        CommentResponse response = CommentMapper.INSTANCE.entityToCommentResponse(savedComment);
+        CommentResponse response = CommentMapper.INSTANCE.entityToCommentResponse(comment);
 
         return response;
     }
@@ -174,17 +174,17 @@ public class PostController {
                                          @PathVariable Long postId,
                                          @PathVariable Long commentId,
                                          @RequestBody CommentDto.UpdateRequest updateRequest) {
-        // 인증된 멤버
+        // Authentication 멤버
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Member authMember = principalDetails.getMember();
 
         // 댓글 수정
         Post findPost = postService.findPost(category, postId);
         Comment comment = CommentMapper.INSTANCE.updateRequestToEntity(updateRequest, findPost, authMember);
-        Comment savedComment = commentService.saveComment(comment);
+        commentService.saveComment(comment);
 
         // Entity to CommentResponse
-        CommentResponse response = CommentMapper.INSTANCE.entityToCommentResponse(savedComment);
+        CommentResponse response = CommentMapper.INSTANCE.entityToCommentResponse(comment);
 
         return response;
     }

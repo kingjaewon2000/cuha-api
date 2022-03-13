@@ -23,21 +23,37 @@ public interface MemberMapper {
     })
     Member loginRequestToEntity(LoginRequest request);
 
-    @Mappings({
-            @Mapping(source = "member.id", target = "id"),
-            @Mapping(source = "member.username", target = "username"),
-            @Mapping(source = "member.password", target = "password"),
-            @Mapping(source = "member.name", target = "name"),
-            @Mapping(source = "member.isMale", target = "isMale"),
-            @Mapping(source = "member.email", target = "email"),
-            @Mapping(source = "member.phoneNumber", target = "phoneNumber"),
-            @Mapping(source = "member.studentId", target = "studentId"),
-            @Mapping(source = "member.department", target = "department"),
-            @Mapping(source = "member.role", target = "role"),
-            @Mapping(source = "request", target = "profile"),
-            @Mapping(source = "member.refreshToken", target = "refreshToken"),
-    })
-    Member updateProfileToEntity(Profile request, Member member);
+//    @Mappings({
+//            @Mapping(source = "member.id", target = "id"),
+//            @Mapping(source = "member.username", target = "username"),
+//            @Mapping(source = "member.password", target = "password"),
+//            @Mapping(source = "member.name", target = "name"),
+//            @Mapping(source = "member.isMale", target = "isMale"),
+//            @Mapping(source = "member.email", target = "email"),
+//            @Mapping(source = "member.phoneNumber", target = "phoneNumber"),
+//            @Mapping(source = "member.studentId", target = "studentId"),
+//            @Mapping(source = "member.department", target = "department"),
+//            @Mapping(source = "member.role", target = "role"),
+//            @Mapping(source = "request", target = "profile"),
+//            @Mapping(source = "member.refreshToken", target = "refreshToken"),
+//    })
+//    Member updateProfileToEntity(Profile request, Member member);
+//
+//    @Mappings({
+//            @Mapping(source = "member.id", target = "id"),
+//            @Mapping(source = "member.username", target = "username"),
+//            @Mapping(source = "member.password", target = "password"),
+//            @Mapping(source = "request.name", target = "name"),
+//            @Mapping(source = "request.isMale", target = "isMale"),
+//            @Mapping(source = "request.email", target = "email"),
+//            @Mapping(source = "request.phoneNumber", target = "phoneNumber"),
+//            @Mapping(source = "request.studentId", target = "studentId"),
+//            @Mapping(source = "request.department", target = "department"),
+//            @Mapping(source = "member.role", target = "role"),
+//            @Mapping(source = "member.profile", target = "profile"),
+//            @Mapping(source = "member.refreshToken", target = "refreshToken"),
+//    })
+//    Member updateInfoRequestToEntity(UpdateInfoRequest request, Member member);
 
     @Mappings({
             @Mapping(source = "member.id", target = "id"),
@@ -50,10 +66,10 @@ public interface MemberMapper {
             @Mapping(source = "request.studentId", target = "studentId"),
             @Mapping(source = "request.department", target = "department"),
             @Mapping(source = "member.role", target = "role"),
-            @Mapping(source = "member.profile", target = "profile"),
+            @Mapping(source = "profile", target = "profile"),
             @Mapping(source = "member.refreshToken", target = "refreshToken"),
     })
-    Member updateInfoRequestToEntity(UpdateInfoRequest request, Member member);
+    Member updateInfoRequestToEntity(UpdateInfoRequest request, Member member, Profile profile);
 
     @Mappings({
             @Mapping(source = "member.id", target = "id"),

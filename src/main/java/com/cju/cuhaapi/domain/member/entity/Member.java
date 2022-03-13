@@ -3,11 +3,15 @@ package com.cju.cuhaapi.domain.member.entity;
 import com.cju.cuhaapi.audit.AuditListener;
 import com.cju.cuhaapi.audit.Auditable;
 import com.cju.cuhaapi.audit.BaseTime;
+import com.cju.cuhaapi.domain.post.entity.Comment;
+import com.cju.cuhaapi.domain.post.entity.Post;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor

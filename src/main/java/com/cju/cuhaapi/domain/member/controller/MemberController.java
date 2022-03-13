@@ -1,10 +1,11 @@
 package com.cju.cuhaapi.domain.member.controller;
 
 import com.cju.cuhaapi.domain.member.dto.MemberDto;
-import com.cju.cuhaapi.domain.member.service.MemberService;
-import com.cju.cuhaapi.domain.member.entity.Password;
+import com.cju.cuhaapi.domain.member.dto.MemberDto.*;
 import com.cju.cuhaapi.domain.member.entity.Member;
+import com.cju.cuhaapi.domain.member.entity.Password;
 import com.cju.cuhaapi.domain.member.entity.Profile;
+import com.cju.cuhaapi.domain.member.service.MemberService;
 import com.cju.cuhaapi.security.auth.PrincipalDetails;
 import com.cju.cuhaapi.utils.PasswordEncoderUtils;
 import io.swagger.annotations.ApiOperation;
@@ -16,8 +17,6 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,14 +43,13 @@ public class MemberController {
      */
     @ApiOperation(value = "멤버 조회", notes = "현재 로그인중인 회원의 정보를 조회합니다.")
     @GetMapping
-    public MemberDto.InfoResponse info(Authentication authentication) {
-        // 인증된 멤버
+    public InfoResponse info(Authentication authentication) {
+        // Authentication 멤버
         PrincipalDetails principalDetails = ((PrincipalDetails)authentication.getPrincipal());
         Member authMember = principalDetails.getMember();
 
-        // 멤버 조회
-        Member member = memberService.findMember(authMember.getId());
-        MemberDto.InfoResponse response = INSTANCE.entityToInfoResponse(member);
+        // 응답
+        InfoResponse response = INSTANCE.entityToInfoResponse(authMember);
 
         return response;
     }
@@ -61,16 +59,10 @@ public class MemberController {
      */
     @ApiOperation(value = "회원가입", notes = "회원을 저장합니다.")
     @PostMapping("/join")
-    public MemberDto.InfoResponse join(@Validated @RequestBody MemberDto.JoinRequest joinRequest,
-                                       BindingResult bindingResult) {
-        // 입력 값 검증
-        if (bindingResult.hasErrors()) {
-            throw new IllegalArgumentException("모든 필드를 채워주셔야 합니다.");
-        }
-
+    public InfoResponse join(@RequestBody JoinRequest joinRequest) {
         Member member = INSTANCE.joinRequestToEntity(joinRequest);
-        Member savedMember = memberService.saveMember(member);
-        MemberDto.InfoResponse response = INSTANCE.entityToInfoResponse(savedMember);
+        memberService.saveMember(member);
+        InfoResponse response = INSTANCE.entityToInfoResponse(member);
 
         return response;
     }
@@ -80,51 +72,56 @@ public class MemberController {
      */
     @ApiOperation(value = "멤버 정보 변경", notes = "현재 로그인중인 회원의 정보를 변경합니다.")
     @PatchMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
-    public MemberDto.InfoResponse updateInfo(Authentication authentication,
-                                             @RequestPart("json") MemberDto.UpdateInfoRequest updateInfoRequest,
-                                             @RequestPart(required = false) MultipartFile profileFile) throws IOException {
-        // 인증된 멤버
+    public InfoResponse updateInfo(Authentication authentication,
+                                   @RequestPart("json") UpdateInfoRequest updateInfoRequest,
+                                   @RequestPart(required = false) MultipartFile profileFile) throws IOException {
+        // Authentication 멤버
         PrincipalDetails principalDetails = ((PrincipalDetails)authentication.getPrincipal());
         Member authMember = principalDetails.getMember();
-        Member findMember = memberService.findMember(authMember.getId());
 
         // 프로필 업로드
-        Profile profile = null;
+        Profile profile = authMember.getProfile();
 
         if (profileFile != null) {
             String originalFilename = profileFile.getOriginalFilename();
+            Long size = profile.getSize();
             String ext = StringUtils.getFilenameExtension(originalFilename);
             String filename = createFilename(ext);
-            File file = new File(getFullPath(filename));
-            profileFile.transferTo(file);
 
-            profile = Profile.builder()
-                    .originalFilename(profileFile.getOriginalFilename())
-                    .filename(filename)
-                    .size(profileFile.getSize())
-                    .build();
-
-        } else {
-            profile = findMember.getProfile();
+            saveFile(profileFile, filename);
+            profile = multipartFileToEntity(originalFilename, filename, size);
         }
 
-        Member member = INSTANCE.updateProfileToEntity(profile, findMember);
-        member = INSTANCE.updateInfoRequestToEntity(updateInfoRequest, member);
-        Member updatedMember = memberService.updateMember(member);
-        MemberDto.InfoResponse response = INSTANCE.entityToInfoResponse(updatedMember);
+        Member member = INSTANCE.updateInfoRequestToEntity(updateInfoRequest, authMember, profile);
+        memberService.updateMember(member);
+        InfoResponse response = INSTANCE.entityToInfoResponse(member);
 
         return response;
     }
 
+    private Profile multipartFileToEntity(String originalFilename, String filename, Long size) {
+        Profile profile = Profile.builder()
+                .originalFilename(originalFilename)
+                .filename(filename)
+                .size(size)
+                .build();
+
+        return profile;
+    }
+
+    private void saveFile(MultipartFile multipartFile, String filename) throws IOException {
+        File file = new File(getFullPath(filename));
+        multipartFile.transferTo(file);
+    }
 
     /**
      * 비밀번호 변경
      */
     @ApiOperation(value = "비밀번호 변경", notes = "현재 로그인중인 회원의 비밀번호를 변경합니다.")
     @PatchMapping("/password")
-    public MemberDto.InfoResponse updatePassword(Authentication authentication,
-                                                 @RequestBody MemberDto.UpdatePasswordRequest updatePasswordRequest) {
-        // 인증된 멤버
+    public InfoResponse updatePassword(Authentication authentication,
+                                       @RequestBody UpdatePasswordRequest updatePasswordRequest) {
+        // Authentication 멤버
         PrincipalDetails principalDetails = ((PrincipalDetails)authentication.getPrincipal());
         Member authMember = principalDetails.getMember();
 
@@ -139,14 +136,10 @@ public class MemberController {
         }
 
         Member member = INSTANCE.updatePasswordRequestToEntity(updatePasswordRequest, findMember);
-        Member updatedMember = memberService.updatePassword(member);
-        MemberDto.InfoResponse response = INSTANCE.entityToInfoResponse(updatedMember);
+        memberService.updatePassword(member);
+        InfoResponse response = INSTANCE.entityToInfoResponse(member);
 
         return response;
-    }
-
-    private boolean isValidPassword(String passwordBefore, String encodedPassword) {
-        return PasswordEncoderUtils.getInstance().matchers(passwordBefore, encodedPassword);
     }
 
     /**
@@ -154,17 +147,16 @@ public class MemberController {
      */
     @ApiOperation(value = "회원탈퇴", notes = "현재 로그인중인 회원을 탈퇴합니다.")
     @DeleteMapping
-    public MemberDto.DeleteResponse delete(Authentication authentication) {
-        // 인증된 멤버
+    public DeleteResponse delete(Authentication authentication) {
+        // Authentication 멤버
         PrincipalDetails principalDetails = ((PrincipalDetails)authentication.getPrincipal());
         Member authMember = principalDetails.getMember();
 
         // 회원탈퇴
-        Long memberId = authMember.getId();
-        memberService.deleteMember(memberId);
+        memberService.deleteMember(authMember);
 
         // 응답 객체 생성
-        MemberDto.DeleteResponse response = new MemberDto.DeleteResponse(memberId);
+        DeleteResponse response = new DeleteResponse(authMember.getId());
 
         return response;
     }
@@ -183,4 +175,7 @@ public class MemberController {
         return uploadPath + "/" + filename;
     }
 
+    private boolean isValidPassword(String passwordBefore, String encodedPassword) {
+        return PasswordEncoderUtils.getInstance().matchers(passwordBefore, encodedPassword);
+    }
 }

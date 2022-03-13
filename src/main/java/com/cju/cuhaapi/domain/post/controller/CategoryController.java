@@ -35,8 +35,8 @@ public class CategoryController {
     @PostMapping
     public CategoryResponse create(@RequestBody CategoryRequest categoryRequest) {
         Category category = INSTANCE.categoryRequestToEntity(categoryRequest);
-        Category savedCategory = categoryService.saveCategory(category);
-        CategoryResponse response = INSTANCE.entityToCategoryResponse(savedCategory);
+        categoryService.saveCategory(category);
+        CategoryResponse response = INSTANCE.entityToCategoryResponse(category);
 
         return response;
     }

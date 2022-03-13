@@ -22,9 +22,7 @@ public class CategoryService {
                 .orElseThrow(() -> new IllegalArgumentException("name값이 잘못 지정되었습니다."));
     }
 
-    public Category saveCategory(Category category) {
-        Category savedCategory = categoryRepository.save(category);
-
-        return savedCategory;
+    public void saveCategory(Category category) {
+        categoryRepository.save(category);
     }
 }

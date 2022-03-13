@@ -22,7 +22,7 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("ID값이 잘못 지정되었습니다."));
     }
 
-    public Member saveMember(Member member) {
+    public void saveMember(Member member) {
         // 아이디 중복 체크
         String username = member.getUsername();
         if(isDuplicateUsername(username)) {
@@ -30,36 +30,26 @@ public class MemberService {
         }
 
         // 회원가입 로직
-        Member savedMember = memberRepository.save(member);
-
-        return savedMember;
+        memberRepository.save(member);
     }
 
-    public Member updateMember(Member member) {
-        // 멤버 정보 변경 및 저장
+    public void updateMember(Member member) {
         Profile profile = member.getProfile();
         if (profile != null) {
             profileRepository.save(profile);
         }
 
-        Member updatedMember = memberRepository.save(member);
-
-        return updatedMember;
+        memberRepository.save(member);
     }
 
-    public Member updatePassword(Member member) {
+    public void updatePassword(Member member) {
         // 비밀번호 변경 및 저장
-        Member updatedMember = memberRepository.save(member);
-
-        return updatedMember;
+        memberRepository.save(member);
     }
 
-    public void deleteMember(Long id) {
-        // ID값으로 멤버 가져오기.
-        Member findMember = findMember(id);
-
+    public void deleteMember(Member member) {
         // 회원 탈퇴
-        memberRepository.delete(findMember);
+        memberRepository.delete(member);
     }
 
     /**

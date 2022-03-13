@@ -22,26 +22,17 @@ public class PostService {
         return postRepository.findAllByCategoryName(category, pageRequest);
     }
 
-    public Post findPost(Long id) {
-        return postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("ID값이 잘못 지정되었습니다."));
-    }
-
     public Post findPost(String name, Long id) {
         return postRepository.findPostByCategoryNameAndId(name, id)
                 .orElseThrow(() -> new IllegalArgumentException("name값 혹은 ID값이 잘못 지정되었습니다."));
     }
 
-    public Post createPost(Post post) {
-        Post createdPost = postRepository.save(post);
-
-        return createdPost;
+    public void createPost(Post post) {
+        postRepository.save(post);
     }
 
-    public Post updatePost(Post post) {
-        Post savedPost = postRepository.save(post);
-
-        return savedPost;
+    public void updatePost(Post post) {
+        postRepository.save(post);
     }
 
     public void deletePost(String name, Long id) {

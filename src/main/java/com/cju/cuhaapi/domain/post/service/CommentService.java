@@ -33,22 +33,16 @@ public class CommentService {
         return commentRepository.findAllByPostCategoryNameAndPostId(category, postId, pageRequest);
     }
 
-    public Comment saveComment(Comment comment) {
-        Comment savedComment = commentRepository.save(comment);
-
-        return savedComment;
+    public void saveComment(Comment comment) {
+        commentRepository.save(comment);
     }
 
-    public Comment updateComment(Comment comment) {
-        Comment updatedComment = commentRepository.save(comment);
-
-        return updatedComment;
+    public void updateComment(Comment comment) {
+        commentRepository.save(comment);
     }
 
-    public Comment deleteComment(String name, Long postId, Long commentId) {
+    public void deleteComment(String name, Long postId, Long commentId) {
         Comment comment = findComment(name, postId, commentId);
         commentRepository.delete(comment);
-
-        return comment;
     }
 }
