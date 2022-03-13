@@ -35,7 +35,7 @@ public class MemberService {
 
     public void updateMember(Member member) {
         Profile profile = member.getProfile();
-        if (profile != null) {
+        if (profile != null && !profileRepository.existsByFilename(profile.getFilename())) {
             profileRepository.save(profile);
         }
 
@@ -56,11 +56,6 @@ public class MemberService {
      * 도우미 메서드
      */
     public boolean isDuplicateUsername(String username) {
-        Member member = memberRepository.findByUsername(username);
-        if (member == null) {
-            return false;
-        }
-
-        return true;
+        return memberRepository.existsByUsername(username);
     }
 }

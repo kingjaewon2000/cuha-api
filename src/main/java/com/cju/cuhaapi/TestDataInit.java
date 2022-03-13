@@ -41,22 +41,22 @@ public class TestDataInit {
         Profile profile = initProfile();
         Member member = initMember(role, profile);
         Category category = initCategory();
-//        Post post = initPost(member, category);
-//
-//        PostLike postLike = PostLike.builder()
-//                .isLike(true)
-//                .member(member)
-//                .post(post)
-//                .build();
-//        postLikeRepository.save(postLike);
-//
-//        Comment comment = Comment.builder()
-//                .body("김치볶음밥")
-//                .post(post)
-//                .member(member)
-//                .build();
-//
-//        commentRepository.save(comment);
+        Post post = initPost(member, category);
+
+        PostLike postLike = PostLike.builder()
+                .isLike(true)
+                .member(member)
+                .post(post)
+                .build();
+        postLikeRepository.save(postLike);
+
+        Comment comment = Comment.builder()
+                .body("김치볶음밥")
+                .post(post)
+                .member(member)
+                .build();
+
+        commentRepository.save(comment);
     }
 
     private Post initPost(Member member, Category category) {
