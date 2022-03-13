@@ -88,6 +88,17 @@ class MemberServiceTest {
         assertEquals(findMember.getUsername(), member.getUsername());
     }
 
+    @DisplayName("멤버 조회시 해당하는 아이디가 없는 경우")
+    @Test
+    void 멤버_조회_실패() {
+        Long memberId = 1L;
+
+        given(memberRepository.findById(memberId)).willThrow(IllegalArgumentException.class);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> memberService.findMember(memberId));
+    }
+
     @DisplayName("회원가입 할때 아이디가 중복인 경우")
     @Test
     void 멤버_회원가입_중복O() {

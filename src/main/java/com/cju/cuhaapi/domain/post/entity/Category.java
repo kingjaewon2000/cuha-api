@@ -21,7 +21,7 @@ public class Category implements Auditable {
     @Column(name = "category_id")
     private Long id;
 
-    @Column
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column
