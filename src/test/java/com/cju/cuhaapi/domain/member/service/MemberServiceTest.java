@@ -1,47 +1,50 @@
 package com.cju.cuhaapi.domain.member.service;
 
+import com.cju.cuhaapi.domain.member.dto.MemberDto;
 import com.cju.cuhaapi.domain.member.dto.MemberDto.UpdateInfoRequest;
 import com.cju.cuhaapi.domain.member.dto.MemberDto.UpdatePasswordRequest;
 import com.cju.cuhaapi.domain.member.entity.Department;
 import com.cju.cuhaapi.domain.member.entity.Member;
 import com.cju.cuhaapi.domain.member.entity.Password;
+import com.cju.cuhaapi.domain.member.entity.Profile;
 import com.cju.cuhaapi.domain.member.repository.MemberRepository;
+import com.cju.cuhaapi.domain.member.repository.ProfileRepository;
+import com.cju.cuhaapi.error.exception.DuplicateUsernameException;
+import com.cju.cuhaapi.mapper.MemberMapper;
 import com.cju.cuhaapi.utils.PasswordEncoderUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 import static com.cju.cuhaapi.mapper.MemberMapper.INSTANCE;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.will;
+import static org.mockito.Mockito.doReturn;
 
-/**
- * @SpringBootTest를 사용하여 매우 느림.
- * 개선 여지가 있음
- */
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
 
-    @Autowired
+    @Mock
     private MemberRepository memberRepository;
 
-    @Autowired
+    @Mock
+    private ProfileRepository profileRepository;
+
+    @InjectMocks
     private MemberService memberService;
 
-    private Member savedMember;
+    private Member member = memberBuild();
 
-    @BeforeEach
-    void beforeEach() {
-        memberRepository.deleteAll();
-
-        Member member = createMember();
-        this.savedMember = memberRepository.save(member);
-    }
-
-    private Member createMember() {
+    private Member memberBuild() {
         Member member = Member.builder()
+                .id(1L)
                 .username("cuha")
                 .password(new Password("cuha"))
                 .name("김태형")
@@ -55,90 +58,152 @@ class MemberServiceTest {
         return member;
     }
 
-    @DisplayName("멤버 조회 테스트")
+    @DisplayName("아이디가 중복이 아닌 경우")
     @Test
-    void 멤버_조회() {
-        Member findMember = memberService.findMember(savedMember.getId());
+    void 멤버_아이디_중복X() {
+        given(memberRepository.existsByUsername(member.getUsername())).willReturn(false);
 
-        assertEquals(savedMember.getId(), findMember.getId());
-        assertEquals(savedMember.getUsername(), findMember.getUsername());
+        boolean isDuplicateUsername = memberService.isDuplicateUsername(member.getUsername());
+        assertEquals(false, isDuplicateUsername);
     }
 
-    @DisplayName("멤버 저장 테스트")
+    @DisplayName("아이디가 중복인 경우")
     @Test
-    void 멤버_저장() {
-        Member member = Member.builder()
-                .username("test")
-                .password(new Password("test"))
-                .name("홍길동")
-                .isMale(true)
-                .email("cuha@cju.ac.klr")
-                .phoneNumber("010-1234-5678")
-                .studentId("00000000")
-                .department(Department.DIGITAL_SECURITY)
-                .build();
+    void 멤버_아이디_중복O() {
+        given(memberRepository.existsByUsername(member.getUsername())).willReturn(true);
 
+        assertEquals(true, memberService.isDuplicateUsername(member.getUsername()));
+    }
+
+    @DisplayName("멤버 조회")
+    @Test
+    void 멤버_조회() {
+        given(memberRepository.save(member)).willReturn(member);
+        given(memberRepository.findById(1L)).willReturn(Optional.of(member));
+
+        memberService.saveMember(member);
+        Member findMember = memberService.findMember(1L);
+
+        assertEquals(findMember.getId(), member.getId());
+        assertEquals(findMember.getUsername(), member.getUsername());
+    }
+
+    @DisplayName("회원가입 할때 아이디가 중복인 경우")
+    @Test
+    void 멤버_회원가입_중복O() {
+        given(memberRepository.existsByUsername(member.getUsername())).willReturn(true);
+
+        assertThrows(DuplicateUsernameException.class,
+                () -> memberService.saveMember(member));
+    }
+
+    @DisplayName("회원가입 할때 아이디가 중복이 아닌 경우")
+    @Test
+    void 멤버_회원가입_중복X() {
+        given(memberRepository.existsByUsername(member.getUsername())).willReturn(false);
 
         assertDoesNotThrow(() -> memberService.saveMember(member));
     }
 
-    @DisplayName("멤버 정보 수정 테스트(프로필 X)")
+    @DisplayName("내 정보를 변경하는 경우(프로필 NULL)")
     @Test
-    void 멤버_정보_수정() {
+    void 내_정보_변경_프로필_NULL() {
+        UpdateInfoRequest request = updateInfoRequestBuild();
+        Profile profile = null;
+
+        Member updateMember = INSTANCE.updateInfoRequestToEntity(request, member, profile);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> memberService.updateMember(updateMember));
+    }
+
+    @DisplayName("내 정보를 변경하는 경우(프로필 포함 O)")
+    @Test
+    void 내_정보_변경() {
+        UpdateInfoRequest request = updateInfoRequestBuild();
+        Profile profile = new Profile();
+
+        Member updateMember = INSTANCE.updateInfoRequestToEntity(request, member, profile);
+
+        given(memberRepository.save(updateMember)).willReturn(updateMember);
+        given(memberRepository.findById(updateMember.getId())).willReturn(Optional.of(updateMember));
+
+        memberService.updateMember(updateMember);
+        Member findMember = memberService.findMember(updateMember.getId());
+
+        assertEquals("홍길동", findMember.getName());
+        assertEquals(false, findMember.getIsMale());
+        assertEquals("qwer@example.com", findMember.getEmail());
+        assertEquals("010-9876-5432", findMember.getPhoneNumber());
+        assertEquals("55555555", findMember.getStudentId());
+        assertEquals(Department.AI, findMember.getDepartment());
+    }
+
+    @DisplayName("멤버 비밀번호를 변경하는 경우 입력한 비밀번호가 현재 사용중인 비밀번호와 일치하지 않을 때")
+    @Test
+    void 비밀번호_변경_실패() {
+        UpdatePasswordRequest request = updatePasswordRequestBuildX();
+
+        given(memberRepository.findById(member.getId())).willReturn(Optional.ofNullable(member));
+
+        assertThrows(IllegalStateException.class, () ->
+                memberService.updatePassword(member.getId(),
+                        request.getPasswordBefore(),
+                        request.getPasswordAfter()));
+    }
+
+    @DisplayName("멤버 비밀번호를 정상적으로 입력한 경우")
+    @Test
+    void 비밀번호_변경_성공() {
+        UpdatePasswordRequest request = updatePasswordRequestBuildO();
+
+        given(memberRepository.findById(member.getId())).willReturn(Optional.ofNullable(member));
+        doReturn(Member.builder()
+                .id(member.getId())
+                .username(member.getUsername())
+                .password(new Password(request.getPasswordAfter()))
+                .build())
+        .when(memberRepository).save(any());
+
+        Member updatedMember = memberService.updatePassword(member.getId(),
+                request.getPasswordBefore(),
+                request.getPasswordAfter());
+
+        boolean isMatchPassword = PasswordEncoderUtils.getInstance()
+                .matchers(request.getPasswordAfter(), updatedMember.getPassword().getValue());
+        assertEquals(member.getId(), updatedMember.getId());
+        assertEquals(member.getUsername(), updatedMember.getUsername());
+        assertEquals(true, isMatchPassword);
+    }
+
+    private UpdateInfoRequest updateInfoRequestBuild() {
         UpdateInfoRequest request = UpdateInfoRequest.builder()
                 .name("홍길동")
                 .isMale(false)
-                .email("qqqq@example.co.kr")
-                .phoneNumber("010-9999-9999")
-                .studentId("99999999")
-                .department("AI")
+                .email("qwer@example.com")
+                .phoneNumber("010-9876-5432")
+                .studentId("55555555")
+                .department(Department.AI.name())
                 .build();
-        Member member = INSTANCE.updateInfoRequestToEntity(request, savedMember, savedMember.getProfile());
 
-        memberService.updateMember(member);
-        Member findMember = memberService.findMember(savedMember.getId());
-
-        assertEquals(member.getId(), findMember.getId());
-        assertEquals(member.getName(), findMember.getName());
-        assertEquals(member.getIsMale(), findMember.getIsMale());
-        assertEquals(member.getEmail(), findMember.getEmail());
-        assertEquals(member.getPhoneNumber(), findMember.getPhoneNumber());
-        assertEquals(member.getStudentId(), findMember.getStudentId());
-        assertEquals(member.getDepartment(), findMember.getDepartment());
+        return request;
     }
 
-    @DisplayName("멤버 비밀번호 수정 테스트")
-    @Test
-    void 멤버_비밀번호_수정() {
-        String passwordBefore = "cuha";
-        String passwordAfter = "qwer1234";
-
+    private UpdatePasswordRequest updatePasswordRequestBuildO() {
         UpdatePasswordRequest request = UpdatePasswordRequest.builder()
-                .passwordBefore(passwordBefore)
-                .passwordAfter(passwordAfter)
+                .passwordBefore("cuha")
+                .passwordAfter("qwer1234")
                 .build();
 
-        Member member = INSTANCE.updatePasswordRequestToEntity(request, savedMember);
-
-        memberService.updatePassword(member);
-        Member findMember = memberService.findMember(savedMember.getId());
-
-        assertEquals(member.getId(), findMember.getId());
-        assertEquals(member.getUsername(), findMember.getUsername());
-        boolean isEqualPassword = PasswordEncoderUtils.getInstance().
-                matchers(passwordAfter,
-                        findMember.getPassword().getValue());
-        assertEquals(true, isEqualPassword);
+        return request;
     }
 
-    @DisplayName("멤버 탈퇴 테스트")
-    @Test
-    void 멤버_탈퇴() {
-        long countBefore = memberRepository.count();
+    private UpdatePasswordRequest updatePasswordRequestBuildX() {
+        UpdatePasswordRequest request = UpdatePasswordRequest.builder()
+                .passwordBefore("qwer1234")
+                .passwordAfter("qwer1234")
+                .build();
 
-        memberService.deleteMember(savedMember);
-
-        long countAfter = memberRepository.count();
-        assertEquals(countBefore - 1, countAfter);
+        return request;
     }
 }

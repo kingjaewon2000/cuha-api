@@ -125,18 +125,11 @@ public class MemberController {
         PrincipalDetails principalDetails = ((PrincipalDetails)authentication.getPrincipal());
         Member authMember = principalDetails.getMember();
 
-        // 비밀번호 변경
-        Member findMember = memberService.findMember(authMember.getId());
         String passwordBefore = updatePasswordRequest.getPasswordBefore();
+        String passwordAfter = updatePasswordRequest.getPasswordAfter();
 
-        Password password = findMember.getPassword();
-        String encodedPassword = password.getValue();
-        if (!isValidPassword(passwordBefore, encodedPassword)) {
-            throw new IllegalStateException("이전 패스워드와 다릅니다.");
-        }
-
-        Member member = INSTANCE.updatePasswordRequestToEntity(updatePasswordRequest, findMember);
-        memberService.updatePassword(member);
+        // 비밀번호 변경
+        Member member = memberService.updatePassword(authMember.getId(), passwordBefore, passwordAfter);
         InfoResponse response = INSTANCE.entityToInfoResponse(member);
 
         return response;
@@ -173,9 +166,5 @@ public class MemberController {
 
     private String getFullPath(String filename) {
         return uploadPath + "/" + filename;
-    }
-
-    private boolean isValidPassword(String passwordBefore, String encodedPassword) {
-        return PasswordEncoderUtils.getInstance().matchers(passwordBefore, encodedPassword);
     }
 }

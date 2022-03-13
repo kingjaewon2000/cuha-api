@@ -74,7 +74,7 @@ public interface MemberMapper {
     @Mappings({
             @Mapping(source = "member.id", target = "id"),
             @Mapping(source = "member.username", target = "username"),
-            @Mapping(source = "request.passwordAfter", target = "password.value"),
+            @Mapping(source = "password", target = "password.value"),
             @Mapping(source = "member.name", target = "name"),
             @Mapping(source = "member.isMale", target = "isMale"),
             @Mapping(source = "member.email", target = "email"),
@@ -86,7 +86,7 @@ public interface MemberMapper {
             @Mapping(source = "member.refreshToken", target = "refreshToken"),
             @Mapping(source = "member.baseTime", target = "baseTime")
     })
-    Member updatePasswordRequestToEntity(UpdatePasswordRequest request, Member member);
+    Member updatePasswordRequestToEntity(String password, Member member);
 
     @Mappings({
             @Mapping(source = "member.profile.filename", target = "profileImage"),
