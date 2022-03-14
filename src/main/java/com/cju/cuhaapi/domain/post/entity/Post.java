@@ -4,6 +4,9 @@ import com.cju.cuhaapi.audit.AuditListener;
 import com.cju.cuhaapi.audit.Auditable;
 import com.cju.cuhaapi.audit.BaseTime;
 import com.cju.cuhaapi.domain.member.entity.Member;
+import com.cju.cuhaapi.domain.post.dto.PostDto;
+import com.cju.cuhaapi.domain.post.dto.PostDto.SaveRequest;
+import com.cju.cuhaapi.domain.post.dto.PostDto.UpdateRequest;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -55,5 +58,33 @@ public class Post implements Auditable {
     @Override
     public void setBaseTime(BaseTime baseTime) {
         this.baseTime = baseTime;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public static Post save(Category category, SaveRequest request, Member member) {
+        return Post.builder()
+                .title(request.getTitle())
+                .body(request.getBody())
+                .member(member)
+                .category(category)
+                .build();
+    }
+
+    public static Post update(UpdateRequest request, Post post) {
+        post.setTitle(request.getTitle());
+        post.setBody(request.getBody());
+
+        return post;
     }
 }

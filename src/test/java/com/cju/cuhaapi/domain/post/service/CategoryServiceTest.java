@@ -1,5 +1,6 @@
 package com.cju.cuhaapi.domain.post.service;
 
+import com.cju.cuhaapi.domain.post.dto.CategoryDto;
 import com.cju.cuhaapi.domain.post.entity.Category;
 import com.cju.cuhaapi.domain.post.repository.CategoryRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -13,8 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.cju.cuhaapi.domain.post.dto.CategoryDto.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,7 +55,7 @@ class CategoryServiceTest {
     void 카테고리_조회() {
         given(categoryRepository.findByName(notice.getName())).willReturn(Optional.ofNullable(notice));
 
-        Category findCategory = categoryService.findByName("notice");
+        Category findCategory = categoryService.getCategory("notice");
 
         assertEquals(notice.getName(), findCategory.getName());
         assertEquals(notice.getDescription(), findCategory.getDescription());
@@ -66,17 +69,23 @@ class CategoryServiceTest {
         given(categoryRepository.findByName(name)).willThrow(IllegalArgumentException.class);
 
         assertThrows(IllegalArgumentException.class,
-                () -> categoryService.findByName(name));
+                () -> categoryService.getCategory(name));
     }
 
     @DisplayName("카테고리 추가")
     @Test
     void 카테고리_추가() {
-        given(categoryRepository.save(notice)).willReturn(notice);
+        CreateRequest request = CreateRequest.builder()
+                .name("notice")
+                .description("공지사항")
+                .build();
+
+        given(categoryRepository.save(any())).willReturn(notice);
         given(categoryRepository.findByName(notice.getName())).willReturn(Optional.ofNullable(notice));
 
-        categoryService.saveCategory(notice);
-        Category findCategory = categoryService.findByName(notice.getName());
+
+        categoryService.saveCategory(request);
+        Category findCategory = categoryService.getCategory(notice.getName());
 
         assertEquals(notice.getId(), findCategory.getId());
         assertEquals(notice.getName(), findCategory.getName());

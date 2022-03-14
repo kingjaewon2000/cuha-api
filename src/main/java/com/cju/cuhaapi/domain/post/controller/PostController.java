@@ -1,26 +1,19 @@
 package com.cju.cuhaapi.domain.post.controller;
 
-import com.cju.cuhaapi.domain.post.entity.Comment;
+import com.cju.cuhaapi.annotation.CurrentMember;
+import com.cju.cuhaapi.domain.member.entity.Member;
 import com.cju.cuhaapi.domain.post.dto.CommentDto;
 import com.cju.cuhaapi.domain.post.dto.CommentDto.CommentResponse;
-import com.cju.cuhaapi.domain.post.dto.CommentDto.SaveRequest;
-import com.cju.cuhaapi.domain.post.service.CommentService;
-import com.cju.cuhaapi.audit.BaseTime;
 import com.cju.cuhaapi.domain.post.dto.PostDto;
-import com.cju.cuhaapi.domain.post.entity.Category;
-import com.cju.cuhaapi.domain.post.entity.Post;
-import com.cju.cuhaapi.domain.post.service.CategoryService;
-import com.cju.cuhaapi.domain.post.service.PostService;
-import com.cju.cuhaapi.mapper.CommentMapper;
-import com.cju.cuhaapi.domain.member.entity.Member;
-import com.cju.cuhaapi.domain.post.dto.PostDto.CreateRequest;
+import com.cju.cuhaapi.domain.post.dto.PostDto.SaveRequest;
 import com.cju.cuhaapi.domain.post.dto.PostDto.PostResponse;
-import com.cju.cuhaapi.mapper.PostMapper;
-import com.cju.cuhaapi.security.auth.PrincipalDetails;
+import com.cju.cuhaapi.domain.post.entity.Comment;
+import com.cju.cuhaapi.domain.post.entity.Post;
+import com.cju.cuhaapi.domain.post.service.CommentService;
+import com.cju.cuhaapi.domain.post.service.PostService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,7 +25,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/v1/posts")
 public class PostController {
 
-    private final CategoryService categoryService;
     private final PostService postService;
     private final CommentService commentService;
 
@@ -45,7 +37,7 @@ public class PostController {
                                     @RequestParam(defaultValue = "0") Integer start,
                                     @RequestParam(defaultValue = "100") Integer end) {
         return postService.findPosts(category, start, end).stream()
-                .map(PostMapper.INSTANCE::entityToPostResponse)
+                .map(post -> PostResponse.of(post, postService.likeCount(post.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -53,13 +45,12 @@ public class PostController {
      * id에 해당하는 게시글 조회
      */
     @ApiOperation(value = "단위 게시글 조회", notes = "게시글을 조회합니다.")
-    @GetMapping("/{category}/{id}")
-    public PostResponse post(@PathVariable Long id,
+    @GetMapping("/{category}/{postId}")
+    public PostResponse post(@PathVariable Long postId,
                              @PathVariable String category) {
-        Post post = postService.findPost(category, id);
-        PostResponse postResponse = PostMapper.INSTANCE.entityToPostResponse(post);
+        Post post = postService.getPost(category, postId);
 
-        return postResponse;
+        return PostResponse.of(post, postService.likeCount(post.getId()));
     }
 
     /**
@@ -67,60 +58,41 @@ public class PostController {
      */
     @ApiOperation(value = "게시글 생성", notes = "게시글을 생성합니다.")
     @PostMapping("/{category}")
-    public PostResponse create(Authentication authentication,
-                               @PathVariable String category,
-                               @RequestBody CreateRequest createRequest) {
-        // Authentication 멤버
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        Member authMember = principalDetails.getMember();
-
-        // 게시글 작성
-        Category findCategory = categoryService.findByName(category);
-        Post post = PostMapper.INSTANCE.createRequestToEntity(createRequest, authMember, findCategory);
-        postService.createPost(post);
-
-        PostResponse postResponse = PostMapper.INSTANCE.entityToPostResponse(post);
-
-        return postResponse;
+    public void save(@CurrentMember Member authMember,
+                     @PathVariable String category,
+                     @RequestBody SaveRequest request) {
+        postService.savePost(category, request, authMember);
     }
 
     /**
      * 게시글 수정
      */
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정합니다.")
-    @PatchMapping("/{category}/{id}")
-    public PostResponse update(Authentication authentication,
-                               @PathVariable String category,
-                               @PathVariable Long id,
-                               @RequestBody PostDto.UpdateRequest updateRequest) {
-        // Authentication 멤버
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        Member authMember = principalDetails.getMember();
-
-        // 게시글 수정
-        Post findPost = postService.findPost(category, id);
-        Post post = PostMapper.INSTANCE.updateRequestToEntity(updateRequest, findPost);
-        postService.updatePost(post);
-        PostResponse postResponse = PostMapper.INSTANCE.entityToPostResponse(post);
-
-        return postResponse;
+    @PatchMapping("/{category}/{postId}")
+    public void update(@CurrentMember Member authMember,
+                       @PathVariable String category,
+                       @PathVariable Long postId,
+                       @RequestBody PostDto.UpdateRequest request) {
+        postService.updatePost(category, postId, request, authMember);
     }
 
     /**
      * 게시글 삭제
      */
     @ApiOperation(value = "게시글 삭제", notes = "게시글을 삭제합니다.")
-    @DeleteMapping("/{category}/{id}")
-    public PostDto.DeleteResponse delete(@PathVariable String category,
-                                         @PathVariable Long id) {
-        postService.deletePost(category, id);
-
-        PostDto.DeleteResponse response =
-                new PostDto.DeleteResponse(category, id);
-
-        return response;
+    @DeleteMapping("/{category}/{postId}")
+    public void delete(@CurrentMember Member authMember,
+                       @PathVariable String category,
+                       @PathVariable Long postId) {
+        postService.deletePost(category, postId, authMember);
     }
 
+    @PostMapping("/{category}/{postId}")
+    public void likePost(@CurrentMember Member authMember,
+                         @PathVariable String category,
+                         @PathVariable Long postId) {
+        postService.likePost(category, postId, authMember);
+    }
 
     /**
      * 댓글 CRUD
@@ -135,8 +107,9 @@ public class PostController {
                                           @PathVariable Long postId,
                                           @RequestParam(defaultValue = "0") Integer start,
                                           @RequestParam(defaultValue = "100") Integer end) {
-        return commentService.findComments(category, postId, start, end).stream()
-                .map(CommentMapper.INSTANCE::entityToCommentResponse)
+        return commentService.getComments(category, postId, start, end).stream()
+                .map(comment ->
+                        CommentResponse.of(comment, commentService.likeCount(comment.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -145,23 +118,11 @@ public class PostController {
      */
     @ApiOperation(value = "댓글 생성", notes = "댓글을 생성합니다.")
     @PostMapping("/{category}/{postId}/comments")
-    public CommentResponse saveComment(Authentication authentication,
-                                       @PathVariable String category,
-                                       @PathVariable Long postId,
-                                       @RequestBody SaveRequest saveRequest) {
-        // Authentication 멤버
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        Member authMember = principalDetails.getMember();
-
-        // 댓글 생성
-        Post findPost = postService.findPost(category, postId);
-        Comment comment = CommentMapper.INSTANCE.saveRequestToEntity(saveRequest, findPost, authMember);
-        commentService.saveComment(comment);
-
-        // Entity to CommentResponse
-        CommentResponse response = CommentMapper.INSTANCE.entityToCommentResponse(comment);
-
-        return response;
+    public void saveComment(@CurrentMember Member authMember,
+                            @PathVariable String category,
+                            @PathVariable Long postId,
+                            @RequestBody CommentDto.SaveRequest request) {
+        commentService.saveComment(category, postId, request, authMember);
     }
 
     /**
@@ -169,24 +130,13 @@ public class PostController {
      */
     @ApiOperation(value = "댓글 수정", notes = "댓글을 수정합니다.")
     @PatchMapping("/{category}/{postId}/comments/{commentId}")
-    public CommentResponse updateComment(Authentication authentication,
-                                         @PathVariable String category,
-                                         @PathVariable Long postId,
-                                         @PathVariable Long commentId,
-                                         @RequestBody CommentDto.UpdateRequest updateRequest) {
-        // Authentication 멤버
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        Member authMember = principalDetails.getMember();
-
+    public void updateComment(@CurrentMember Member authMember,
+                              @PathVariable String category,
+                              @PathVariable Long postId,
+                              @PathVariable Long commentId,
+                              @RequestBody CommentDto.UpdateRequest request) {
         // 댓글 수정
-        Post findPost = postService.findPost(category, postId);
-        Comment comment = CommentMapper.INSTANCE.updateRequestToEntity(updateRequest, findPost, authMember);
-        commentService.saveComment(comment);
-
-        // Entity to CommentResponse
-        CommentResponse response = CommentMapper.INSTANCE.entityToCommentResponse(comment);
-
-        return response;
+        commentService.updateComment(category, postId, commentId, request, authMember);
     }
 
     /**
@@ -194,16 +144,19 @@ public class PostController {
      */
     @ApiOperation(value = "댓글 삭제", notes = "댓글을 삭제합니다.")
     @DeleteMapping("/{category}/{postId}/comments/{commentId}")
-    public CommentDto.DeleteResponse deleteComment(@PathVariable String category,
-                                                   @PathVariable Long postId,
-                                                   @PathVariable Long commentId) {
-        commentService.deleteComment(category, postId, commentId);
-
-        CommentDto.DeleteResponse response =
-                new CommentDto.DeleteResponse(category, postId, commentId);
-
-        return response;
+    public void deleteComment(@CurrentMember Member authMember,
+                              @PathVariable String category,
+                              @PathVariable Long postId,
+                              @PathVariable Long commentId) {
+        commentService.deleteComment(category, postId, commentId, authMember);
     }
 
+    @PostMapping("/{category}/{postId}/comments/{commentId}/like")
+    public void likeComment(@CurrentMember Member authMember,
+                            @PathVariable String category,
+                            @PathVariable Long postId,
+                            @PathVariable Long commentId) {
+        commentService.likeComment(category, postId, commentId, authMember);
+    }
 }
 

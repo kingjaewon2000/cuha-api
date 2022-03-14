@@ -24,10 +24,6 @@ public class CommentLike implements Auditable {
     @Column(name = "like_comment_id")
     private Long id;
 
-    @ColumnDefault("false")
-    @Column
-    private Boolean isLike;
-
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;

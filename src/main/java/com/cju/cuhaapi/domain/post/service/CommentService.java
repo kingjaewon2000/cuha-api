@@ -1,6 +1,13 @@
 package com.cju.cuhaapi.domain.post.service;
 
+import com.cju.cuhaapi.domain.member.entity.Member;
+import com.cju.cuhaapi.domain.post.dto.CommentDto;
+import com.cju.cuhaapi.domain.post.dto.CommentDto.SaveRequest;
+import com.cju.cuhaapi.domain.post.dto.CommentDto.UpdateRequest;
 import com.cju.cuhaapi.domain.post.entity.Comment;
+import com.cju.cuhaapi.domain.post.entity.CommentLike;
+import com.cju.cuhaapi.domain.post.entity.Post;
+import com.cju.cuhaapi.domain.post.repository.CommentLikeRepository;
 import com.cju.cuhaapi.domain.post.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,33 +23,65 @@ import java.util.List;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final CommentLikeRepository commentLikeRepository;
+    private final PostService postService;
 
-    public Comment findComment(String name, Long postId, Long commentId)  {
+    public Comment getComment(String name, Long postId, Long commentId)  {
         return commentRepository.findByPostCategoryNameAndPostIdAndId(name, postId, commentId);
     }
 
-    public Page<Comment> findComments(Integer start, Integer end) {
+    public Page<Comment> getComments(Integer start, Integer end) {
         PageRequest pageRequest = PageRequest.of(start, end);
 
         return commentRepository.findAll(pageRequest);
     }
 
-    public List<Comment> findComments(String category, Long postId, Integer start, Integer end) {
+    public List<Comment> getComments(String name, Long postId, Integer start, Integer end) {
         PageRequest pageRequest = PageRequest.of(start, end);
 
-        return commentRepository.findAllByPostCategoryNameAndPostId(category, postId, pageRequest);
+        return commentRepository.findAllByPostCategoryNameAndPostId(name, postId, pageRequest);
     }
 
-    public void saveComment(Comment comment) {
-        commentRepository.save(comment);
+    public void saveComment(String name, Long postId, SaveRequest request, Member member) {
+        Post post = postService.getPost(name, postId);
+
+        commentRepository.save(Comment.save(request, post, member));
     }
 
-    public void updateComment(Comment comment) {
-        commentRepository.save(comment);
+    public void updateComment(String name, Long postId, Long commentId, UpdateRequest request, Member member) {
+        Comment comment = getComment(name, postId, commentId);
+        if (!comment.getMember().getUsername().equals(member.getUsername())) {
+            throw new IllegalArgumentException("댓글은 작성한 유저가 아닙니다.");
+        }
+
+        commentRepository.save(Comment.update(request, comment));
     }
 
-    public void deleteComment(String name, Long postId, Long commentId) {
-        Comment comment = findComment(name, postId, commentId);
+    public void deleteComment(String name, Long postId, Long commentId, Member member) {
+        Comment comment = getComment(name, postId, commentId);
+
+        if (!comment.getMember().getUsername().equals(member.getUsername())) {
+            throw new IllegalArgumentException("댓글은 작성한 유저가 아닙니다.");
+        }
         commentRepository.delete(comment);
+    }
+
+    public void likeComment(String name, Long postId, Long commentId, Member member) {
+        Comment comment = getComment(name, postId, commentId);
+
+        if (commentLikeRepository.existsByCommentIdAndMemberId(comment.getId(), member.getId())) {
+            throw new IllegalArgumentException("이미 추천하신 댓글 입니다.");
+        }
+
+        CommentLike like = CommentLike.builder()
+                .member(member)
+                .comment(comment)
+                .build();
+
+        commentLikeRepository.save(like);
+    }
+
+    public Long likeCount(Long commentId) {
+        return commentLikeRepository.countByCommentId(commentId);
     }
 }

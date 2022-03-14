@@ -25,12 +25,9 @@ public class CommentController {
     @GetMapping
     public List<CommentResponse> comments(@RequestParam(defaultValue = "0") Integer start,
                                           @RequestParam(defaultValue = "100") Integer end) {
-        return commentService.findComments(start, end).stream()
-                .map(comment -> CommentResponse.builder()
-                        .id(comment.getId())
-                        .body(comment.getBody())
-                        .postId(comment.getPost().getId())
-                        .build())
+        return commentService.getComments(start, end).stream()
+                .map(comment ->
+                        CommentResponse.of(comment, commentService.likeCount(comment.getId())))
                 .collect(Collectors.toList());
     }
 

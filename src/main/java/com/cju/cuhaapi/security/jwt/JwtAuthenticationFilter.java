@@ -1,5 +1,6 @@
 package com.cju.cuhaapi.security.jwt;
 
+import com.cju.cuhaapi.domain.member.dto.MemberDto;
 import com.cju.cuhaapi.domain.member.dto.MemberDto.LoginRequest;
 import com.cju.cuhaapi.security.auth.PrincipalDetails;
 import com.cju.cuhaapi.security.jwt.JwtResponseDto.Token;
@@ -20,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static com.cju.cuhaapi.security.jwt.JwtConstants.*;
+import static com.cju.cuhaapi.security.jwt.JwtConstants.TOKEN_TYPE_PREFIX;
 
 @Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {

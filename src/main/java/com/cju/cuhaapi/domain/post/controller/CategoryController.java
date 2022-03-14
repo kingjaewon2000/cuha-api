@@ -1,7 +1,6 @@
 package com.cju.cuhaapi.domain.post.controller;
 
-import com.cju.cuhaapi.domain.post.entity.Category;
-import com.cju.cuhaapi.domain.post.dto.CategoryDto.CategoryRequest;
+import com.cju.cuhaapi.domain.post.dto.CategoryDto.CreateRequest;
 import com.cju.cuhaapi.domain.post.dto.CategoryDto.CategoryResponse;
 import com.cju.cuhaapi.domain.post.service.CategoryService;
 import io.swagger.annotations.ApiOperation;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.cju.cuhaapi.mapper.CategoryMapper.INSTANCE;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,17 +25,13 @@ public class CategoryController {
     public List<CategoryResponse> categories() {
         return categoryService.findAll()
                 .stream()
-                .map(INSTANCE::entityToCategoryResponse)
+                .map(CategoryResponse::of)
                 .collect(Collectors.toList());
     }
 
     @ApiOperation(value = "카테고리 생성", notes = "카테고리를 생성합니다.")
     @PostMapping
-    public CategoryResponse create(@RequestBody CategoryRequest categoryRequest) {
-        Category category = INSTANCE.categoryRequestToEntity(categoryRequest);
-        categoryService.saveCategory(category);
-        CategoryResponse response = INSTANCE.entityToCategoryResponse(category);
-
-        return response;
+    public void create(@RequestBody CreateRequest request) {
+        categoryService.saveCategory(request);
     }
 }

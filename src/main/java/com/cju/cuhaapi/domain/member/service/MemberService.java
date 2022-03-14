@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.domain.member.service;
 
-import com.cju.cuhaapi.domain.member.entity.Password;
+import com.cju.cuhaapi.domain.member.dto.MemberDto;
 import com.cju.cuhaapi.domain.member.repository.ProfileRepository;
 import com.cju.cuhaapi.domain.member.entity.Member;
 import com.cju.cuhaapi.domain.member.entity.Profile;
@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import static com.cju.cuhaapi.mapper.MemberMapper.INSTANCE;
+import static com.cju.cuhaapi.domain.member.dto.MemberDto.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,12 +21,14 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
 
-    public Member findMember(Long id) {
+    public Member getMember(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("ID값이 잘못 지정되었습니다."));
     }
 
-    public void saveMember(Member member) {
+    public void saveMember(JoinRequest request) {
+        Member member = Member.join(request);
+
         // 아이디 중복 체크
         String username = member.getUsername();
         if(isDuplicateUsername(username)) {
@@ -37,31 +39,28 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public void updateMember(Member member) {
-        Profile profile = member.getProfile();
-        if (profile == null) {
-            throw new IllegalArgumentException("프로필이 존재하지 않습니다.");
-        }
+    public void updateMember(UpdateInfoRequest request, Member currentMember, Profile uploadProfile) {
+        Member member = Member.updateInfo(request, currentMember, uploadProfile);
 
-        if (!profileRepository.existsByFilename(profile.getFilename())) {
-            profileRepository.save(profile);
+        if (uploadProfile != null && !profileRepository.existsByFilename(uploadProfile.getFilename())) {
+            profileRepository.save(uploadProfile);
         }
 
         memberRepository.save(member);
     }
 
-    public Member updatePassword(Long id, String passwordBefore, String passwordAfter) {
-        Member findMember = findMember(id);
+    public void updatePassword(UpdatePasswordRequest request, Member currentMember) {
+        String password = request.getPasswordBefore();
 
         // 비밀번호 검증
-        String encodedPassword = findMember.getPassword().getValue();
-        if (!isValidPassword(passwordBefore, encodedPassword)) {
+        String encodedPassword = currentMember.getPassword().getValue();
+        if (!isValidPassword(password, encodedPassword)) {
             throw new IllegalStateException("이전 패스워드가 일치하지 않습니다.");
         }
 
-        // 비밀번호 변경
-        Member member = INSTANCE.updatePasswordRequestToEntity(passwordAfter, findMember);
-        return memberRepository.save(member);
+        Member member = Member.updatePassword(request, currentMember);
+
+        memberRepository.save(member);
     }
 
     public void deleteMember(Member member) {

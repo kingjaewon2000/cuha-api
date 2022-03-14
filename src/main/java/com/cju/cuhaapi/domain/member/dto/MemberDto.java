@@ -1,5 +1,8 @@
 package com.cju.cuhaapi.domain.member.dto;
 
+import com.cju.cuhaapi.domain.member.entity.Department;
+import com.cju.cuhaapi.domain.member.entity.Member;
+import com.cju.cuhaapi.domain.member.entity.Password;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -131,14 +134,22 @@ public class MemberDto {
 
         @ApiModelProperty(value = "패스워드 마지막 수정 일")
         private String lastModifiedDate;
+
+        public static InfoResponse of(Member member) {
+            return InfoResponse.builder()
+                    .profileImage(member.getProfile().getFilename())
+                    .username(member.getUsername())
+                    .name(member.getName())
+                    .isMale(member.getIsMale())
+                    .email(member.getEmail())
+                    .phoneNumber(member.getPhoneNumber())
+                    .studentId(member.getStudentId())
+                    .department(member.getDepartment().name())
+                    .createdAt(member.getBaseTime().getCreatedAt().toString())
+                    .updatedAt(member.getBaseTime().getUpdatedAt().toString())
+                    .lastModifiedDate(member.getPassword().getLastModifiedDate().toString())
+                    .build();
+        }
     }
 
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    @Getter
-    public static class DeleteResponse {
-        @ApiModelProperty(value = "식별자", example = "1")
-        private Long id;
-    }
 }

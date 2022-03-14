@@ -1,5 +1,6 @@
 package com.cju.cuhaapi.domain.post.dto;
 
+import com.cju.cuhaapi.domain.post.entity.Post;
 import lombok.*;
 
 public class PostDto {
@@ -9,7 +10,7 @@ public class PostDto {
     @Builder
     @Getter
     @Setter
-    public static class CreateRequest {
+    public static class SaveRequest {
         private String title;
         private String body;
     }
@@ -34,9 +35,25 @@ public class PostDto {
         private String title;
         private String body;
         private Long views;
+        private Long like;
+        private String createdAt;
+        private String profileImage;
         private String username;
         private String name;
-        private String createdAt;
+
+        public static PostResponse of(Post post, Long like) {
+            return PostResponse.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .body(post.getBody())
+                    .views(post.getViews())
+                    .like(like)
+                    .createdAt(post.getBaseTime().getCreatedAt().toString())
+                    .profileImage(post.getMember().getProfile().getFilename())
+                    .username(post.getMember().getUsername())
+                    .name(post.getMember().getName())
+                    .build();
+        }
     }
 
     @NoArgsConstructor

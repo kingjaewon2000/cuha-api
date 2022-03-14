@@ -3,6 +3,7 @@ package com.cju.cuhaapi.domain.post.entity;
 import com.cju.cuhaapi.audit.AuditListener;
 import com.cju.cuhaapi.audit.Auditable;
 import com.cju.cuhaapi.audit.BaseTime;
+import com.cju.cuhaapi.domain.post.dto.CategoryDto.CreateRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -33,5 +34,12 @@ public class Category implements Auditable {
     @Override
     public void setBaseTime(BaseTime baseTime) {
         this.baseTime = baseTime;
+    }
+
+    public static Category create(CreateRequest request) {
+        return Category.builder()
+                .name(request.getName())
+                .description(request.getDescription())
+                .build();
     }
 }

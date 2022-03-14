@@ -34,4 +34,12 @@ public class Profile {
     @ColumnDefault("0")
     @Column
     private Long size;
+
+    public static Profile of(String originalFilename, String filename, Long size) {
+        return Profile.builder()
+                .originalFilename(originalFilename)
+                .filename(filename)
+                .size(size)
+                .build();
+    }
 }

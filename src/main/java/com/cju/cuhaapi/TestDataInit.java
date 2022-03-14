@@ -44,7 +44,6 @@ public class TestDataInit {
         Post post = initPost(member, category);
 
         PostLike postLike = PostLike.builder()
-                .isLike(true)
                 .member(member)
                 .post(post)
                 .build();
