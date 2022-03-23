@@ -22,7 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,9 +40,21 @@ public class MemberController {
     /**
      * 멤버 조회
      */
-    @ApiOperation(value = "멤버 조회", notes = "현재 로그인중인 회원의 정보를 조회합니다.")
+    @ApiOperation(value = "범위 멤버 조회", notes = "범위 회원의 정보를 조회합니다.")
     @GetMapping
-    public InfoResponse info(@CurrentMember Member authMember) {
+    public List<InfoResponse> infoByRange(@RequestParam(defaultValue = "0") Integer start,
+                                          @RequestParam(defaultValue = "100") Integer end) {
+        return memberService.getMembers(start, end).stream()
+                .map(member -> InfoResponse.of(member))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 로그인한 멤버 조회
+     */
+    @ApiOperation(value = "로그인한 멤버 조회", notes = "현재 로그인중인 회원의 정보를 조회합니다.")
+    @GetMapping("/me")
+    public InfoResponse infoByLogin(@CurrentMember Member authMember) {
         return InfoResponse.of(authMember);
     }
 
@@ -56,7 +70,7 @@ public class MemberController {
     /**
      * 멤버 정보 변경
      */
-    @ApiOperation(value = "멤버 정보 변경", notes = "현재 로그인중인 회원의 정보를 변경합니다.")
+//    @ApiOperation(value = "정보 변경", notes = "현재 로그인중인 회원의 정보를 변경합니다.")
     @PatchMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
     public void updateInfo(@CurrentMember Member authMember,
                            @RequestPart("json") UpdateInfoRequest request,

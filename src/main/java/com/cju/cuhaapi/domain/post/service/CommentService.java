@@ -50,7 +50,7 @@ public class CommentService {
 
     public void updateComment(String name, Long postId, Long commentId, UpdateRequest request, Member member) {
         Comment comment = getComment(name, postId, commentId);
-        if (!comment.getMember().getUsername().equals(member.getUsername())) {
+        if (!isCheckOwner(comment.getMember(), member)) {
             throw new IllegalArgumentException("댓글은 작성한 유저가 아닙니다.");
         }
 
@@ -60,7 +60,7 @@ public class CommentService {
     public void deleteComment(String name, Long postId, Long commentId, Member member) {
         Comment comment = getComment(name, postId, commentId);
 
-        if (!comment.getMember().getUsername().equals(member.getUsername())) {
+        if (!isCheckOwner(comment.getMember(), member)) {
             throw new IllegalArgumentException("댓글은 작성한 유저가 아닙니다.");
         }
         commentRepository.delete(comment);
@@ -83,5 +83,14 @@ public class CommentService {
 
     public Long likeCount(Long commentId) {
         return commentLikeRepository.countByCommentId(commentId);
+    }
+
+    private boolean isCheckOwner(Member owner, Member member) {
+        if (owner.getUsername().equals(member.getUsername())
+                && owner.getId().equals(member.getId())) {
+            return true;
+        }
+
+        return false;
     }
 }

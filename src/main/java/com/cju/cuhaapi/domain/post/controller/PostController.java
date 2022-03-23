@@ -29,13 +29,25 @@ public class PostController {
     private final CommentService commentService;
 
     /**
-     * 게시글 조회
+     * 모든 게시글 조회
      */
-    @ApiOperation(value = "범위 게시글 조회", notes = "모든 게시글을 조회합니다.")
-    @GetMapping("/{category}")
-    public List<PostResponse> posts(@PathVariable String category,
-                                    @RequestParam(defaultValue = "0") Integer start,
+    @ApiOperation(value = "범위 게시글 조회", notes = "범위 게시글을 조회합니다.")
+    @GetMapping
+    public List<PostResponse> postsByRange(@RequestParam(defaultValue = "0") Integer start,
                                     @RequestParam(defaultValue = "100") Integer end) {
+        return postService.findPosts(start, end).stream()
+                .map(post -> PostResponse.of(post, postService.likeCount(post.getId())))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 카테고리에 해당하는 게시글 조회
+     */
+    @ApiOperation(value = "범위 게시글 조회", notes = "카테고리에 해당하는 범위 게시글을 조회합니다.")
+    @GetMapping("/{category}")
+    public List<PostResponse> postsByCategory(@PathVariable String category,
+                                              @RequestParam(defaultValue = "0") Integer start,
+                                              @RequestParam(defaultValue = "100") Integer end) {
         return postService.findPosts(category, start, end).stream()
                 .map(post -> PostResponse.of(post, postService.likeCount(post.getId())))
                 .collect(Collectors.toList());

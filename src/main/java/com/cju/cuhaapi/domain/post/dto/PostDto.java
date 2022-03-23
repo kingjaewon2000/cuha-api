@@ -31,6 +31,7 @@ public class PostDto {
     @Builder
     @Getter
     public static class PostResponse {
+        private String category;
         private Long id;
         private String title;
         private String body;
@@ -43,6 +44,7 @@ public class PostDto {
 
         public static PostResponse of(Post post, Long like) {
             return PostResponse.builder()
+                    .category(post.getCategory().getName())
                     .id(post.getId())
                     .title(post.getTitle())
                     .body(post.getBody())

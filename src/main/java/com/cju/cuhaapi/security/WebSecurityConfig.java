@@ -96,6 +96,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web
                 .ignoring()
                 .mvcMatchers("/v2/**",
+                        "/v3/**",
                         "/configuration/**",
                         "/swagger*/**",
                         "/webjars/**",

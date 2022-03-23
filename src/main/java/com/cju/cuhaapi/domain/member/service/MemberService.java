@@ -9,6 +9,8 @@ import com.cju.cuhaapi.error.exception.DuplicateUsernameException;
 import com.cju.cuhaapi.utils.PasswordEncoderUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import static com.cju.cuhaapi.domain.member.dto.MemberDto.*;
@@ -20,6 +22,12 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
+
+    public Page<Member> getMembers(Integer start, Integer end) {
+        PageRequest pageRequest = PageRequest.of(start, end);
+
+        return memberRepository.findAll(pageRequest);
+    }
 
     public Member getMember(Long id) {
         return memberRepository.findById(id)

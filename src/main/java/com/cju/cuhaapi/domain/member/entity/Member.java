@@ -72,10 +72,15 @@ public class Member implements Auditable {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Post> posts = new ArrayList<>();
 
+    /**
+     * setter
+     */
+
     @Override
     public void setBaseTime(BaseTime baseTime) {
         this.baseTime = baseTime;
     }
+
 
     private void setPassword(Password password) {
         this.password = password;

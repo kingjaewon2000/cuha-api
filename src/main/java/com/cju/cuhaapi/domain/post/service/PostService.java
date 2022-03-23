@@ -1,7 +1,6 @@
 package com.cju.cuhaapi.domain.post.service;
 
 import com.cju.cuhaapi.domain.member.entity.Member;
-import com.cju.cuhaapi.domain.post.dto.PostDto;
 import com.cju.cuhaapi.domain.post.dto.PostDto.SaveRequest;
 import com.cju.cuhaapi.domain.post.dto.PostDto.UpdateRequest;
 import com.cju.cuhaapi.domain.post.entity.Category;
@@ -11,6 +10,7 @@ import com.cju.cuhaapi.domain.post.repository.PostLikeRepository;
 import com.cju.cuhaapi.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +24,12 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
     private final CategoryService categoryService;
+
+    public Page<Post> findPosts(Integer start, Integer end) {
+        PageRequest pageRequest = PageRequest.of(start, end);
+
+        return postRepository.findAll(pageRequest);
+    }
 
     public List<Post> findPosts(String category, Integer start, Integer end) {
         PageRequest pageRequest = PageRequest.of(start, end);
@@ -49,7 +55,7 @@ public class PostService {
     public void updatePost(String name, Long postId, UpdateRequest request, Member member) {
         Post post = getPost(name, postId);
 
-        if (!post.getMember().getUsername().equals(member.getUsername())) {
+        if (!isCheckWriter(post.getMember(), member)) {
             throw new IllegalArgumentException("게시글을 작성한 멤버가 아닙니다.");
         }
 
@@ -58,7 +64,8 @@ public class PostService {
 
     public void deletePost(String name, Long id, Member member) {
         Post post = getPost(name, id);
-        if (!post.getMember().getUsername().equals(member.getUsername())) {
+
+        if (!isCheckWriter(post.getMember(), member)) {
             throw new IllegalArgumentException("게시글을 작성한 멤버가 아닙니다.");
         }
 
@@ -82,5 +89,14 @@ public class PostService {
 
     public Long likeCount(Long postId) {
         return postLikeRepository.countByPostId(postId);
+    }
+
+    private boolean isCheckWriter(Member writer, Member member) {
+        if (writer.getUsername().equals(member.getUsername())
+                && writer.getId().equals(member.getId())) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -3,6 +3,7 @@ package com.cju.cuhaapi.domain.member.dto;
 import com.cju.cuhaapi.domain.member.entity.Department;
 import com.cju.cuhaapi.domain.member.entity.Member;
 import com.cju.cuhaapi.domain.member.entity.Password;
+import com.cju.cuhaapi.domain.member.entity.Role;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -126,6 +127,9 @@ public class MemberDto {
         @ApiModelProperty(value = "학과", example = "DIGITAL_SECURITY")
         private String department;
 
+        @ApiModelProperty(value = "권한", example = "동아리원")
+        private Role role;
+
         @ApiModelProperty(value = "계정 생성 일")
         private String createdAt;
 
@@ -145,6 +149,11 @@ public class MemberDto {
                     .phoneNumber(member.getPhoneNumber())
                     .studentId(member.getStudentId())
                     .department(member.getDepartment().name())
+                    .role(Role.builder()
+                            .id(member.getRole().getId())
+                            .role(member.getRole().getRole())
+                            .description(member.getRole().getDescription())
+                            .build())
                     .createdAt(member.getBaseTime().getCreatedAt().toString())
                     .updatedAt(member.getBaseTime().getUpdatedAt().toString())
                     .lastModifiedDate(member.getPassword().getLastModifiedDate().toString())

@@ -24,7 +24,9 @@ public class Role {
     @Column(name = "role_id")
     private Long id;
 
-    @ColumnDefault("'ROLE_MEMBER'")
-    @Column
+    @Column(nullable = false)
     private String role;
+
+    @Column(nullable = false)
+    private String description;
 }
