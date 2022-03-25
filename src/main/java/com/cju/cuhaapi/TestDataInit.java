@@ -56,6 +56,27 @@ public class TestDataInit {
                 .build();
 
         commentRepository.save(comment);
+
+        for (int i = 1; i <= 100; i++) {
+            post = Post.builder()
+                    .title("테스트 게시글" + i)
+                    .body("테스트 게시글" + i)
+                    .member(member)
+                    .category(category)
+                    .build();
+
+            postRepository.save(post);
+        }
+
+        for (int i = 1; i <= 100; i++) {
+            comment = Comment.builder()
+                    .body("테스트 댓글" + i)
+                    .post(post)
+                    .member(member)
+                    .build();
+
+            commentRepository.save(comment);
+        }
     }
 
     private Post initPost(Member member, Category category) {

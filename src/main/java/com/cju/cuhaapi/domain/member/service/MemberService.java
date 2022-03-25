@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import static com.cju.cuhaapi.domain.member.dto.MemberDto.*;
@@ -24,7 +25,7 @@ public class MemberService {
     private final ProfileRepository profileRepository;
 
     public Page<Member> getMembers(Integer start, Integer end) {
-        PageRequest pageRequest = PageRequest.of(start, end);
+        PageRequest pageRequest = PageRequest.of(start, end, Sort.by("id").descending());
 
         return memberRepository.findAll(pageRequest);
     }

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,13 +32,13 @@ public class CommentService {
     }
 
     public Page<Comment> getComments(Integer start, Integer end) {
-        PageRequest pageRequest = PageRequest.of(start, end);
+        PageRequest pageRequest = PageRequest.of(start, end, Sort.by("id").descending());
 
         return commentRepository.findAll(pageRequest);
     }
 
     public List<Comment> getComments(String name, Long postId, Integer start, Integer end) {
-        PageRequest pageRequest = PageRequest.of(start, end);
+        PageRequest pageRequest = PageRequest.of(start, end, Sort.by("id").descending());
 
         return commentRepository.findAllByPostCategoryNameAndPostId(name, postId, pageRequest);
     }

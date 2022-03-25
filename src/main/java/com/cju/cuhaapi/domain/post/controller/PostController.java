@@ -34,7 +34,7 @@ public class PostController {
     @ApiOperation(value = "범위 게시글 조회", notes = "범위 게시글을 조회합니다.")
     @GetMapping
     public List<PostResponse> postsByRange(@RequestParam(defaultValue = "0") Integer start,
-                                    @RequestParam(defaultValue = "100") Integer end) {
+                                           @RequestParam(defaultValue = "100") Integer end) {
         return postService.findPosts(start, end).stream()
                 .map(post -> PostResponse.of(post, postService.likeCount(post.getId())))
                 .collect(Collectors.toList());

@@ -5,6 +5,7 @@ import com.cju.cuhaapi.domain.post.dto.CategoryDto.CreateRequest;
 import com.cju.cuhaapi.domain.post.entity.Category;
 import com.cju.cuhaapi.domain.post.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     public List<Category> findAll() {
-        return categoryRepository.findAll();
+        return categoryRepository.findAll(Sort.by("id").descending());
     }
 
     public Category getCategory(String name) {

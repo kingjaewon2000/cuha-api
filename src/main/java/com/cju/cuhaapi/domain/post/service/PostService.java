@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,13 +27,13 @@ public class PostService {
     private final CategoryService categoryService;
 
     public Page<Post> findPosts(Integer start, Integer end) {
-        PageRequest pageRequest = PageRequest.of(start, end);
+        PageRequest pageRequest = PageRequest.of(start, end, Sort.by("id").descending());
 
         return postRepository.findAll(pageRequest);
     }
 
     public List<Post> findPosts(String category, Integer start, Integer end) {
-        PageRequest pageRequest = PageRequest.of(start, end);
+        PageRequest pageRequest = PageRequest.of(start, end, Sort.by("id").descending());
 
         return postRepository.findAllByCategoryName(category, pageRequest);
     }
