@@ -1,6 +1,5 @@
 package com.cju.cuhaapi.domain.post.service;
 
-import com.cju.cuhaapi.domain.post.dto.CategoryDto;
 import com.cju.cuhaapi.domain.post.dto.CategoryDto.CreateRequest;
 import com.cju.cuhaapi.domain.post.entity.Category;
 import com.cju.cuhaapi.domain.post.repository.CategoryRepository;
@@ -26,7 +25,7 @@ public class CategoryService {
     }
 
     public void saveCategory(CreateRequest request) {
-        Category category = Category.create(request);
+        Category category = Category.createCategory(request);
 
         categoryRepository.save(category);
     }

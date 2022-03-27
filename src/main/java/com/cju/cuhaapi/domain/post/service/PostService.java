@@ -49,7 +49,7 @@ public class PostService {
             throw new IllegalArgumentException("잘못된 카테고리 입니다.");
         }
 
-        Post post = Post.save(category, request, member);
+        Post post = Post.savePost(category, request, member);
         postRepository.save(post);
     }
 
@@ -60,7 +60,7 @@ public class PostService {
             throw new IllegalArgumentException("게시글을 작성한 멤버가 아닙니다.");
         }
 
-        postRepository.save(Post.update(request, post));
+        postRepository.save(Post.updatePost(request, post));
     }
 
     public void deletePost(String name, Long id, Member member) {

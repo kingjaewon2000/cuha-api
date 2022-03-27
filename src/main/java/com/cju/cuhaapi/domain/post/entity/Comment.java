@@ -42,6 +42,7 @@ public class Comment implements Auditable {
     @Embedded
     private BaseTime baseTime;
 
+    //== 수정 메서드 ==//
     @Override
     public void setBaseTime(BaseTime baseTime) {
         this.baseTime = baseTime;
@@ -52,6 +53,7 @@ public class Comment implements Auditable {
     }
 
 
+    //== 생성 메서드 ==//
     public static Comment save(SaveRequest request, Post post, Member member) {
         return Comment.builder()
                 .body(request.getBody())

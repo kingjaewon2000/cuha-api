@@ -36,7 +36,8 @@ public class Category implements Auditable {
         this.baseTime = baseTime;
     }
 
-    public static Category create(CreateRequest request) {
+    //== 생성 메서드 ==//
+    public static Category createCategory(CreateRequest request) {
         return Category.builder()
                 .name(request.getName())
                 .description(request.getDescription())

@@ -85,7 +85,7 @@ public class MemberController {
             String filename = createFilename(ext);
 
             saveFile(profileFile, filename);
-            profile = Profile.of(originalFilename, filename, size);
+            profile = Profile.createProfile(originalFilename, filename, size);
         }
 
         memberService.updateMember(request, authMember, profile);

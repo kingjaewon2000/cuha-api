@@ -19,7 +19,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Getter
-@ToString
 @DynamicInsert
 @Entity
 @EntityListeners(AuditListener.class)
@@ -72,15 +71,12 @@ public class Member implements Auditable {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Post> posts = new ArrayList<>();
 
-    /**
-     * setter
-     */
+    //== 수정자 메서드 ==//
 
     @Override
     public void setBaseTime(BaseTime baseTime) {
         this.baseTime = baseTime;
     }
-
 
     private void setPassword(Password password) {
         this.password = password;
@@ -118,10 +114,7 @@ public class Member implements Auditable {
         this.profile = profile;
     }
 
-    /**
-     * dto -> entity
-     */
-
+    //== 생성 메서드 ==//
     public static Member join(JoinRequest request) {
         return Member.builder()
                 .username(request.getUsername())

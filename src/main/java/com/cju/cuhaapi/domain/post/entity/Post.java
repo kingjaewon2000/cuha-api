@@ -4,7 +4,6 @@ import com.cju.cuhaapi.audit.AuditListener;
 import com.cju.cuhaapi.audit.Auditable;
 import com.cju.cuhaapi.audit.BaseTime;
 import com.cju.cuhaapi.domain.member.entity.Member;
-import com.cju.cuhaapi.domain.post.dto.PostDto;
 import com.cju.cuhaapi.domain.post.dto.PostDto.SaveRequest;
 import com.cju.cuhaapi.domain.post.dto.PostDto.UpdateRequest;
 import lombok.*;
@@ -55,6 +54,7 @@ public class Post implements Auditable {
     @Embedded
     private BaseTime baseTime;
 
+    //== 수정 메서드==//
     @Override
     public void setBaseTime(BaseTime baseTime) {
         this.baseTime = baseTime;
@@ -72,7 +72,8 @@ public class Post implements Auditable {
         this.category = category;
     }
 
-    public static Post save(Category category, SaveRequest request, Member member) {
+    //== 생성 메서드==//
+    public static Post savePost(Category category, SaveRequest request, Member member) {
         return Post.builder()
                 .title(request.getTitle())
                 .body(request.getBody())
@@ -81,7 +82,7 @@ public class Post implements Auditable {
                 .build();
     }
 
-    public static Post update(UpdateRequest request, Post post) {
+    public static Post updatePost(UpdateRequest request, Post post) {
         post.setTitle(request.getTitle());
         post.setBody(request.getBody());
 

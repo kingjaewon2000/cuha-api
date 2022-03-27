@@ -35,6 +35,7 @@ public class PostLike implements Auditable {
     @Embedded
     private BaseTime baseTime;
 
+    //== 수정 메서드==//
     @Override
     public void setBaseTime(BaseTime baseTime) {
         this.baseTime = baseTime;

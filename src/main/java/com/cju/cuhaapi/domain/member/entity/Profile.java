@@ -35,7 +35,8 @@ public class Profile {
     @Column
     private Long size;
 
-    public static Profile of(String originalFilename, String filename, Long size) {
+    //== 생성 메서드 ==//
+    public static Profile createProfile(String originalFilename, String filename, Long size) {
         return Profile.builder()
                 .originalFilename(originalFilename)
                 .filename(filename)

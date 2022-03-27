@@ -18,18 +18,16 @@ public class Password {
     private static PasswordEncoderUtils passwordEncoderUtils = PasswordEncoderUtils.getInstance();
 
     @Column
-    private int failCount;
+    private int failCount = 0;
 
     @Column(name = "password")
     private String value;
 
     @Column
-    private LocalDateTime lastModifiedDate;
+    private LocalDateTime lastModifiedDate = LocalDateTime.now();
 
     @Builder
     public Password(String value) {
-        this.failCount = 0;
         this.value = passwordEncoderUtils.encode(value);
-        this.lastModifiedDate = LocalDateTime.now();
     }
 }
