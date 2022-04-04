@@ -23,7 +23,7 @@ public class CategoryController {
     @ApiOperation(value = "카테고리 조회", notes = "카테고리를 조회합니다.")
     @GetMapping
     public List<CategoryResponse> categories() {
-        return categoryService.findAll()
+        return categoryService.getAll()
                 .stream()
                 .map(CategoryResponse::of)
                 .collect(Collectors.toList());
@@ -31,7 +31,7 @@ public class CategoryController {
 
     @ApiOperation(value = "카테고리 생성", notes = "카테고리를 생성합니다.")
     @PostMapping
-    public void create(@RequestBody CreateRequest request) {
+    public void save(@RequestBody CreateRequest request) {
         categoryService.saveCategory(request);
     }
 }

@@ -42,8 +42,8 @@ public class MemberController {
      */
     @ApiOperation(value = "범위 멤버 조회", notes = "범위 회원의 정보를 조회합니다.")
     @GetMapping
-    public List<InfoResponse> infoByRange(@RequestParam(defaultValue = "0") Integer start,
-                                          @RequestParam(defaultValue = "100") Integer end) {
+    public List<InfoResponse> infoList(@RequestParam(defaultValue = "0") Integer start,
+                                       @RequestParam(defaultValue = "100") Integer end) {
         return memberService.getMembers(start, end).stream()
                 .map(member -> InfoResponse.of(member))
                 .collect(Collectors.toList());

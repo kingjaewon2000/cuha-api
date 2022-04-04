@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.cju.cuhaapi.domain.member.entity.Member.isSameMember;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -26,13 +28,13 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final CategoryService categoryService;
 
-    public Page<Post> findPosts(Integer start, Integer end) {
+    public Page<Post> getPosts(Integer start, Integer end) {
         PageRequest pageRequest = PageRequest.of(start, end, Sort.by("id").descending());
 
         return postRepository.findAll(pageRequest);
     }
 
-    public List<Post> findPosts(String category, Integer start, Integer end) {
+    public List<Post> getPosts(String category, Integer start, Integer end) {
         PageRequest pageRequest = PageRequest.of(start, end, Sort.by("id").descending());
 
         return postRepository.findAllByCategoryName(category, pageRequest);
@@ -53,20 +55,22 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public void updatePost(String name, Long postId, UpdateRequest request, Member member) {
+    public void updatePost(String name, Long postId, UpdateRequest request, Member writeMember) {
         Post post = getPost(name, postId);
+        Member member = post.getMember();
 
-        if (!isCheckWriter(post.getMember(), member)) {
+        if (!isSameMember(member, writeMember)) {
             throw new IllegalArgumentException("게시글을 작성한 멤버가 아닙니다.");
         }
 
         postRepository.save(Post.updatePost(request, post));
     }
 
-    public void deletePost(String name, Long id, Member member) {
+    public void deletePost(String name, Long id, Member writeMember) {
         Post post = getPost(name, id);
+        Member member = post.getMember();
 
-        if (!isCheckWriter(post.getMember(), member)) {
+        if (!isSameMember(member, writeMember)) {
             throw new IllegalArgumentException("게시글을 작성한 멤버가 아닙니다.");
         }
 
@@ -90,14 +94,5 @@ public class PostService {
 
     public Long likeCount(Long postId) {
         return postLikeRepository.countByPostId(postId);
-    }
-
-    private boolean isCheckWriter(Member writer, Member member) {
-        if (writer.getUsername().equals(member.getUsername())
-                && writer.getId().equals(member.getId())) {
-            return true;
-        }
-
-        return false;
     }
 }

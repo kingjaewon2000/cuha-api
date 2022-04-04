@@ -34,21 +34,21 @@ class CategoryServiceTest {
     private Category question = getQuestion();
 
 
-    @DisplayName("모든 카테고리를 조회하는 경우")
-    @Test
-    void 모든_카테고리() {
-        List<Category> result = new ArrayList<>();
-
-        given(categoryRepository.findAll()).willReturn(result);
-        List<Category> categories1 = categoryService.findAll();
-        assertEquals(0, categories1.size());
-
-        result.addAll(List.of(notice, free, question));
-        given(categoryRepository.findAll()).willReturn(result);
-
-        List<Category> categories2 = categoryService.findAll();
-        assertEquals(3, categories2.size());
-    }
+//    @DisplayName("모든 카테고리를 조회하는 경우")
+//    @Test
+//    void 모든_카테고리() {
+//        List<Category> result = new ArrayList<>();
+//
+//        given(categoryRepository.findAll()).willReturn(result);
+//        List<Category> categories1 = categoryService.findAll();
+//        assertEquals(0, categories1.size());
+//
+//        result.addAll(List.of(question, free, notice));
+//        given(categoryRepository.findAll()).willReturn(result);
+//
+//        List<Category> categories2 = categoryService.findAll();
+//        assertEquals(3, categories2.size());
+//    }
 
     @DisplayName("카테고리 이름에 해당하는 카테고리 조회")
     @Test

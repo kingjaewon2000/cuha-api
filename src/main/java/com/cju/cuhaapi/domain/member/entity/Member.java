@@ -15,11 +15,11 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
-@DynamicInsert
 @Entity
 @EntityListeners(AuditListener.class)
 public class Member implements Auditable {
@@ -41,11 +41,11 @@ public class Member implements Auditable {
     private Boolean isMale;
 
     @ColumnDefault("'example@cju.ac.kr'")
-    @Column
+    @Column(nullable = false)
     private String email;
 
     @ColumnDefault("'010-0000-0000'")
-    @Column
+    @Column(nullable = false)
     private String phoneNumber;
 
     @Column(nullable = false)
@@ -53,6 +53,10 @@ public class Member implements Auditable {
 
     @Column(nullable = false)
     private Department department;
+
+    @ColumnDefault("0")
+    @Column
+    private Integer totalScore;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
@@ -124,7 +128,7 @@ public class Member implements Auditable {
                 .email(request.getEmail())
                 .phoneNumber(request.getPhoneNumber())
                 .studentId(request.getStudentId())
-                .department(Department.valueOf(request.getDepartment()))
+                .department(request.getDepartment())
                 .build();
     }
 
@@ -138,7 +142,7 @@ public class Member implements Auditable {
         member.setEmail(request.getEmail());
         member.setPhoneNumber(request.getPhoneNumber());
         member.setStudentId(request.getStudentId());
-        member.setDepartment(Department.valueOf(request.getDepartment()));
+        member.setDepartment(request.getDepartment());
 
         return member;
     }
@@ -149,4 +153,14 @@ public class Member implements Auditable {
         return member;
     }
 
+
+    //== 비지니스 메서드 ==//
+    public static boolean isSameMember(Member firstMember, Member secondMember) {
+        if (firstMember.getUsername().equals(secondMember.getUsername())
+                && firstMember.getId().equals(secondMember.getId())) {
+            return true;
+        }
+
+        return false;
+    }
 }

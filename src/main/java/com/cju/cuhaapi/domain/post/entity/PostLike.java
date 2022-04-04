@@ -10,12 +10,10 @@ import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @Getter
-@ToString
-@DynamicInsert
 @Entity
 @EntityListeners(AuditListener.class)
 public class PostLike implements Auditable {

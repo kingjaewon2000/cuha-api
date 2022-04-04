@@ -57,7 +57,7 @@ public class MemberDto {
         private String studentId;
 
         @ApiModelProperty(value = "학과", required = true, example = "DIGITAL_SECURITY")
-        private String department;
+        private Department department;
     }
 
     @NoArgsConstructor
@@ -82,7 +82,7 @@ public class MemberDto {
         private String studentId;
 
         @ApiModelProperty(value = "학과", required = true, example = "DIGITAL_SECURITY")
-        private String department;
+        private Department department;
     }
 
     @NoArgsConstructor
@@ -125,7 +125,10 @@ public class MemberDto {
         private String studentId;
 
         @ApiModelProperty(value = "학과", example = "DIGITAL_SECURITY")
-        private String department;
+        private Department department;
+
+        @ApiModelProperty(value = "점수", example = "0")
+        private Integer totalScore;
 
         @ApiModelProperty(value = "권한", example = "동아리원")
         private Role role;
@@ -148,7 +151,8 @@ public class MemberDto {
                     .email(member.getEmail())
                     .phoneNumber(member.getPhoneNumber())
                     .studentId(member.getStudentId())
-                    .department(member.getDepartment().name())
+                    .department(member.getDepartment())
+                    .totalScore(member.getTotalScore())
                     .role(Role.builder()
                             .id(member.getRole().getId())
                             .role(member.getRole().getRole())

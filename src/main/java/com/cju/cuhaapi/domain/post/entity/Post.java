@@ -7,18 +7,18 @@ import com.cju.cuhaapi.domain.member.entity.Member;
 import com.cju.cuhaapi.domain.post.dto.PostDto.SaveRequest;
 import com.cju.cuhaapi.domain.post.dto.PostDto.UpdateRequest;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
+@DynamicInsert
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @Getter
-@ToString
-@DynamicInsert
 @Entity
 @EntityListeners(AuditListener.class)
 public class Post implements Auditable {
@@ -28,14 +28,15 @@ public class Post implements Auditable {
     @Column(name = "post_id")
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String title;
 
     @Column
     private String body;
 
+    @ColumnDefault("0")
     @Column(nullable = false)
-    private long views = 0L;
+    private Long views;
 
     @ManyToOne
     @JoinColumn(name = "member_id")

@@ -95,7 +95,7 @@ class MemberServiceTest {
                 .email("cuha@cju.ac.kr")
                 .phoneNumber("010-1234-5678")
                 .studentId("20220001")
-                .department(Department.DIGITAL_SECURITY.name())
+                .department(Department.DIGITAL_SECURITY)
                 .build();
 
         return request;
@@ -142,7 +142,7 @@ class MemberServiceTest {
     @Test
     void 내_정보_변경() {
         UpdateInfoRequest request = updateInfoRequestBuild();
-        Profile profile = new Profile();
+        Profile profile = Profile.createProfile("test", "test", 0L);
 
         Member updateMember = Member.updateInfo(request, member, profile);
 
@@ -191,7 +191,7 @@ class MemberServiceTest {
                 .email("qwer@example.com")
                 .phoneNumber("010-9876-5432")
                 .studentId("55555555")
-                .department(Department.AI.name())
+                .department(Department.AI)
                 .build();
 
         return request;

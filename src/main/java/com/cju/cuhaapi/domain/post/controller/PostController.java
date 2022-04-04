@@ -5,9 +5,8 @@ import com.cju.cuhaapi.domain.member.entity.Member;
 import com.cju.cuhaapi.domain.post.dto.CommentDto;
 import com.cju.cuhaapi.domain.post.dto.CommentDto.CommentResponse;
 import com.cju.cuhaapi.domain.post.dto.PostDto;
-import com.cju.cuhaapi.domain.post.dto.PostDto.SaveRequest;
 import com.cju.cuhaapi.domain.post.dto.PostDto.PostResponse;
-import com.cju.cuhaapi.domain.post.entity.Comment;
+import com.cju.cuhaapi.domain.post.dto.PostDto.SaveRequest;
 import com.cju.cuhaapi.domain.post.entity.Post;
 import com.cju.cuhaapi.domain.post.service.CommentService;
 import com.cju.cuhaapi.domain.post.service.PostService;
@@ -33,9 +32,9 @@ public class PostController {
      */
     @ApiOperation(value = "범위 게시글 조회", notes = "범위 게시글을 조회합니다.")
     @GetMapping
-    public List<PostResponse> postsByRange(@RequestParam(defaultValue = "0") Integer start,
-                                           @RequestParam(defaultValue = "100") Integer end) {
-        return postService.findPosts(start, end).stream()
+    public List<PostResponse> posts(@RequestParam(defaultValue = "0") Integer start,
+                                    @RequestParam(defaultValue = "100") Integer end) {
+        return postService.getPosts(start, end).stream()
                 .map(post -> PostResponse.of(post, postService.likeCount(post.getId())))
                 .collect(Collectors.toList());
     }
@@ -48,7 +47,7 @@ public class PostController {
     public List<PostResponse> postsByCategory(@PathVariable String category,
                                               @RequestParam(defaultValue = "0") Integer start,
                                               @RequestParam(defaultValue = "100") Integer end) {
-        return postService.findPosts(category, start, end).stream()
+        return postService.getPosts(category, start, end).stream()
                 .map(post -> PostResponse.of(post, postService.likeCount(post.getId())))
                 .collect(Collectors.toList());
     }
@@ -58,8 +57,8 @@ public class PostController {
      */
     @ApiOperation(value = "단위 게시글 조회", notes = "게시글을 조회합니다.")
     @GetMapping("/{category}/{postId}")
-    public PostResponse post(@PathVariable Long postId,
-                             @PathVariable String category) {
+    public PostResponse postById(@PathVariable Long postId,
+                                 @PathVariable String category) {
         Post post = postService.getPost(category, postId);
 
         return PostResponse.of(post, postService.likeCount(post.getId()));

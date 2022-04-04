@@ -1,7 +1,6 @@
 package com.cju.cuhaapi.domain.post.service;
 
 import com.cju.cuhaapi.domain.member.entity.Member;
-import com.cju.cuhaapi.domain.post.dto.CommentDto;
 import com.cju.cuhaapi.domain.post.dto.CommentDto.SaveRequest;
 import com.cju.cuhaapi.domain.post.dto.CommentDto.UpdateRequest;
 import com.cju.cuhaapi.domain.post.entity.Comment;
@@ -17,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.cju.cuhaapi.domain.member.entity.Member.isSameMember;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,22 +47,25 @@ public class CommentService {
     public void saveComment(String name, Long postId, SaveRequest request, Member member) {
         Post post = postService.getPost(name, postId);
 
-        commentRepository.save(Comment.save(request, post, member));
+        commentRepository.save(Comment.saveComment(request, post, member));
     }
 
-    public void updateComment(String name, Long postId, Long commentId, UpdateRequest request, Member member) {
+    public void updateComment(String name, Long postId, Long commentId, UpdateRequest request, Member authMember) {
         Comment comment = getComment(name, postId, commentId);
-        if (!isCheckOwner(comment.getMember(), member)) {
+        Member member = comment.getMember();
+
+        if (!isSameMember(member, authMember)) {
             throw new IllegalArgumentException("댓글은 작성한 유저가 아닙니다.");
         }
 
-        commentRepository.save(Comment.update(request, comment));
+        commentRepository.save(Comment.updateComment(request, comment));
     }
 
-    public void deleteComment(String name, Long postId, Long commentId, Member member) {
+    public void deleteComment(String name, Long postId, Long commentId, Member writeMember) {
         Comment comment = getComment(name, postId, commentId);
+        Member member = comment.getMember();
 
-        if (!isCheckOwner(comment.getMember(), member)) {
+        if (!Member.isSameMember(member, writeMember)) {
             throw new IllegalArgumentException("댓글은 작성한 유저가 아닙니다.");
         }
         commentRepository.delete(comment);
@@ -84,14 +88,5 @@ public class CommentService {
 
     public Long likeCount(Long commentId) {
         return commentLikeRepository.countByCommentId(commentId);
-    }
-
-    private boolean isCheckOwner(Member owner, Member member) {
-        if (owner.getUsername().equals(member.getUsername())
-                && owner.getId().equals(member.getId())) {
-            return true;
-        }
-
-        return false;
     }
 }

@@ -12,11 +12,10 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @Getter
-@ToString
 @Entity
 @EntityListeners(AuditListener.class)
 public class Comment implements Auditable {
@@ -54,7 +53,7 @@ public class Comment implements Auditable {
 
 
     //== 생성 메서드 ==//
-    public static Comment save(SaveRequest request, Post post, Member member) {
+    public static Comment saveComment(SaveRequest request, Post post, Member member) {
         return Comment.builder()
                 .body(request.getBody())
                 .post(post)
@@ -62,7 +61,7 @@ public class Comment implements Auditable {
                 .build();
     }
 
-    public static Comment update(UpdateRequest request, Comment comment) {
+    public static Comment updateComment(UpdateRequest request, Comment comment) {
         comment.setBody(request.getBody());
 
         return comment;

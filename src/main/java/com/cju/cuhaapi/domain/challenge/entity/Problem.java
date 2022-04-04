@@ -1,0 +1,108 @@
+package com.cju.cuhaapi.domain.challenge.entity;
+
+import com.cju.cuhaapi.audit.AuditListener;
+import com.cju.cuhaapi.audit.Auditable;
+import com.cju.cuhaapi.audit.BaseTime;
+import com.cju.cuhaapi.domain.challenge.dto.ProblemDto;
+import com.cju.cuhaapi.domain.challenge.dto.ProblemDto.CreateRequest;
+import com.cju.cuhaapi.domain.challenge.dto.ProblemDto.UpdateRequest;
+import com.cju.cuhaapi.domain.member.entity.Member;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+
+import javax.persistence.*;
+
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+@Getter
+@Entity
+@EntityListeners(AuditListener.class)
+public class Problem implements Auditable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
+    private ProblemType type;
+
+    @Enumerated(EnumType.STRING)
+    private Tear tear;
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column
+    private String body;
+
+    @ColumnDefault("0")
+    @Column(nullable = false)
+    private Integer score;
+
+    @ColumnDefault("0")
+    @Column(nullable = false)
+    private String flag;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @Embedded
+    private BaseTime baseTime;
+
+    //== 수정 메서드 ==//
+    @Override
+    public void setBaseTime(BaseTime baseTime) {
+        this.baseTime = baseTime;
+    }
+
+    private void setType(ProblemType type) {
+        this.type = type;
+    }
+
+    private void setTear(Tear tear) {
+        this.tear = tear;
+    }
+
+    private void setTitle(String title) {
+        this.title = title;
+    }
+
+    private void setBody(String body) {
+        this.body = body;
+    }
+
+    private void setScore(Integer score) {
+        this.score = score;
+    }
+
+    private void setFlag(String flag) {
+        this.flag = flag;
+    }
+
+    //== 생성 메서드 ==//
+    public static Problem createProblem(CreateRequest request, Member member) {
+        return Problem.builder()
+                .type(request.getProblemType())
+                .tear(request.getTear())
+                .title(request.getTitle())
+                .body(request.getBody())
+                .score(request.getScore())
+                .flag(request.getFlag())
+                .member(member)
+                .build();
+    }
+
+    public static Problem updateProblem(UpdateRequest request, Problem problem) {
+        problem.setType(request.getProblemType());
+        problem.setTear(request.getTear());
+        problem.setTitle(request.getTitle());
+        problem.setBody(request.getBody());
+        problem.setScore(request.getScore());
+        problem.setFlag(request.getFlag());
+
+        return problem;
+    }
+}

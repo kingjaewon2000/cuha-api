@@ -8,11 +8,10 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @Getter
-@ToString
 @Entity
 @EntityListeners(AuditListener.class)
 public class Category implements Auditable {

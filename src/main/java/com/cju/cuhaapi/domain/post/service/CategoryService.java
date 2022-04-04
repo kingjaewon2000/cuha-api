@@ -15,7 +15,7 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public List<Category> findAll() {
+    public List<Category> getAll() {
         return categoryRepository.findAll(Sort.by("id").descending());
     }
 
