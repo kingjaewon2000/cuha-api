@@ -1,15 +1,16 @@
 package com.cju.cuhaapi.domain.member.service;
 
-import com.cju.cuhaapi.domain.member.dto.MemberDto.JoinRequest;
-import com.cju.cuhaapi.domain.member.dto.MemberDto.UpdateInfoRequest;
-import com.cju.cuhaapi.domain.member.dto.MemberDto.UpdatePasswordRequest;
-import com.cju.cuhaapi.domain.member.entity.Department;
-import com.cju.cuhaapi.domain.member.entity.Member;
-import com.cju.cuhaapi.domain.member.entity.Password;
-import com.cju.cuhaapi.domain.member.entity.Profile;
-import com.cju.cuhaapi.domain.member.repository.MemberRepository;
-import com.cju.cuhaapi.domain.member.repository.ProfileRepository;
+import com.cju.cuhaapi.controller.dto.MemberDto.JoinRequest;
+import com.cju.cuhaapi.controller.dto.MemberDto.UpdateInfoRequest;
+import com.cju.cuhaapi.controller.dto.MemberDto.UpdatePasswordRequest;
+import com.cju.cuhaapi.repository.entity.member.Department;
+import com.cju.cuhaapi.repository.entity.member.Member;
+import com.cju.cuhaapi.repository.entity.member.Password;
+import com.cju.cuhaapi.repository.entity.member.Profile;
+import com.cju.cuhaapi.repository.MemberRepository;
+import com.cju.cuhaapi.repository.ProfileRepository;
 import com.cju.cuhaapi.error.exception.DuplicateUsernameException;
+import com.cju.cuhaapi.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

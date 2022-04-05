@@ -1,8 +1,8 @@
 package com.cju.cuhaapi.domain.post.service;
 
-import com.cju.cuhaapi.domain.post.dto.CategoryDto;
-import com.cju.cuhaapi.domain.post.entity.Category;
-import com.cju.cuhaapi.domain.post.repository.CategoryRepository;
+import com.cju.cuhaapi.repository.entity.post.Category;
+import com.cju.cuhaapi.repository.CategoryRepository;
+import com.cju.cuhaapi.service.CategoryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,11 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
-import static com.cju.cuhaapi.domain.post.dto.CategoryDto.*;
+import static com.cju.cuhaapi.controller.dto.CategoryDto.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;

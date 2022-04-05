@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.security.auth;
 
-import com.cju.cuhaapi.domain.member.entity.Member;
+import com.cju.cuhaapi.repository.entity.member.Member;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,6 +21,10 @@ public class PrincipalDetails implements UserDetails {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(member.getRole().getRole()));
         return authorities;
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     @Override

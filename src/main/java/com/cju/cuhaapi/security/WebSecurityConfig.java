@@ -1,6 +1,8 @@
 package com.cju.cuhaapi.security;
 
-import com.cju.cuhaapi.domain.member.repository.MemberRepository;
+import com.cju.cuhaapi.repository.MemberRepository;
+import com.cju.cuhaapi.security.auth.PrincipalDetails;
+import com.cju.cuhaapi.security.auth.PrincipalDetailsService;
 import com.cju.cuhaapi.security.jwt.*;
 import com.cju.cuhaapi.utils.PasswordEncoderUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,6 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final MemberRepository memberRepository;
     private final ObjectMapper objectMapper;
     private final JwtExceptionHandlerFilter filter;
+    private final PrincipalDetailsService principalDetailsService;
 
     @Bean
     public JwtProvider getJwtProvider() {
@@ -77,7 +81,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(accessDeniedHandler());
 
         http
-                .addFilter(new JwtAuthenticationFilter(getJwtProvider(), authenticationManager(), objectMapper))
+                .addFilter(new JwtAuthenticationFilter(getJwtProvider(), authenticationManager(), objectMapper, memberRepository))
                 .addFilter(new JwtAuthorizationFilter(getJwtProvider(), authenticationManager(), memberRepository))
                 .addFilterBefore(filter, LogoutFilter.class)
                 .addFilter(corsFilter);
