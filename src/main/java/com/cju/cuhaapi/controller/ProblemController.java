@@ -1,12 +1,14 @@
 package com.cju.cuhaapi.controller;
 
 import com.cju.cuhaapi.annotation.CurrentMember;
+import com.cju.cuhaapi.controller.dto.ProblemDto;
 import com.cju.cuhaapi.controller.dto.ProblemDto.CreateRequest;
 import com.cju.cuhaapi.controller.dto.ProblemDto.ProblemResponse;
+import com.cju.cuhaapi.controller.dto.ProblemDto.SubmitRequest;
 import com.cju.cuhaapi.controller.dto.ProblemDto.UpdateRequest;
 import com.cju.cuhaapi.repository.entity.challenge.Problem;
 import com.cju.cuhaapi.repository.entity.challenge.ProblemType;
-import com.cju.cuhaapi.repository.entity.challenge.Tear;
+import com.cju.cuhaapi.repository.entity.challenge.Tier;
 import com.cju.cuhaapi.service.ProblemService;
 import com.cju.cuhaapi.repository.entity.member.Member;
 import lombok.RequiredArgsConstructor;
@@ -23,16 +25,6 @@ import java.util.stream.Collectors;
 public class ProblemController {
 
     private final ProblemService problemService;
-
-    @GetMapping("/type")
-    public ProblemType[] problemTypes() {
-        return ProblemType.values();
-    }
-
-    @GetMapping("/tear")
-    public Tear[] tears() {
-        return Tear.values();
-    }
 
     @GetMapping("/{id}")
     public ProblemResponse problemById(@PathVariable Long id) {
@@ -67,4 +59,13 @@ public class ProblemController {
                        @PathVariable Long id) {
         problemService.deleteProblem(id, authMember);
     }
+
+
+    @PostMapping("/submit/{id}")
+    public void submit(@CurrentMember Member authMember,
+                       @PathVariable Long id,
+                       @RequestBody SubmitRequest request) {
+        problemService.grading(id, request.getFlag(), authMember);
+    }
+
 }

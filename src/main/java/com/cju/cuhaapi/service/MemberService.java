@@ -29,6 +29,12 @@ public class MemberService {
         return memberRepository.findAll(pageRequest);
     }
 
+    public Page<Member> getMembersOrderByScore(Integer start, Integer end) {
+        PageRequest pageRequest = PageRequest.of(start, end, Sort.by("totalScore").descending());
+
+        return memberRepository.findAll(pageRequest);
+    }
+
     public Member getMember(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("ID값이 잘못 지정되었습니다."));
@@ -76,9 +82,11 @@ public class MemberService {
         memberRepository.delete(member);
     }
 
-    /**
-     * 도우미 메서드
-     */
+    public Long ranking(Long id) {
+        return memberRepository.ranking(id);
+    }
+
+    //== 도우미 메서드 ==//
     public boolean isDuplicateUsername(String username) {
         return memberRepository.existsByUsername(username);
     }

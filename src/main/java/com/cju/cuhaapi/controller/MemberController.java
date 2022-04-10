@@ -1,10 +1,8 @@
 package com.cju.cuhaapi.controller;
 
 import com.cju.cuhaapi.annotation.CurrentMember;
-import com.cju.cuhaapi.controller.dto.MemberDto.InfoResponse;
-import com.cju.cuhaapi.controller.dto.MemberDto.JoinRequest;
-import com.cju.cuhaapi.controller.dto.MemberDto.UpdateInfoRequest;
-import com.cju.cuhaapi.controller.dto.MemberDto.UpdatePasswordRequest;
+import com.cju.cuhaapi.controller.dto.MemberDto;
+import com.cju.cuhaapi.controller.dto.MemberDto.*;
 import com.cju.cuhaapi.repository.entity.member.Member;
 import com.cju.cuhaapi.repository.entity.member.Profile;
 import com.cju.cuhaapi.service.MemberService;
@@ -47,6 +45,30 @@ public class MemberController {
         return memberService.getMembers(start, end).stream()
                 .map(member -> InfoResponse.of(member))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 멤버 조회(점수 기반)
+     */
+    @ApiOperation(value = "범위 랭킹 조회", notes = "범위 회원의 랭킹 정보를 순서로 조회합니다.")
+    @GetMapping("/ranking")
+    public List<InfoResponse> ranking(@RequestParam(defaultValue = "0") Integer start,
+                                      @RequestParam(defaultValue = "100") Integer end) {
+        return memberService.getMembersOrderByScore(start, end).stream()
+                .map(member -> InfoResponse.of(member))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 내 랭킹 출력
+     */
+    @ApiOperation(value = "내 랭킹 조회", notes = "내 랭킹을 조회합니다.")
+    @GetMapping("/ranking/me")
+    public RankingResponse ranking(@CurrentMember Member authMember) {
+        Long authMemberId = authMember.getId();
+        Long ranking = memberService.ranking(authMemberId);
+
+        return RankingResponse.of(authMemberId, ranking);
     }
 
     /**
@@ -117,6 +139,7 @@ public class MemberController {
         return new UrlResource("file:" + getFullPath(filename));
     }
 
+    //== 비지니스 메서드 ==//
     private String createFilename(String ext) {
         return UUID.randomUUID().toString() + "." + ext;
     }

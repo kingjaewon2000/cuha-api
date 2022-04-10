@@ -21,14 +21,14 @@ public class Problem implements Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "problem_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
     private ProblemType type;
 
     @Enumerated(EnumType.STRING)
-    private Tear tear;
+    private Tier tier;
 
     @Column(nullable = false)
     private String title;
@@ -61,8 +61,8 @@ public class Problem implements Auditable {
         this.type = type;
     }
 
-    private void setTear(Tear tear) {
-        this.tear = tear;
+    private void setTier(Tier tier) {
+        this.tier = tier;
     }
 
     private void setTitle(String title) {
@@ -85,7 +85,7 @@ public class Problem implements Auditable {
     public static Problem createProblem(CreateRequest request, Member member) {
         return Problem.builder()
                 .type(request.getProblemType())
-                .tear(request.getTear())
+                .tier(request.getTier())
                 .title(request.getTitle())
                 .body(request.getBody())
                 .score(request.getScore())
@@ -96,7 +96,7 @@ public class Problem implements Auditable {
 
     public static Problem updateProblem(UpdateRequest request, Problem problem) {
         problem.setType(request.getProblemType());
-        problem.setTear(request.getTear());
+        problem.setTier(request.getTier());
         problem.setTitle(request.getTitle());
         problem.setBody(request.getBody());
         problem.setScore(request.getScore());

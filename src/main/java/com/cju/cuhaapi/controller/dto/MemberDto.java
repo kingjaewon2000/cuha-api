@@ -164,4 +164,20 @@ public class MemberDto {
         }
     }
 
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Getter
+    public static class RankingResponse {
+        private Long id;
+        public Long ranking;
+
+        public static RankingResponse of(Long id, Long ranking) {
+            return RankingResponse.builder()
+                    .id(id)
+                    .ranking(ranking)
+                    .build();
+        }
+    }
+
 }

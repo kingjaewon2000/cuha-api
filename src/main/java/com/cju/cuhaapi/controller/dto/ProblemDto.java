@@ -2,7 +2,7 @@ package com.cju.cuhaapi.controller.dto;
 
 import com.cju.cuhaapi.repository.entity.challenge.Problem;
 import com.cju.cuhaapi.repository.entity.challenge.ProblemType;
-import com.cju.cuhaapi.repository.entity.challenge.Tear;
+import com.cju.cuhaapi.repository.entity.challenge.Tier;
 import lombok.*;
 
 public class ProblemDto {
@@ -14,7 +14,7 @@ public class ProblemDto {
     @Setter
     public static class CreateRequest {
         private ProblemType problemType;
-        private Tear tear;
+        private Tier tier;
         private String title;
         private String body;
         private Integer score;
@@ -28,7 +28,7 @@ public class ProblemDto {
     @Setter
     public static class UpdateRequest {
         private ProblemType problemType;
-        private Tear tear;
+        private Tier tier;
         private String title;
         private String body;
         private Integer score;
@@ -39,10 +39,19 @@ public class ProblemDto {
     @AllArgsConstructor
     @Builder
     @Getter
+    @Setter
+    public static class SubmitRequest {
+        private String flag;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Getter
     public static class ProblemResponse {
         private Long id;
         private ProblemType problemType;
-        private Tear tear;
+        private Tier tier;
         private String title;
         private String body;
         private Integer score;
@@ -52,7 +61,7 @@ public class ProblemDto {
             return ProblemResponse.builder()
                     .id(problem.getId())
                     .problemType(problem.getType())
-                    .tear(problem.getTear())
+                    .tier(problem.getTier())
                     .title(problem.getTitle())
                     .body(problem.getBody())
                     .score(problem.getScore())

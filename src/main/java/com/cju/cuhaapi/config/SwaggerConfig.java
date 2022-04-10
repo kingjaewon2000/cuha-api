@@ -23,7 +23,7 @@ public class SwaggerConfig {
     public Docket swaggerApi() {
         return new Docket(DocumentationType.OAS_30)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.cju.cuhaapi.domain"))
+                .apis(RequestHandlerSelectors.basePackage("com.cju.cuhaapi.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo())
