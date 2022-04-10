@@ -48,6 +48,10 @@ public class Problem implements Auditable {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @OneToOne
+    @JoinColumn(name = "solution_id")
+    private Solution solution;
+
     @Embedded
     private BaseTime baseTime;
 

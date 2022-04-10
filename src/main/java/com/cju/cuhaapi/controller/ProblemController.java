@@ -1,16 +1,13 @@
 package com.cju.cuhaapi.controller;
 
 import com.cju.cuhaapi.annotation.CurrentMember;
-import com.cju.cuhaapi.controller.dto.ProblemDto;
 import com.cju.cuhaapi.controller.dto.ProblemDto.CreateRequest;
 import com.cju.cuhaapi.controller.dto.ProblemDto.ProblemResponse;
 import com.cju.cuhaapi.controller.dto.ProblemDto.SubmitRequest;
 import com.cju.cuhaapi.controller.dto.ProblemDto.UpdateRequest;
 import com.cju.cuhaapi.repository.entity.challenge.Problem;
-import com.cju.cuhaapi.repository.entity.challenge.ProblemType;
-import com.cju.cuhaapi.repository.entity.challenge.Tier;
-import com.cju.cuhaapi.service.ProblemService;
 import com.cju.cuhaapi.repository.entity.member.Member;
+import com.cju.cuhaapi.service.ProblemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -67,5 +64,4 @@ public class ProblemController {
                        @RequestBody SubmitRequest request) {
         problemService.grading(id, request.getFlag(), authMember);
     }
-
 }
