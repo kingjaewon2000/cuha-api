@@ -19,8 +19,8 @@ public class CategoryService {
         return categoryRepository.findAll(Sort.by("id").descending());
     }
 
-    public Category getCategory(String name) {
-        return categoryRepository.findByName(name)
+    public Category getCategory(String categoryName) {
+        return categoryRepository.findByName(categoryName)
                 .orElseThrow(() -> new IllegalArgumentException("name값이 잘못 지정되었습니다."));
     }
 

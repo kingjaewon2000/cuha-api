@@ -23,14 +23,14 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
 
-    public Page<Member> getMembers(Integer start, Integer end) {
-        PageRequest pageRequest = PageRequest.of(start, end, Sort.by("id").descending());
+    public Page<Member> getMembers(Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
 
         return memberRepository.findAll(pageRequest);
     }
 
-    public Page<Member> getMembersOrderByScore(Integer start, Integer end) {
-        PageRequest pageRequest = PageRequest.of(start, end, Sort.by("totalScore").descending());
+    public Page<Member> getMembersOrderByScore(Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("totalScore").descending());
 
         return memberRepository.findAll(pageRequest);
     }

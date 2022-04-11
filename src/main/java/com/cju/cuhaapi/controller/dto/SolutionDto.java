@@ -11,7 +11,6 @@ public class SolutionDto {
     @Getter
     @Setter
     public static class CreateRequest {
-        private String title;
         private String body;
     }
 
@@ -21,7 +20,6 @@ public class SolutionDto {
     @Getter
     @Setter
     public static class UpdateRequest {
-        private String title;
         private String body;
     }
 
@@ -31,12 +29,10 @@ public class SolutionDto {
     @Builder
     @Getter
     public static class SolutionResponse {
-        private String title;
         private String body;
 
         public static SolutionResponse of(Solution solution) {
             return SolutionResponse.builder()
-                    .title(solution.getTitle())
                     .body(solution.getBody())
                     .build();
         }

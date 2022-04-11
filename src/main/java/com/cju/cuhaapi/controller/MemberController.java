@@ -1,7 +1,6 @@
 package com.cju.cuhaapi.controller;
 
 import com.cju.cuhaapi.annotation.CurrentMember;
-import com.cju.cuhaapi.controller.dto.MemberDto;
 import com.cju.cuhaapi.controller.dto.MemberDto.*;
 import com.cju.cuhaapi.repository.entity.member.Member;
 import com.cju.cuhaapi.repository.entity.member.Profile;
@@ -40,9 +39,9 @@ public class MemberController {
      */
     @ApiOperation(value = "범위 멤버 조회", notes = "범위 회원의 정보를 조회합니다.")
     @GetMapping
-    public List<InfoResponse> infoList(@RequestParam(defaultValue = "0") Integer start,
-                                       @RequestParam(defaultValue = "100") Integer end) {
-        return memberService.getMembers(start, end).stream()
+    public List<InfoResponse> infoList(@RequestParam(defaultValue = "0") Integer page,
+                                       @RequestParam(defaultValue = "100") Integer size) {
+        return memberService.getMembers(page, size).stream()
                 .map(member -> InfoResponse.of(member))
                 .collect(Collectors.toList());
     }
@@ -52,9 +51,9 @@ public class MemberController {
      */
     @ApiOperation(value = "범위 랭킹 조회", notes = "범위 회원의 랭킹 정보를 순서로 조회합니다.")
     @GetMapping("/ranking")
-    public List<InfoResponse> ranking(@RequestParam(defaultValue = "0") Integer start,
-                                      @RequestParam(defaultValue = "100") Integer end) {
-        return memberService.getMembersOrderByScore(start, end).stream()
+    public List<InfoResponse> ranking(@RequestParam(defaultValue = "0") Integer page,
+                                      @RequestParam(defaultValue = "100") Integer size) {
+        return memberService.getMembersOrderByScore(page, size).stream()
                 .map(member -> InfoResponse.of(member))
                 .collect(Collectors.toList());
     }

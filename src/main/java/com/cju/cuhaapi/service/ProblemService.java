@@ -29,8 +29,8 @@ public class ProblemService {
                 .orElseThrow(() -> new IllegalArgumentException("ID값이 잘못 지정되었습니다."));
     }
 
-    public Page<Problem> getProblems(Integer start, Integer end) {
-        PageRequest pageRequest = PageRequest.of(start, end, Sort.by("id").descending());
+    public Page<Problem> getProblems(Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
         return problemRepository.findAll(pageRequest);
     }
 

@@ -35,9 +35,11 @@ public class Password {
 
     //== 비지니스 메서드 ==//
     public void addFailCount() {
-        if (failCount < MAX_FAIL_COUNT) {
-            failCount += 1;
+        if (failCount >= MAX_FAIL_COUNT) {
+            throw new IllegalArgumentException("패스워드 실패 횟수를 초과했습니다.");
         }
+
+        failCount += 1;
     }
 
     public void initFailCount() {

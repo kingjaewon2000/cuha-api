@@ -24,7 +24,6 @@ public class Solution implements Auditable {
     @Column(name = "solution_id")
     private Long id;
 
-    private String title;
     private String body;
 
     @ManyToOne
@@ -43,10 +42,6 @@ public class Solution implements Auditable {
         this.baseTime = baseTime;
     }
 
-    private void setTitle(String title) {
-        this.title = title;
-    }
-
     private void setBody(String body) {
         this.body = body;
     }
@@ -57,7 +52,6 @@ public class Solution implements Auditable {
     //== 생성 메서드 ==//
     public static Solution createSolution(CreateRequest request, Member member, Problem problem) {
         return Solution.builder()
-                .title(request.getTitle())
                 .body(request.getBody())
                 .member(member)
                 .problem(problem)
@@ -65,7 +59,6 @@ public class Solution implements Auditable {
     }
 
     public static Solution updateSolution(UpdateRequest request, Solution solution) {
-        solution.setTitle(request.getTitle());
         solution.setBody(request.getBody());
 
         return solution;

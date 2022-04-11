@@ -28,30 +28,30 @@ public class CommentService {
     private final CommentLikeRepository commentLikeRepository;
     private final PostService postService;
 
-    public Comment getComment(String name, Long postId, Long commentId)  {
-        return commentRepository.findByPostCategoryNameAndPostIdAndId(name, postId, commentId);
+    public Comment getComment(String categoryName, Long postId, Long commentId)  {
+        return commentRepository.findByPostCategoryNameAndPostIdAndId(categoryName, postId, commentId);
     }
 
-    public Page<Comment> getComments(Integer start, Integer end) {
-        PageRequest pageRequest = PageRequest.of(start, end, Sort.by("id").descending());
+    public Page<Comment> getComments(Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
 
         return commentRepository.findAll(pageRequest);
     }
 
-    public List<Comment> getComments(String name, Long postId, Integer start, Integer end) {
-        PageRequest pageRequest = PageRequest.of(start, end, Sort.by("id").descending());
+    public List<Comment> getComments(String categoryName, Long postId, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
 
-        return commentRepository.findAllByPostCategoryNameAndPostId(name, postId, pageRequest);
+        return commentRepository.findAllByPostCategoryNameAndPostId(categoryName, postId, pageRequest);
     }
 
-    public void saveComment(String name, Long postId, SaveRequest request, Member member) {
-        Post post = postService.getPost(name, postId);
+    public void saveComment(String categoryName, Long postId, SaveRequest request, Member member) {
+        Post post = postService.getPost(categoryName, postId);
 
         commentRepository.save(Comment.saveComment(request, post, member));
     }
 
-    public void updateComment(String name, Long postId, Long commentId, UpdateRequest request, Member authMember) {
-        Comment comment = getComment(name, postId, commentId);
+    public void updateComment(String categoryName, Long postId, Long commentId, UpdateRequest request, Member authMember) {
+        Comment comment = getComment(categoryName, postId, commentId);
         Member member = comment.getMember();
 
         if (!isSameMember(member, authMember)) {
@@ -61,8 +61,8 @@ public class CommentService {
         commentRepository.save(Comment.updateComment(request, comment));
     }
 
-    public void deleteComment(String name, Long postId, Long commentId, Member writeMember) {
-        Comment comment = getComment(name, postId, commentId);
+    public void deleteComment(String categoryName, Long postId, Long commentId, Member writeMember) {
+        Comment comment = getComment(categoryName, postId, commentId);
         Member member = comment.getMember();
 
         if (!Member.isSameMember(member, writeMember)) {
@@ -71,8 +71,8 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
-    public void likeComment(String name, Long postId, Long commentId, Member member) {
-        Comment comment = getComment(name, postId, commentId);
+    public void likeComment(String categoryName, Long postId, Long commentId, Member member) {
+        Comment comment = getComment(categoryName, postId, commentId);
 
         if (commentLikeRepository.existsByCommentIdAndMemberId(comment.getId(), member.getId())) {
             throw new IllegalArgumentException("이미 추천하신 댓글 입니다.");
@@ -88,5 +88,12 @@ public class CommentService {
 
     public Long likeCount(Long commentId) {
         return commentLikeRepository.countByCommentId(commentId);
+    }
+
+    public List<Boolean> isClickLike(String categoryName, Long postId, Member authMember, Integer start, Integer end) {
+        Post post = postService.getPost(categoryName, postId);
+        PageRequest pageRequest = PageRequest.of(start, end);
+
+        return commentLikeRepository.existsAllByMemberId(authMember.getId(), pageRequest);
     }
 }

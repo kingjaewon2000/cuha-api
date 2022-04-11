@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import static com.cju.cuhaapi.repository.entity.member.Password.INIT_FAIL_COUNT;
+import static com.cju.cuhaapi.repository.entity.member.Password.MAX_FAIL_COUNT;
 import static com.cju.cuhaapi.security.jwt.JwtConstants.TOKEN_TYPE_PREFIX;
 
 @Slf4j

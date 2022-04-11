@@ -28,25 +28,25 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final CategoryService categoryService;
 
-    public Page<Post> getPosts(Integer start, Integer end) {
-        PageRequest pageRequest = PageRequest.of(start, end, Sort.by("id").descending());
+    public Page<Post> getPosts(Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
 
         return postRepository.findAll(pageRequest);
     }
 
-    public List<Post> getPosts(String category, Integer start, Integer end) {
-        PageRequest pageRequest = PageRequest.of(start, end, Sort.by("id").descending());
+    public List<Post> getPosts(String categoryName, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
 
-        return postRepository.findAllByCategoryName(category, pageRequest);
+        return postRepository.findAllByCategoryName(categoryName, pageRequest);
     }
 
-    public Post getPost(String name, Long id) {
-        return postRepository.findPostByCategoryNameAndId(name, id)
+    public Post getPost(String categoryName, Long id) {
+        return postRepository.findPostByCategoryNameAndId(categoryName, id)
                 .orElseThrow(() -> new IllegalArgumentException("name값 혹은 ID값이 잘못 지정되었습니다."));
     }
 
-    public void savePost(String name, SaveRequest request, Member member) {
-        Category category = categoryService.getCategory(name);
+    public void savePost(String categoryName, SaveRequest request, Member member) {
+        Category category = categoryService.getCategory(categoryName);
         if (category == null) {
             throw new IllegalArgumentException("잘못된 카테고리 입니다.");
         }
@@ -55,8 +55,8 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public void updatePost(String name, Long postId, UpdateRequest request, Member writeMember) {
-        Post post = getPost(name, postId);
+    public void updatePost(String categoryName, Long postId, UpdateRequest request, Member writeMember) {
+        Post post = getPost(categoryName, postId);
         Member member = post.getMember();
 
         if (!isSameMember(member, writeMember)) {
@@ -66,8 +66,8 @@ public class PostService {
         postRepository.save(Post.updatePost(request, post));
     }
 
-    public void deletePost(String name, Long id, Member writeMember) {
-        Post post = getPost(name, id);
+    public void deletePost(String categoryName, Long id, Member writeMember) {
+        Post post = getPost(categoryName, id);
         Member member = post.getMember();
 
         if (!isSameMember(member, writeMember)) {
@@ -77,15 +77,15 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    public void likePost(String name, Long id, Member member) {
-        Post post = getPost(name, id);
+    public void likePost(String categoryName, Long id, Member authMember) {
+        Post post = getPost(categoryName, id);
 
-        if (postLikeRepository.existsByPostIdAndMemberId(post.getId(), member.getId())) {
+        if (postLikeRepository.existsByPostIdAndMemberId(post.getId(), authMember.getId())) {
             throw new IllegalArgumentException("이미 추천하신 게시글 입니다.");
         }
 
         PostLike like = PostLike.builder()
-                .member(member)
+                .member(authMember)
                 .post(post)
                 .build();
 
@@ -94,5 +94,9 @@ public class PostService {
 
     public Long likeCount(Long postId) {
         return postLikeRepository.countByPostId(postId);
+    }
+
+    public boolean isClickLike(String categoryName, Long postId, Member authMember) {
+        return postLikeRepository.existsByPostCategoryNameAndPostIdAndMemberId(categoryName, postId, authMember.getId());
     }
 }

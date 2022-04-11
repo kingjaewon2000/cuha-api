@@ -31,9 +31,9 @@ public class ProblemController {
     }
 
     @GetMapping
-    public List<ProblemResponse> problems(@RequestParam(defaultValue = "0") Integer start,
-                                          @RequestParam(defaultValue = "100") Integer end) {
-        return problemService.getProblems(start, end).stream()
+    public List<ProblemResponse> problems(@RequestParam(defaultValue = "0") Integer page,
+                                          @RequestParam(defaultValue = "100") Integer size) {
+        return problemService.getProblems(page, size).stream()
                 .map(problem -> ProblemResponse.of(problem))
                 .collect(Collectors.toList());
     }

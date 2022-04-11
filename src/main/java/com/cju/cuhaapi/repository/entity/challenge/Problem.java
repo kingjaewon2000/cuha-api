@@ -85,6 +85,10 @@ public class Problem implements Auditable {
         this.flag = flag;
     }
 
+    private void setSolution(Solution solution) {
+        this.solution = solution;
+    }
+
     //== 생성 메서드 ==//
     public static Problem createProblem(CreateRequest request, Member member) {
         return Problem.builder()
@@ -105,6 +109,12 @@ public class Problem implements Auditable {
         problem.setBody(request.getBody());
         problem.setScore(request.getScore());
         problem.setFlag(request.getFlag());
+
+        return problem;
+    }
+
+    public static Problem updateSolution(Solution solution, Problem problem) {
+        problem.setSolution(solution);
 
         return problem;
     }
