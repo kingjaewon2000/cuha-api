@@ -64,7 +64,7 @@ public class MemberDto {
     @Builder
     @Getter
     @Setter
-    public static class UpdateInfoRequest {
+    public static class UpdateMemberRequest {
         @ApiModelProperty(value = "이름", required = true, example = "김태형")
         private String name;
 
@@ -101,7 +101,7 @@ public class MemberDto {
     @AllArgsConstructor
     @Builder
     @Getter
-    public static class InfoResponse {
+    public static class MemberResponse {
         @ApiModelProperty(value = "프로필")
         private String profileImage;
 
@@ -141,8 +141,8 @@ public class MemberDto {
         @ApiModelProperty(value = "패스워드 마지막 수정 일")
         private String lastModifiedDate;
 
-        public static InfoResponse of(Member member) {
-            return InfoResponse.builder()
+        public static MemberResponse of(Member member) {
+            return MemberResponse.builder()
                     .profileImage(member.getProfile().getFilename())
                     .username(member.getUsername())
                     .name(member.getName())
@@ -169,13 +169,13 @@ public class MemberDto {
     @Builder
     @Getter
     public static class RankingResponse {
-        private Long id;
-        public Long ranking;
+        private Long ranking;
+        private String username;
 
-        public static RankingResponse of(Long id, Long ranking) {
+        public static RankingResponse of(Long ranking, String username) {
             return RankingResponse.builder()
-                    .id(id)
                     .ranking(ranking)
+                    .username(username)
                     .build();
         }
     }

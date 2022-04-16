@@ -1,13 +1,9 @@
 package com.cju.cuhaapi.repository;
 
-import com.cju.cuhaapi.controller.dto.MemberDto;
-import com.cju.cuhaapi.controller.dto.MemberDto.RankingResponse;
 import com.cju.cuhaapi.repository.entity.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import javax.persistence.NamedNativeQuery;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 

@@ -39,10 +39,10 @@ public class MemberController {
      */
     @ApiOperation(value = "범위 멤버 조회", notes = "범위 회원의 정보를 조회합니다.")
     @GetMapping
-    public List<InfoResponse> infoList(@RequestParam(defaultValue = "0") Integer page,
-                                       @RequestParam(defaultValue = "100") Integer size) {
+    public List<MemberResponse> members(@RequestParam(defaultValue = "0") Integer page,
+                                        @RequestParam(defaultValue = "100") Integer size) {
         return memberService.getMembers(page, size).stream()
-                .map(member -> InfoResponse.of(member))
+                .map(member -> MemberResponse.of(member))
                 .collect(Collectors.toList());
     }
 
@@ -51,10 +51,10 @@ public class MemberController {
      */
     @ApiOperation(value = "범위 랭킹 조회", notes = "범위 회원의 랭킹 정보를 순서로 조회합니다.")
     @GetMapping("/ranking")
-    public List<InfoResponse> ranking(@RequestParam(defaultValue = "0") Integer page,
-                                      @RequestParam(defaultValue = "100") Integer size) {
+    public List<MemberResponse> membersByScore(@RequestParam(defaultValue = "0") Integer page,
+                                               @RequestParam(defaultValue = "100") Integer size) {
         return memberService.getMembersOrderByScore(page, size).stream()
-                .map(member -> InfoResponse.of(member))
+                .map(member -> MemberResponse.of(member))
                 .collect(Collectors.toList());
     }
 
@@ -63,11 +63,11 @@ public class MemberController {
      */
     @ApiOperation(value = "내 랭킹 조회", notes = "내 랭킹을 조회합니다.")
     @GetMapping("/ranking/me")
-    public RankingResponse ranking(@CurrentMember Member authMember) {
+    public RankingResponse rankingMe(@CurrentMember Member authMember) {
         Long authMemberId = authMember.getId();
         Long ranking = memberService.ranking(authMemberId);
 
-        return RankingResponse.of(authMemberId, ranking);
+        return RankingResponse.of(ranking, authMember.getUsername());
     }
 
     /**
@@ -75,8 +75,8 @@ public class MemberController {
      */
     @ApiOperation(value = "로그인한 멤버 조회", notes = "현재 로그인중인 회원의 정보를 조회합니다.")
     @GetMapping("/me")
-    public InfoResponse infoByLogin(@CurrentMember Member authMember) {
-        return InfoResponse.of(authMember);
+    public MemberResponse info(@CurrentMember Member authMember) {
+        return MemberResponse.of(authMember);
     }
 
     /**
@@ -93,9 +93,9 @@ public class MemberController {
      */
 //    @ApiOperation(value = "정보 변경", notes = "현재 로그인중인 회원의 정보를 변경합니다.")
     @PatchMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
-    public void updateInfo(@CurrentMember Member authMember,
-                           @RequestPart("json") UpdateInfoRequest request,
-                           @RequestPart(required = false) MultipartFile profileFile) throws IOException {
+    public void updateMember(@CurrentMember Member authMember,
+                             @RequestPart("json") UpdateMemberRequest request,
+                             @RequestPart(required = false) MultipartFile profileFile) throws IOException {
         // 프로필 업로드
         Profile profile = null;
 

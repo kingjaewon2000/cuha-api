@@ -1,7 +1,7 @@
 package com.cju.cuhaapi.domain.member.service;
 
 import com.cju.cuhaapi.controller.dto.MemberDto.JoinRequest;
-import com.cju.cuhaapi.controller.dto.MemberDto.UpdateInfoRequest;
+import com.cju.cuhaapi.controller.dto.MemberDto.UpdateMemberRequest;
 import com.cju.cuhaapi.controller.dto.MemberDto.UpdatePasswordRequest;
 import com.cju.cuhaapi.repository.entity.member.Department;
 import com.cju.cuhaapi.repository.entity.member.Member;
@@ -133,7 +133,7 @@ class MemberServiceTest {
     @DisplayName("내 정보를 변경하는 경우(프로필 NULL)")
     @Test
     void 내_정보_변경_프로필_NULL() {
-        UpdateInfoRequest request = updateInfoRequestBuild();
+        UpdateMemberRequest request = updateInfoRequestBuild();
         Profile profile = null;
 
         assertDoesNotThrow(() -> memberService.updateMember(request, member, profile));
@@ -142,16 +142,16 @@ class MemberServiceTest {
     @DisplayName("내 정보를 변경하는 경우(프로필 포함 O)")
     @Test
     void 내_정보_변경() {
-        UpdateInfoRequest request = updateInfoRequestBuild();
+        UpdateMemberRequest request = updateInfoRequestBuild();
         Profile profile = Profile.createProfile("test", "test", 0L);
 
-        Member updateMember = Member.updateInfo(request, member, profile);
+        member.updateMember(request, profile);
 
-        given(memberRepository.save(updateMember)).willReturn(updateMember);
-        given(memberRepository.findById(updateMember.getId())).willReturn(Optional.of(updateMember));
+        given(memberRepository.save(member)).willReturn(member);
+        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
 
         memberService.updateMember(request, member, profile);
-        Member findMember = memberService.getMember(updateMember.getId());
+        Member findMember = memberService.getMember(member.getId());
 
         assertEquals("홍길동", findMember.getName());
         assertEquals(false, findMember.getIsMale());
@@ -185,8 +185,8 @@ class MemberServiceTest {
         assertDoesNotThrow(() -> memberService.updatePassword(request, member));
     }
 
-    private UpdateInfoRequest updateInfoRequestBuild() {
-        UpdateInfoRequest request = UpdateInfoRequest.builder()
+    private UpdateMemberRequest updateInfoRequestBuild() {
+        UpdateMemberRequest request = UpdateMemberRequest.builder()
                 .name("홍길동")
                 .isMale(false)
                 .email("qwer@example.com")

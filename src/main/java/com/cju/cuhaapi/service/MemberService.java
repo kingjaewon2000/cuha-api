@@ -53,14 +53,14 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public void updateMember(UpdateInfoRequest request, Member currentMember, Profile uploadProfile) {
-        Member member = Member.updateInfo(request, currentMember, uploadProfile);
+    public void updateMember(UpdateMemberRequest request, Member currentMember, Profile uploadProfile) {
+        currentMember.updateMember(request, uploadProfile);
 
         if (uploadProfile != null && !profileRepository.existsByFilename(uploadProfile.getFilename())) {
             profileRepository.save(uploadProfile);
         }
 
-        memberRepository.save(member);
+        memberRepository.save(currentMember);
     }
 
     public void updatePassword(UpdatePasswordRequest request, Member currentMember) {
@@ -72,9 +72,9 @@ public class MemberService {
             throw new IllegalStateException("이전 패스워드가 일치하지 않습니다.");
         }
 
-        Member member = Member.updatePassword(request, currentMember);
+        currentMember.updatePassword(request);
 
-        memberRepository.save(member);
+        memberRepository.save(currentMember);
     }
 
     public void deleteMember(Member member) {

@@ -4,7 +4,7 @@ import com.cju.cuhaapi.audit.AuditListener;
 import com.cju.cuhaapi.audit.Auditable;
 import com.cju.cuhaapi.audit.BaseTime;
 import com.cju.cuhaapi.controller.dto.MemberDto.JoinRequest;
-import com.cju.cuhaapi.controller.dto.MemberDto.UpdateInfoRequest;
+import com.cju.cuhaapi.controller.dto.MemberDto.UpdateMemberRequest;
 import com.cju.cuhaapi.controller.dto.MemberDto.UpdatePasswordRequest;
 import com.cju.cuhaapi.repository.entity.post.Post;
 import lombok.*;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @DynamicInsert
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @Getter
@@ -76,7 +76,6 @@ public class Member implements Auditable {
     private List<Post> posts = new ArrayList<>();
 
     //== 수정자 메서드 ==//
-
     @Override
     public void setBaseTime(BaseTime baseTime) {
         this.baseTime = baseTime;
@@ -110,10 +109,6 @@ public class Member implements Auditable {
         this.department = department;
     }
 
-    private void setRole(Role role) {
-        this.role = role;
-    }
-
     private void setProfile(Profile profile) {
         this.profile = profile;
     }
@@ -132,25 +127,21 @@ public class Member implements Auditable {
                 .build();
     }
 
-    public static Member updateInfo(UpdateInfoRequest request, Member member, Profile profile) {
+    public void updateMember(UpdateMemberRequest request, Profile profile) {
         if (profile != null) {
-            member.setProfile(profile);
+            setProfile(profile);
         }
 
-        member.setName(request.getName());
-        member.setMale(request.getIsMale());
-        member.setEmail(request.getEmail());
-        member.setPhoneNumber(request.getPhoneNumber());
-        member.setStudentId(request.getStudentId());
-        member.setDepartment(request.getDepartment());
-
-        return member;
+        setName(request.getName());
+        setMale(request.getIsMale());
+        setEmail(request.getEmail());
+        setPhoneNumber(request.getPhoneNumber());
+        setStudentId(request.getStudentId());
+        setDepartment(request.getDepartment());
     }
 
-    public static Member updatePassword(UpdatePasswordRequest request, Member member) {
-        member.setPassword(new Password(request.getPasswordAfter()));
-
-        return member;
+    public void updatePassword(UpdatePasswordRequest request) {
+        setPassword(new Password(request.getPasswordAfter()));
     }
 
 
