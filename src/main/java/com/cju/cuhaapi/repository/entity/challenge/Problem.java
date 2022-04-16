@@ -102,20 +102,16 @@ public class Problem implements Auditable {
                 .build();
     }
 
-    public static Problem updateProblem(UpdateRequest request, Problem problem) {
-        problem.setType(request.getProblemType());
-        problem.setTier(request.getTier());
-        problem.setTitle(request.getTitle());
-        problem.setBody(request.getBody());
-        problem.setScore(request.getScore());
-        problem.setFlag(request.getFlag());
-
-        return problem;
+    public void updateProblem(UpdateRequest request) {
+        setType(request.getProblemType());
+        setTier(request.getTier());
+        setTitle(request.getTitle());
+        setBody(request.getBody());
+        setScore(request.getScore());
+        setFlag(request.getFlag());
     }
 
-    public static Problem updateSolution(Solution solution, Problem problem) {
-        problem.setSolution(solution);
-
-        return problem;
+    public void updateSolution(Solution solution) {
+        setSolution(solution);
     }
 }

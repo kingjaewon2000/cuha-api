@@ -61,15 +61,15 @@ public class Post implements Auditable {
         this.baseTime = baseTime;
     }
 
-    public void setTitle(String title) {
+    private void setTitle(String title) {
         this.title = title;
     }
 
-    public void setBody(String body) {
+    private void setBody(String body) {
         this.body = body;
     }
 
-    public void setCategory(Category category) {
+    private void setCategory(Category category) {
         this.category = category;
     }
 
@@ -83,10 +83,8 @@ public class Post implements Auditable {
                 .build();
     }
 
-    public static Post updatePost(UpdateRequest request, Post post) {
-        post.setTitle(request.getTitle());
-        post.setBody(request.getBody());
-
-        return post;
+    public void updatePost(UpdateRequest request) {
+        setTitle(request.getTitle());
+        setBody(request.getBody());
     }
 }

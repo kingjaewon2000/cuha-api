@@ -1,5 +1,7 @@
 package com.cju.cuhaapi.repository.entity.member;
 
+import com.cju.cuhaapi.controller.dto.MemberDto;
+import com.cju.cuhaapi.controller.dto.MemberDto.UpdatePasswordRequest;
 import com.cju.cuhaapi.utils.PasswordEncoderUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +35,11 @@ public class Password {
         this.value = passwordEncoderUtils.encode(value);
     }
 
+    //== 수정자 메서드 ==//
+    private void setValue(String value) {
+        this.value = passwordEncoderUtils.encode(value);
+    }
+
     //== 비지니스 메서드 ==//
     public void addFailCount() {
         if (failCount >= MAX_FAIL_COUNT) {
@@ -44,5 +51,9 @@ public class Password {
 
     public void initFailCount() {
         this.failCount = 0;
+    }
+
+    public void updatePassword(UpdatePasswordRequest request) {
+        setValue(request.getPasswordAfter());
     }
 }

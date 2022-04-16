@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.cju.cuhaapi.repository.entity.member.Member.isSameMember;
+import static com.cju.cuhaapi.repository.entity.member.Member.isEqualMember;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -54,18 +54,19 @@ public class CommentService {
         Comment comment = getComment(categoryName, postId, commentId);
         Member member = comment.getMember();
 
-        if (!isSameMember(member, authMember)) {
+        if (!isEqualMember(member, authMember)) {
             throw new IllegalArgumentException("댓글은 작성한 유저가 아닙니다.");
         }
 
-        commentRepository.save(Comment.updateComment(request, comment));
+        comment.updateComment(request);
+        commentRepository.save(comment);
     }
 
     public void deleteComment(String categoryName, Long postId, Long commentId, Member writeMember) {
         Comment comment = getComment(categoryName, postId, commentId);
         Member member = comment.getMember();
 
-        if (!Member.isSameMember(member, writeMember)) {
+        if (!Member.isEqualMember(member, writeMember)) {
             throw new IllegalArgumentException("댓글은 작성한 유저가 아닙니다.");
         }
         commentRepository.delete(comment);

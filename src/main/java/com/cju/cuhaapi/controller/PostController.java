@@ -5,7 +5,6 @@ import com.cju.cuhaapi.controller.dto.CommentDto;
 import com.cju.cuhaapi.repository.entity.member.Member;
 import com.cju.cuhaapi.controller.dto.PostDto;
 import com.cju.cuhaapi.controller.dto.PostDto.PostResponse;
-import com.cju.cuhaapi.controller.dto.PostDto.SaveRequest;
 import com.cju.cuhaapi.repository.entity.post.Post;
 import com.cju.cuhaapi.service.CommentService;
 import com.cju.cuhaapi.service.PostService;
@@ -70,7 +69,7 @@ public class PostController {
     @PostMapping("/{categoryName}")
     public void save(@CurrentMember Member authMember,
                      @PathVariable String categoryName,
-                     @RequestBody SaveRequest request) {
+                     @RequestBody PostDto.SaveRequest request) {
         postService.savePost(categoryName, request, authMember);
     }
 

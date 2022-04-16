@@ -61,9 +61,7 @@ public class Comment implements Auditable {
                 .build();
     }
 
-    public static Comment updateComment(UpdateRequest request, Comment comment) {
-        comment.setBody(request.getBody());
-
-        return comment;
+    public void updateComment(UpdateRequest request) {
+        setBody(request.getBody());
     }
 }

@@ -2,6 +2,7 @@ package com.cju.cuhaapi.service;
 
 import com.cju.cuhaapi.repository.ProfileRepository;
 import com.cju.cuhaapi.repository.entity.member.Member;
+import com.cju.cuhaapi.repository.entity.member.Password;
 import com.cju.cuhaapi.repository.entity.member.Profile;
 import com.cju.cuhaapi.repository.MemberRepository;
 import com.cju.cuhaapi.error.exception.DuplicateUsernameException;
@@ -64,15 +65,16 @@ public class MemberService {
     }
 
     public void updatePassword(UpdatePasswordRequest request, Member currentMember) {
-        String password = request.getPasswordBefore();
+        String passwordBefore = request.getPasswordBefore();
 
         // 비밀번호 검증
         String encodedPassword = currentMember.getPassword().getValue();
-        if (!isValidPassword(password, encodedPassword)) {
+        if (!isValidPassword(passwordBefore, encodedPassword)) {
             throw new IllegalStateException("이전 패스워드가 일치하지 않습니다.");
         }
 
-        currentMember.updatePassword(request);
+        Password password = currentMember.getPassword();
+        password.updatePassword(request);
 
         memberRepository.save(currentMember);
     }

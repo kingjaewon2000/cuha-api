@@ -58,9 +58,7 @@ public class Solution implements Auditable {
                 .build();
     }
 
-    public static Solution updateSolution(UpdateRequest request, Solution solution) {
-        solution.setBody(request.getBody());
-
-        return solution;
+    public void updateSolution(UpdateRequest request) {
+        setBody(request.getBody());
     }
 }

@@ -34,9 +34,9 @@ public class SolutionService {
         Problem problem = problemService.getProblem(problemId);
 
         Solution solution = Solution.createSolution(request, member, problem);
-        Problem updateProblem = problem.updateSolution(solution, problem);
+        problem.updateSolution(solution);
         solutionRepository.save(solution);
-        problemRepository.save(updateProblem);
+        problemRepository.save(problem);
     }
 
     public void updateSolution(Long problemId, UpdateRequest updateRequest, Member authMember) {
@@ -47,8 +47,8 @@ public class SolutionService {
             throw new IllegalArgumentException("problemId에 해당하는 해결책이 없습니다.");
         }
 
-        Solution updateSolution = Solution.updateSolution(updateRequest, solution);
-        solutionRepository.save(updateSolution);
+        solution.updateSolution(updateRequest);
+        solutionRepository.save(solution);
     }
 
     public void deleteSolution(Long problemId, Member authMember) {

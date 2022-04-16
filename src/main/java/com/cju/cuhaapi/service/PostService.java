@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.cju.cuhaapi.repository.entity.member.Member.isSameMember;
+import static com.cju.cuhaapi.repository.entity.member.Member.isEqualMember;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -59,18 +59,19 @@ public class PostService {
         Post post = getPost(categoryName, postId);
         Member member = post.getMember();
 
-        if (!isSameMember(member, writeMember)) {
+        if (!isEqualMember(member, writeMember)) {
             throw new IllegalArgumentException("게시글을 작성한 멤버가 아닙니다.");
         }
 
-        postRepository.save(Post.updatePost(request, post));
+        post.updatePost(request);
+        postRepository.save(post);
     }
 
     public void deletePost(String categoryName, Long id, Member writeMember) {
         Post post = getPost(categoryName, id);
         Member member = post.getMember();
 
-        if (!isSameMember(member, writeMember)) {
+        if (!isEqualMember(member, writeMember)) {
             throw new IllegalArgumentException("게시글을 작성한 멤버가 아닙니다.");
         }
 

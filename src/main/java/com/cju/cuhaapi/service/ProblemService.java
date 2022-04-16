@@ -14,7 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import static com.cju.cuhaapi.repository.entity.member.Member.isSameMember;
+import static com.cju.cuhaapi.repository.entity.member.Member.isEqualMember;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,19 +43,19 @@ public class ProblemService {
         Problem problem = getProblem(id);
         Member member = problem.getMember();
 
-        if (!isSameMember(member, authMember)) {
+        if (!isEqualMember(member, authMember)) {
             throw new IllegalArgumentException("문제를 수정할 수 있는 권한이 없습니다.");
         }
 
-        Problem updateProblem = Problem.updateProblem(request, problem);
-        problemRepository.save(updateProblem);
+        problem.updateProblem(request);
+        problemRepository.save(problem);
     }
 
     public void deleteProblem(Long id, Member authMember) {
         Problem problem = getProblem(id);
 
         Member member = problem.getMember();
-        if (!isSameMember(member, authMember)) {
+        if (!isEqualMember(member, authMember)) {
             throw new IllegalArgumentException("문제를 수정할 수 있는 권한이 없습니다.");
         }
 

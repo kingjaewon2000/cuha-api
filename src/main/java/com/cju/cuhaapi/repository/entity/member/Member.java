@@ -5,7 +5,6 @@ import com.cju.cuhaapi.audit.Auditable;
 import com.cju.cuhaapi.audit.BaseTime;
 import com.cju.cuhaapi.controller.dto.MemberDto.JoinRequest;
 import com.cju.cuhaapi.controller.dto.MemberDto.UpdateMemberRequest;
-import com.cju.cuhaapi.controller.dto.MemberDto.UpdatePasswordRequest;
 import com.cju.cuhaapi.repository.entity.post.Post;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -140,13 +139,8 @@ public class Member implements Auditable {
         setDepartment(request.getDepartment());
     }
 
-    public void updatePassword(UpdatePasswordRequest request) {
-        setPassword(new Password(request.getPasswordAfter()));
-    }
-
-
     //== 비지니스 메서드 ==//
-    public static boolean isSameMember(Member firstMember, Member secondMember) {
+    public static boolean isEqualMember(Member firstMember, Member secondMember) {
         if (firstMember.getUsername().equals(secondMember.getUsername())
                 && firstMember.getId().equals(secondMember.getId())) {
             return true;
