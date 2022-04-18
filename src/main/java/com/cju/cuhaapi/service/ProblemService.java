@@ -3,10 +3,10 @@ package com.cju.cuhaapi.service;
 import com.cju.cuhaapi.controller.dto.ProblemDto.CreateRequest;
 import com.cju.cuhaapi.controller.dto.ProblemDto.UpdateRequest;
 import com.cju.cuhaapi.repository.SubmitRepository;
-import com.cju.cuhaapi.repository.entity.challenge.Problem;
+import com.cju.cuhaapi.entity.challenge.Problem;
 import com.cju.cuhaapi.repository.ProblemRepository;
-import com.cju.cuhaapi.repository.entity.challenge.Submit;
-import com.cju.cuhaapi.repository.entity.member.Member;
+import com.cju.cuhaapi.entity.challenge.Submit;
+import com.cju.cuhaapi.entity.member.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -14,7 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import static com.cju.cuhaapi.repository.entity.member.Member.isEqualMember;
+import static com.cju.cuhaapi.entity.member.Member.isEqualMember;
 
 @Slf4j
 @RequiredArgsConstructor

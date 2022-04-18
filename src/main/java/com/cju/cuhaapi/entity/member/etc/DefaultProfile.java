@@ -1,6 +1,6 @@
-package com.cju.cuhaapi.repository.entity.member.etc;
+package com.cju.cuhaapi.entity.member.etc;
 
-import com.cju.cuhaapi.repository.entity.member.Profile;
+import com.cju.cuhaapi.entity.member.Profile;
 
 public class DefaultProfile {
     private static final Profile profile = Profile.builder()

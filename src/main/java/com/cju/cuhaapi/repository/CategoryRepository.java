@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.repository;
 
-import com.cju.cuhaapi.repository.entity.post.Category;
+import com.cju.cuhaapi.entity.post.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

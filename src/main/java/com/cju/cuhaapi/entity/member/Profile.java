@@ -1,5 +1,6 @@
-package com.cju.cuhaapi.repository.entity.member;
+package com.cju.cuhaapi.entity.member;
 
+import com.cju.cuhaapi.entity.common.BaseTimeEntity;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @Builder
 @Getter
 @Entity
-public class Profile {
+public class Profile extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

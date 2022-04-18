@@ -2,8 +2,8 @@ package com.cju.cuhaapi.security.jwt;
 
 import com.cju.cuhaapi.controller.dto.MemberDto.LoginRequest;
 import com.cju.cuhaapi.repository.MemberRepository;
-import com.cju.cuhaapi.repository.entity.member.Member;
-import com.cju.cuhaapi.repository.entity.member.Password;
+import com.cju.cuhaapi.entity.member.Member;
+import com.cju.cuhaapi.entity.member.Password;
 import com.cju.cuhaapi.security.auth.PrincipalDetails;
 import com.cju.cuhaapi.security.jwt.JwtResponseDto.Token;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -24,9 +24,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
-import static com.cju.cuhaapi.repository.entity.member.Password.INIT_FAIL_COUNT;
-import static com.cju.cuhaapi.repository.entity.member.Password.MAX_FAIL_COUNT;
+import static com.cju.cuhaapi.entity.member.Password.INIT_FAIL_COUNT;
 import static com.cju.cuhaapi.security.jwt.JwtConstants.TOKEN_TYPE_PREFIX;
 
 @Slf4j
@@ -110,10 +110,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         LoginRequest loginRequest = (LoginRequest) request.getAttribute("loginRequest");
         String username = loginRequest.getUsername();
 
-        Member findMember = memberRepository.findByUsername(username);
-        if (findMember == null) {
+        List<Member> members = memberRepository.findByUsername(username);
+        if (members.size() <= 0) {
             throw new UsernameNotFoundException("계정을 찾을 수 없습니다." + username);
         }
+        Member findMember = members.get(0);
 
         Password password = findMember.getPassword();
         password.addFailCount();

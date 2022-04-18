@@ -1,9 +1,7 @@
-package com.cju.cuhaapi.repository.entity.post;
+package com.cju.cuhaapi.entity.post;
 
-import com.cju.cuhaapi.audit.AuditListener;
-import com.cju.cuhaapi.audit.Auditable;
-import com.cju.cuhaapi.audit.BaseTime;
 import com.cju.cuhaapi.controller.dto.CategoryDto.CreateRequest;
+import com.cju.cuhaapi.entity.common.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,8 +11,7 @@ import javax.persistence.*;
 @Builder
 @Getter
 @Entity
-@EntityListeners(AuditListener.class)
-public class Category implements Auditable {
+public class Category extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,14 +23,6 @@ public class Category implements Auditable {
 
     @Column
     private String description;
-
-    @Embedded
-    private BaseTime baseTime;
-
-    @Override
-    public void setBaseTime(BaseTime baseTime) {
-        this.baseTime = baseTime;
-    }
 
     //== 생성 메서드 ==//
     public static Category createCategory(CreateRequest request) {

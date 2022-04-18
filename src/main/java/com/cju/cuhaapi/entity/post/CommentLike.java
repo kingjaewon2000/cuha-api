@@ -1,9 +1,7 @@
-package com.cju.cuhaapi.repository.entity.post;
+package com.cju.cuhaapi.entity.post;
 
-import com.cju.cuhaapi.audit.AuditListener;
-import com.cju.cuhaapi.audit.Auditable;
-import com.cju.cuhaapi.audit.BaseTime;
-import com.cju.cuhaapi.repository.entity.member.Member;
+import com.cju.cuhaapi.entity.common.BaseTimeEntity;
+import com.cju.cuhaapi.entity.member.Member;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,8 +11,7 @@ import javax.persistence.*;
 @Builder
 @Getter
 @Entity
-@EntityListeners(AuditListener.class)
-public class CommentLike implements Auditable {
+public class CommentLike extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "like_comment_id")
@@ -28,12 +25,5 @@ public class CommentLike implements Auditable {
     @JoinColumn(name = "comment_id", nullable = false)
     private Comment comment;
 
-    @Embedded
-    private BaseTime baseTime;
-
     //== 수정 메서드//
-    @Override
-    public void setBaseTime(BaseTime baseTime) {
-        this.baseTime = baseTime;
-    }
 }

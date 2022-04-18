@@ -1,9 +1,9 @@
 package com.cju.cuhaapi.service;
 
 import com.cju.cuhaapi.repository.ProfileRepository;
-import com.cju.cuhaapi.repository.entity.member.Member;
-import com.cju.cuhaapi.repository.entity.member.Password;
-import com.cju.cuhaapi.repository.entity.member.Profile;
+import com.cju.cuhaapi.entity.member.Member;
+import com.cju.cuhaapi.entity.member.Password;
+import com.cju.cuhaapi.entity.member.Profile;
 import com.cju.cuhaapi.repository.MemberRepository;
 import com.cju.cuhaapi.error.exception.DuplicateUsernameException;
 import com.cju.cuhaapi.utils.PasswordEncoderUtils;

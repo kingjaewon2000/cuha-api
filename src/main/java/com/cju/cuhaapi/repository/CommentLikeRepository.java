@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.repository;
 
-import com.cju.cuhaapi.repository.entity.post.CommentLike;
+import com.cju.cuhaapi.entity.post.CommentLike;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 

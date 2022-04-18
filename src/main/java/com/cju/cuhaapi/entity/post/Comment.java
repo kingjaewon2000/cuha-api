@@ -1,11 +1,9 @@
-package com.cju.cuhaapi.repository.entity.post;
+package com.cju.cuhaapi.entity.post;
 
-import com.cju.cuhaapi.audit.AuditListener;
-import com.cju.cuhaapi.audit.Auditable;
-import com.cju.cuhaapi.audit.BaseTime;
-import com.cju.cuhaapi.repository.entity.member.Member;
 import com.cju.cuhaapi.controller.dto.CommentDto.SaveRequest;
 import com.cju.cuhaapi.controller.dto.CommentDto.UpdateRequest;
+import com.cju.cuhaapi.entity.member.Member;
+import com.cju.cuhaapi.entity.common.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,8 +15,7 @@ import java.util.List;
 @Builder
 @Getter
 @Entity
-@EntityListeners(AuditListener.class)
-public class Comment implements Auditable {
+public class Comment extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
@@ -38,19 +35,10 @@ public class Comment implements Auditable {
     @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
     private List<CommentLike> commentLikes = new ArrayList<>();
 
-    @Embedded
-    private BaseTime baseTime;
-
     //== 수정 메서드 ==//
-    @Override
-    public void setBaseTime(BaseTime baseTime) {
-        this.baseTime = baseTime;
-    }
-
     private void setBody(String body) {
         this.body = body;
     }
-
 
     //== 생성 메서드 ==//
     public static Comment saveComment(SaveRequest request, Post post, Member member) {

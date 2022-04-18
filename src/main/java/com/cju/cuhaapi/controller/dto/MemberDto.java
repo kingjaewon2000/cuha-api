@@ -1,8 +1,8 @@
 package com.cju.cuhaapi.controller.dto;
 
-import com.cju.cuhaapi.repository.entity.member.Department;
-import com.cju.cuhaapi.repository.entity.member.Member;
-import com.cju.cuhaapi.repository.entity.member.Role;
+import com.cju.cuhaapi.entity.member.Department;
+import com.cju.cuhaapi.entity.member.Member;
+import com.cju.cuhaapi.entity.member.Role;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -157,8 +157,8 @@ public class MemberDto {
                             .role(member.getRole().getRole())
                             .description(member.getRole().getDescription())
                             .build())
-                    .createdAt(member.getBaseTime().getCreatedAt().toString())
-                    .updatedAt(member.getBaseTime().getUpdatedAt().toString())
+                    .createdAt(member.getCreatedAt().toString())
+                    .updatedAt(member.getUpdatedAt().toString())
                     .lastModifiedDate(member.getPassword().getLastModifiedDate().toString())
                     .build();
         }

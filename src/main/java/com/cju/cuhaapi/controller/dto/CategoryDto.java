@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.controller.dto;
 
-import com.cju.cuhaapi.repository.entity.post.Category;
+import com.cju.cuhaapi.entity.post.Category;
 import lombok.*;
 
 public class CategoryDto {

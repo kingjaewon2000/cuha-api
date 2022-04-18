@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.controller.dto;
 
-import com.cju.cuhaapi.repository.entity.post.Comment;
+import com.cju.cuhaapi.entity.post.Comment;
 import lombok.*;
 
 public class CommentDto {
@@ -49,7 +49,7 @@ public class CommentDto {
                     .username(comment.getMember().getUsername())
                     .name(comment.getMember().getName())
                     .profileImage(comment.getMember().getProfile().getFilename())
-                    .createdAt(comment.getBaseTime().getCreatedAt().toString())
+                    .createdAt(comment.getCreatedAt().toString())
                     .build();
         }
     }

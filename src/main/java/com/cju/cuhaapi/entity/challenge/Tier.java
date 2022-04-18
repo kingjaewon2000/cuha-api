@@ -1,4 +1,4 @@
-package com.cju.cuhaapi.repository.entity.challenge;
+package com.cju.cuhaapi.entity.challenge;
 
 public enum Tier {
     BRONZE("브론즈"), SILVER("실버"), GOLD("골드"),

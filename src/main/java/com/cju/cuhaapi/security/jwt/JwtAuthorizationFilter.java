@@ -1,13 +1,14 @@
 package com.cju.cuhaapi.security.jwt;
 
 import com.cju.cuhaapi.repository.MemberRepository;
-import com.cju.cuhaapi.repository.entity.member.Member;
+import com.cju.cuhaapi.entity.member.Member;
 import com.cju.cuhaapi.security.auth.PrincipalDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -15,8 +16,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
-import static com.cju.cuhaapi.repository.entity.member.Password.MAX_FAIL_COUNT;
 import static com.cju.cuhaapi.security.jwt.JwtConstants.TOKEN_TYPE;
 import static com.cju.cuhaapi.security.jwt.JwtConstants.TOKEN_TYPE_PREFIX;
 
@@ -46,7 +47,11 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String username = jwtProvider.getUsernameFromToken(token);
 
         if (username != null) {
-            Member member = memberRepository.findByUsername(username);
+            List<Member> members = memberRepository.findByUsername(username);
+            if (members.size() <= 0) {
+                throw new UsernameNotFoundException("계정을 찾을 수 없습니다." + username);
+            }
+            Member member = members.get(0);
 
             PrincipalDetails principalDetails = new PrincipalDetails(member);
             Authentication authentication =

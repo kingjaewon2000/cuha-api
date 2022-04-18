@@ -1,10 +1,7 @@
 package com.cju.cuhaapi.repository;
 
-import com.cju.cuhaapi.repository.entity.post.PostLike;
-import org.springframework.data.domain.Pageable;
+import com.cju.cuhaapi.entity.post.PostLike;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
 

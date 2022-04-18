@@ -1,11 +1,9 @@
-package com.cju.cuhaapi.repository.entity.challenge;
+package com.cju.cuhaapi.entity.challenge;
 
-import com.cju.cuhaapi.audit.AuditListener;
-import com.cju.cuhaapi.audit.Auditable;
-import com.cju.cuhaapi.audit.BaseTime;
 import com.cju.cuhaapi.controller.dto.ProblemDto.CreateRequest;
 import com.cju.cuhaapi.controller.dto.ProblemDto.UpdateRequest;
-import com.cju.cuhaapi.repository.entity.member.Member;
+import com.cju.cuhaapi.entity.common.BaseTimeEntity;
+import com.cju.cuhaapi.entity.member.Member;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -16,8 +14,7 @@ import javax.persistence.*;
 @Builder
 @Getter
 @Entity
-@EntityListeners(AuditListener.class)
-public class Problem implements Auditable {
+public class Problem extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,15 +49,7 @@ public class Problem implements Auditable {
     @JoinColumn(name = "solution_id")
     private Solution solution;
 
-    @Embedded
-    private BaseTime baseTime;
-
     //== 수정 메서드 ==//
-    @Override
-    public void setBaseTime(BaseTime baseTime) {
-        this.baseTime = baseTime;
-    }
-
     private void setType(ProblemType type) {
         this.type = type;
     }

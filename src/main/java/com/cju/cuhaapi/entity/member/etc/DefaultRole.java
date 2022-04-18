@@ -1,6 +1,6 @@
-package com.cju.cuhaapi.repository.entity.member.etc;
+package com.cju.cuhaapi.entity.member.etc;
 
-import com.cju.cuhaapi.repository.entity.member.Role;
+import com.cju.cuhaapi.entity.member.Role;
 
 public class DefaultRole {
     private static final Role role = Role.builder()

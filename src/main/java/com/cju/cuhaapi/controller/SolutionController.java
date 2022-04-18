@@ -1,11 +1,10 @@
 package com.cju.cuhaapi.controller;
 
 import com.cju.cuhaapi.annotation.CurrentMember;
-import com.cju.cuhaapi.controller.dto.SolutionDto;
 import com.cju.cuhaapi.controller.dto.SolutionDto.CreateRequest;
 import com.cju.cuhaapi.controller.dto.SolutionDto.UpdateRequest;
 import com.cju.cuhaapi.controller.dto.SolutionDto.SolutionResponse;
-import com.cju.cuhaapi.repository.entity.member.Member;
+import com.cju.cuhaapi.entity.member.Member;
 import com.cju.cuhaapi.service.SolutionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

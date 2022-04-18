@@ -1,7 +1,7 @@
 package com.cju.cuhaapi.resolver;
 
 import com.cju.cuhaapi.annotation.CurrentMember;
-import com.cju.cuhaapi.repository.entity.member.Member;
+import com.cju.cuhaapi.entity.member.Member;
 import com.cju.cuhaapi.security.auth.PrincipalDetails;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;

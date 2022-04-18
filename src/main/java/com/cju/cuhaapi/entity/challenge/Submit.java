@@ -1,9 +1,7 @@
-package com.cju.cuhaapi.repository.entity.challenge;
+package com.cju.cuhaapi.entity.challenge;
 
-import com.cju.cuhaapi.audit.AuditListener;
-import com.cju.cuhaapi.audit.Auditable;
-import com.cju.cuhaapi.audit.BaseTime;
-import com.cju.cuhaapi.repository.entity.member.Member;
+import com.cju.cuhaapi.entity.member.Member;
+import com.cju.cuhaapi.entity.common.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,8 +11,7 @@ import javax.persistence.*;
 @Builder
 @Getter
 @Entity
-@EntityListeners(AuditListener.class)
-public class Submit implements Auditable {
+public class Submit extends BaseTimeEntity {
 
     @Id
     @GeneratedValue
@@ -35,14 +32,7 @@ public class Submit implements Auditable {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Embedded
-    private BaseTime baseTime;
-
     //== 수정 메서드 ==//
-    @Override
-    public void setBaseTime(BaseTime baseTime) {
-        this.baseTime = baseTime;
-    }
 
     //== 생성 메서드 ==//
     public static Submit createSubmit(boolean answer, String flag, Problem problem, Member member) {

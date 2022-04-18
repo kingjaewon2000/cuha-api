@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.controller.dto;
 
-import com.cju.cuhaapi.repository.entity.post.Post;
+import com.cju.cuhaapi.entity.post.Post;
 import lombok.*;
 
 public class PostDto {
@@ -50,7 +50,7 @@ public class PostDto {
                     .body(post.getBody())
                     .views(post.getViews())
                     .like(like)
-                    .createdAt(post.getBaseTime().getCreatedAt().toString())
+                    .createdAt(post.getCreatedAt().toString())
                     .profileImage(post.getMember().getProfile().getFilename())
                     .username(post.getMember().getUsername())
                     .name(post.getMember().getName())

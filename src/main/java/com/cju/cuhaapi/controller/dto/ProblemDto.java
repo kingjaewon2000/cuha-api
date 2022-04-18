@@ -1,8 +1,8 @@
 package com.cju.cuhaapi.controller.dto;
 
-import com.cju.cuhaapi.repository.entity.challenge.Problem;
-import com.cju.cuhaapi.repository.entity.challenge.ProblemType;
-import com.cju.cuhaapi.repository.entity.challenge.Tier;
+import com.cju.cuhaapi.entity.challenge.Problem;
+import com.cju.cuhaapi.entity.challenge.ProblemType;
+import com.cju.cuhaapi.entity.challenge.Tier;
 import lombok.*;
 
 public class ProblemDto {
@@ -65,7 +65,7 @@ public class ProblemDto {
                     .title(problem.getTitle())
                     .body(problem.getBody())
                     .score(problem.getScore())
-                    .createdAt(problem.getBaseTime().getCreatedAt().toString())
+                    .createdAt(problem.getCreatedAt().toString())
                     .build();
         }
     }

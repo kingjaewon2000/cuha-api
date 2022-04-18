@@ -1,11 +1,9 @@
-package com.cju.cuhaapi.repository.entity.member;
+package com.cju.cuhaapi.entity.member;
 
-import com.cju.cuhaapi.audit.AuditListener;
-import com.cju.cuhaapi.audit.Auditable;
-import com.cju.cuhaapi.audit.BaseTime;
 import com.cju.cuhaapi.controller.dto.MemberDto.JoinRequest;
 import com.cju.cuhaapi.controller.dto.MemberDto.UpdateMemberRequest;
-import com.cju.cuhaapi.repository.entity.post.Post;
+import com.cju.cuhaapi.entity.common.BaseTimeEntity;
+import com.cju.cuhaapi.entity.post.Post;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -14,14 +12,15 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.FetchType.LAZY;
+
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @Getter
 @Entity
-@EntityListeners(AuditListener.class)
-public class Member implements Auditable {
+public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -57,29 +56,21 @@ public class Member implements Auditable {
     @Column
     private Integer totalScore;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "role_id")
     private Role role;
 
-    @OneToOne
+    @OneToOne(fetch = LAZY)
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
     @Column
     private String refreshToken;
 
-    @Embedded
-    private BaseTime baseTime;
-
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Post> posts = new ArrayList<>();
 
     //== 수정자 메서드 ==//
-    @Override
-    public void setBaseTime(BaseTime baseTime) {
-        this.baseTime = baseTime;
-    }
-
     private void setPassword(Password password) {
         this.password = password;
     }

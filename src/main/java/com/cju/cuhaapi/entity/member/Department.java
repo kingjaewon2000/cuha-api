@@ -1,4 +1,4 @@
-package com.cju.cuhaapi.repository.entity.member;
+package com.cju.cuhaapi.entity.member;
 
 import lombok.Getter;
 

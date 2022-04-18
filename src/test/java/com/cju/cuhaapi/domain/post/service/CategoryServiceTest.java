@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.domain.post.service;
 
-import com.cju.cuhaapi.repository.entity.post.Category;
+import com.cju.cuhaapi.entity.post.Category;
 import com.cju.cuhaapi.repository.CategoryRepository;
 import com.cju.cuhaapi.service.CategoryService;
 import org.junit.jupiter.api.DisplayName;

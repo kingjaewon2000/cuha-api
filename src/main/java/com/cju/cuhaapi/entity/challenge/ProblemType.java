@@ -1,4 +1,4 @@
-package com.cju.cuhaapi.repository.entity.challenge;
+package com.cju.cuhaapi.entity.challenge;
 
 public enum ProblemType {
     FORENSIC("포렌식"),

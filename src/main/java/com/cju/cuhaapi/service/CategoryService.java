@@ -1,7 +1,7 @@
 package com.cju.cuhaapi.service;
 
 import com.cju.cuhaapi.controller.dto.CategoryDto.CreateRequest;
-import com.cju.cuhaapi.repository.entity.post.Category;
+import com.cju.cuhaapi.entity.post.Category;
 import com.cju.cuhaapi.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;

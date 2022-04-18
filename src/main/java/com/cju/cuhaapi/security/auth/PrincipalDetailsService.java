@@ -1,28 +1,36 @@
 package com.cju.cuhaapi.security.auth;
 
-import com.cju.cuhaapi.repository.entity.member.Member;
+import com.cju.cuhaapi.entity.member.Member;
 import com.cju.cuhaapi.repository.MemberRepository;
-import com.cju.cuhaapi.repository.entity.member.Password;
+import com.cju.cuhaapi.entity.member.Password;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import static com.cju.cuhaapi.repository.entity.member.Password.MAX_FAIL_COUNT;
+import javax.transaction.Transactional;
 
+import java.util.List;
+
+import static com.cju.cuhaapi.entity.member.Password.MAX_FAIL_COUNT;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PrincipalDetailsService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
 
+    @Transactional
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member member = memberRepository.findByUsername(username);
-        if (member == null) {
+        List<Member> members = memberRepository.findByUsername(username);
+        if (members.size() <= 0) {
             throw new UsernameNotFoundException("계정을 찾을 수 없습니다." + username);
         }
+        Member member = members.get(0);
 
         Password password = member.getPassword();
         /**
@@ -32,6 +40,8 @@ public class PrincipalDetailsService implements UserDetailsService {
         if (failCount >= MAX_FAIL_COUNT) {
             throw new IllegalArgumentException("패스워드 실패 횟수를 초과했습니다.");
         }
+
+        log.info("member.getClass() = {}", member.getClass());
 
         return new PrincipalDetails(member);
     }

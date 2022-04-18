@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.repository;
 
-import com.cju.cuhaapi.repository.entity.post.Post;
+import com.cju.cuhaapi.entity.post.Post;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 

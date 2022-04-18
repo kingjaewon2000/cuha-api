@@ -1,11 +1,11 @@
 package com.cju.cuhaapi.service;
 
-import com.cju.cuhaapi.repository.entity.member.Member;
+import com.cju.cuhaapi.entity.member.Member;
 import com.cju.cuhaapi.controller.dto.CommentDto.SaveRequest;
 import com.cju.cuhaapi.controller.dto.CommentDto.UpdateRequest;
-import com.cju.cuhaapi.repository.entity.post.Comment;
-import com.cju.cuhaapi.repository.entity.post.CommentLike;
-import com.cju.cuhaapi.repository.entity.post.Post;
+import com.cju.cuhaapi.entity.post.Comment;
+import com.cju.cuhaapi.entity.post.CommentLike;
+import com.cju.cuhaapi.entity.post.Post;
 import com.cju.cuhaapi.repository.CommentLikeRepository;
 import com.cju.cuhaapi.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.cju.cuhaapi.repository.entity.member.Member.isEqualMember;
+import static com.cju.cuhaapi.entity.member.Member.isEqualMember;
 
 @Slf4j
 @RequiredArgsConstructor

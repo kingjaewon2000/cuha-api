@@ -2,8 +2,8 @@ package com.cju.cuhaapi.controller;
 
 import com.cju.cuhaapi.annotation.CurrentMember;
 import com.cju.cuhaapi.controller.dto.MemberDto.*;
-import com.cju.cuhaapi.repository.entity.member.Member;
-import com.cju.cuhaapi.repository.entity.member.Profile;
+import com.cju.cuhaapi.entity.member.Member;
+import com.cju.cuhaapi.entity.member.Profile;
 import com.cju.cuhaapi.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

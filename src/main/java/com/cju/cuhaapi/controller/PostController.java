@@ -2,10 +2,10 @@ package com.cju.cuhaapi.controller;
 
 import com.cju.cuhaapi.annotation.CurrentMember;
 import com.cju.cuhaapi.controller.dto.CommentDto;
-import com.cju.cuhaapi.repository.entity.member.Member;
+import com.cju.cuhaapi.entity.member.Member;
 import com.cju.cuhaapi.controller.dto.PostDto;
 import com.cju.cuhaapi.controller.dto.PostDto.PostResponse;
-import com.cju.cuhaapi.repository.entity.post.Post;
+import com.cju.cuhaapi.entity.post.Post;
 import com.cju.cuhaapi.service.CommentService;
 import com.cju.cuhaapi.service.PostService;
 import io.swagger.annotations.ApiOperation;

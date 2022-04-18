@@ -1,4 +1,4 @@
-package com.cju.cuhaapi.repository.entity.member;
+package com.cju.cuhaapi.entity.member;
 
 import com.cju.cuhaapi.controller.dto.MemberDto;
 import com.cju.cuhaapi.controller.dto.MemberDto.UpdatePasswordRequest;
@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -27,8 +28,8 @@ public class Password {
     @Column(name = "password")
     private String value;
 
-    @Column
-    private LocalDateTime lastModifiedDate = LocalDateTime.now();
+    @LastModifiedDate
+    private LocalDateTime lastModifiedDate;
 
     @Builder
     public Password(String value) {

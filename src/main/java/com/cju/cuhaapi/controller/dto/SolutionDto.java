@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.controller.dto;
 
-import com.cju.cuhaapi.repository.entity.challenge.Solution;
+import com.cju.cuhaapi.entity.challenge.Solution;
 import lombok.*;
 
 public class SolutionDto {

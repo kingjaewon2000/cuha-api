@@ -1,11 +1,9 @@
-package com.cju.cuhaapi.repository.entity.post;
+package com.cju.cuhaapi.entity.post;
 
-import com.cju.cuhaapi.audit.AuditListener;
-import com.cju.cuhaapi.audit.Auditable;
-import com.cju.cuhaapi.audit.BaseTime;
-import com.cju.cuhaapi.repository.entity.member.Member;
 import com.cju.cuhaapi.controller.dto.PostDto.SaveRequest;
 import com.cju.cuhaapi.controller.dto.PostDto.UpdateRequest;
+import com.cju.cuhaapi.entity.member.Member;
+import com.cju.cuhaapi.entity.common.BaseTimeEntity;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -20,8 +18,7 @@ import java.util.List;
 @Builder
 @Getter
 @Entity
-@EntityListeners(AuditListener.class)
-public class Post implements Auditable {
+public class Post extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,15 +49,7 @@ public class Post implements Auditable {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<PostLike> postLikes = new ArrayList<>();
 
-    @Embedded
-    private BaseTime baseTime;
-
     //== 수정 메서드==//
-    @Override
-    public void setBaseTime(BaseTime baseTime) {
-        this.baseTime = baseTime;
-    }
-
     private void setTitle(String title) {
         this.title = title;
     }
