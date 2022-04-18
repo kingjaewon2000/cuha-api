@@ -2,7 +2,6 @@ package com.cju.cuhaapi.controller;
 
 import com.cju.cuhaapi.controller.dto.CommentDto.CommentResponse;
 import com.cju.cuhaapi.service.CommentService;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +23,6 @@ public class CommentController {
     /**
      * 모든 댓글 조회
      */
-    @ApiOperation(value = "댓글 조회", notes = "모든 댓글을 조회합니다.")
     @GetMapping
     public List<CommentResponse> comments(@RequestParam(defaultValue = "0") Integer page,
                                           @RequestParam(defaultValue = "100") Integer size) {

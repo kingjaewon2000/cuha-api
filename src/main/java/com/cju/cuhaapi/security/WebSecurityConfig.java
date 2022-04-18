@@ -99,11 +99,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                .mvcMatchers("/v2/**",
-                        "/v3/**",
+                .mvcMatchers(
                         "/configuration/**",
                         "/swagger*/**",
-                        "/webjars/**",
-                        "/swagger-resources/**");
+                        "/webjars/**");
     }
 }

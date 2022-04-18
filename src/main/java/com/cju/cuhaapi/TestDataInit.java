@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
-@Component
+//@Component
 @RequiredArgsConstructor
 public class TestDataInit {
 
@@ -26,7 +26,7 @@ public class TestDataInit {
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
 
-    @PostConstruct
+//    @PostConstruct
     public void init() {
         Role role = initRole();
         Profile profile = initProfile();
