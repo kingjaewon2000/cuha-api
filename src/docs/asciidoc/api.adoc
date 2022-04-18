@@ -1,0 +1,25 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+= RESTful Notes API Guide
+Baeldung;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+== HelloController
+
+=== http-request
+include::{snippets}/index/http-request.adoc[]
+
+=== request-body
+include::{snippets}/index/request-body.adoc[]
+
+=== response-body
+include::{snippets}/index/response-body.adoc[]
+
+=== response-fields
+include::{snippets}/index/response-fields.adoc[]
