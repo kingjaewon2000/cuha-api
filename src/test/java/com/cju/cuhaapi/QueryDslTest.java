@@ -1,12 +1,9 @@
 package com.cju.cuhaapi;
 
-import com.cju.cuhaapi.controller.dto.MemberDto;
-import com.cju.cuhaapi.controller.dto.MemberDto.JoinRequest;
-import com.cju.cuhaapi.entity.member.Department;
-import com.cju.cuhaapi.entity.member.Member;
+import com.cju.cuhaapi.member.dto.MemberDto.JoinRequest;
+import com.cju.cuhaapi.member.domain.entity.Member;
 import com.cju.cuhaapi.entity.member.QMember;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
-import static com.cju.cuhaapi.entity.member.Department.DIGITAL_SECURITY;
+import static com.cju.cuhaapi.member.domain.entity.Department.DIGITAL_SECURITY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
