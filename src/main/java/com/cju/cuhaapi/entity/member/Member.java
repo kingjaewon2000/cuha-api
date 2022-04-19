@@ -52,9 +52,7 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private Department department;
 
-    @ColumnDefault("0")
-    @Column
-    private Integer totalScore;
+    private int score;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "role_id")

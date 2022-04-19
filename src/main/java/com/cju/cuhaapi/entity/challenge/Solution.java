@@ -8,6 +8,8 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.LAZY;
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -22,11 +24,11 @@ public class Solution extends BaseTimeEntity {
 
     private String body;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToOne(mappedBy = "solution")
+    @OneToOne(fetch = LAZY, mappedBy = "solution")
     private Problem problem;
 
     //== 수정 메서드 ==//

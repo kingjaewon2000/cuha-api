@@ -8,13 +8,12 @@ import com.cju.cuhaapi.entity.post.Comment;
 import com.cju.cuhaapi.entity.post.Post;
 import com.cju.cuhaapi.entity.post.PostLike;
 import com.cju.cuhaapi.repository.*;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
-//@Component
+@Component
 @RequiredArgsConstructor
 public class TestDataInit {
 
@@ -79,7 +78,7 @@ public class TestDataInit {
                     .department(Department.DIGITAL_SECURITY)
                     .role(role)
                     .profile(profile)
-                    .totalScore((int) (Math.random() * 100000))
+                    .score((int) (Math.random() * 100000))
                     .build();
 
             memberRepository.save(member);

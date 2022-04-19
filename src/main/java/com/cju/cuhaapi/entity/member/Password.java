@@ -23,7 +23,7 @@ public class Password {
     private static PasswordEncoderUtils passwordEncoderUtils = PasswordEncoderUtils.getInstance();
 
     @Column
-    private int failCount = 0;
+    private int failCount;
 
     @Column(name = "password")
     private String value;

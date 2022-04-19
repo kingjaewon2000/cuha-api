@@ -9,6 +9,8 @@ import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.LAZY;
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -33,19 +35,17 @@ public class Problem extends BaseTimeEntity {
     @Column
     private String body;
 
-    @ColumnDefault("0")
-    @Column(nullable = false)
-    private Integer score;
+    private int score;
 
     @ColumnDefault("0")
     @Column(nullable = false)
     private String flag;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToOne
+    @OneToOne(fetch = LAZY)
     @JoinColumn(name = "solution_id")
     private Solution solution;
 

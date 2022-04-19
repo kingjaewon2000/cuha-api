@@ -80,7 +80,7 @@ public class MemberDto {
         private String phoneNumber;
         private String studentId;
         private Department department;
-        private Integer totalScore;
+        private int score;
         private Role role;
         private String createdAt;
         private String updatedAt;
@@ -96,7 +96,7 @@ public class MemberDto {
                     .phoneNumber(member.getPhoneNumber())
                     .studentId(member.getStudentId())
                     .department(member.getDepartment())
-                    .totalScore(member.getTotalScore())
+                    .score(member.getScore())
                     .role(Role.builder()
                             .id(member.getRole().getId())
                             .role(member.getRole().getRole())
