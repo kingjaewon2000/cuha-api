@@ -5,23 +5,16 @@ import com.cju.cuhaapi.member.domain.entity.Member;
 import com.cju.cuhaapi.member.domain.entity.Profile;
 import com.cju.cuhaapi.member.dto.*;
 import com.cju.cuhaapi.member.service.MemberService;
+import com.cju.cuhaapi.member.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,9 +23,7 @@ import java.util.UUID;
 public class MemberController {
 
     private final MemberService memberService;
-
-    @Value("${upload.path}")
-    private String uploadPath;
+    private final ProfileService profileService;
 
     /**
      * 멤버 조회 sort(score)
@@ -82,17 +73,7 @@ public class MemberController {
                              @RequestPart("json") MemberUpdateInfoRequest request,
                              @RequestPart(required = false) MultipartFile profileFile) throws IOException {
         // 프로필 업로드
-        Profile profile = null;
-
-        if (profileFile != null) {
-            String originalFilename = profileFile.getOriginalFilename();
-            Long size = profile.getSize();
-            String ext = StringUtils.getFilenameExtension(originalFilename);
-            String filename = createFilename(ext);
-
-            saveFile(profileFile, filename);
-            profile = Profile.createProfile(originalFilename, filename, size);
-        }
+        Profile profile = profileService.saveProfileFile(profileFile);
 
         memberService.updateMember(loginMember, request, profile);
     }
@@ -113,24 +94,5 @@ public class MemberController {
     public void delete(@LoginMember Member loginMember) {
         // 회원탈퇴
         memberService.deleteMember(loginMember);
-    }
-
-    @GetMapping("/profiles/{filename}")
-    public Resource downloadProfile(@PathVariable String filename) throws MalformedURLException {
-        return new UrlResource("file:" + getFullPath(filename));
-    }
-
-    //== 비지니스 메서드 ==//
-    private String createFilename(String ext) {
-        return UUID.randomUUID().toString() + "." + ext;
-    }
-
-    private String getFullPath(String filename) {
-        return uploadPath + "/" + filename;
-    }
-
-    private void saveFile(MultipartFile multipartFile, String filename) throws IOException {
-        File file = new File(getFullPath(filename));
-        multipartFile.transferTo(file);
     }
 }

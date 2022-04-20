@@ -15,8 +15,11 @@ import com.cju.cuhaapi.post.domain.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@Component
+import javax.annotation.PostConstruct;
+
+//@Component
 @RequiredArgsConstructor
+@org.springframework.context.annotation.Profile("local")
 public class TestDataInit {
 
     private final MemberRepository memberRepository;
@@ -27,7 +30,7 @@ public class TestDataInit {
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
 
-//    @PostConstruct
+    @PostConstruct
     public void init() {
         Role role = initRole();
         Profile profile = initProfile();

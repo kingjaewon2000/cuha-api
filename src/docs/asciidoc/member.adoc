@@ -1,0 +1,25 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+= RESTful Notes API Guide
+Baeldung;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+== MemberController
+
+=== http-request
+include::{snippets}/get-members/http-request.adoc[]
+
+=== request-body
+include::{snippets}/get-members/request-body.adoc[]
+
+=== response-body
+include::{snippets}/get-members/response-body.adoc[]
+
+=== response-fields
+include::{snippets}/get-members/response-fields.adoc[]

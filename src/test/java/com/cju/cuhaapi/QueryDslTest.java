@@ -1,8 +1,6 @@
 package com.cju.cuhaapi;
 
-import com.cju.cuhaapi.member.domain.entity.Gender;
 import com.cju.cuhaapi.member.domain.entity.Member;
-import com.cju.cuhaapi.entity.member.QMember;
 import com.cju.cuhaapi.member.domain.entity.Profile;
 import com.cju.cuhaapi.member.domain.entity.Role;
 import com.cju.cuhaapi.member.domain.repository.ProfileRepository;
@@ -10,7 +8,6 @@ import com.cju.cuhaapi.member.domain.repository.RoleRepository;
 import com.cju.cuhaapi.member.dto.MemberJoinRequest;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +16,6 @@ import javax.persistence.EntityManager;
 
 import static com.cju.cuhaapi.member.domain.entity.Department.DIGITAL_SECURITY;
 import static com.cju.cuhaapi.member.domain.entity.Gender.MALE;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
