@@ -94,7 +94,7 @@ public class MemberController {
             profile = Profile.createProfile(originalFilename, filename, size);
         }
 
-        memberService.updateMember(loginMember.getId(), request, profile);
+        memberService.updateMember(loginMember, request, profile);
     }
 
     /**
@@ -103,7 +103,7 @@ public class MemberController {
     @PatchMapping("/password")
     public void updatePassword(@LoginMember Member loginMember,
                                @RequestBody MemberUpdatePasswordRequest request) {
-        memberService.updatePassword(loginMember.getId(), request);
+        memberService.updatePassword(loginMember, request);
     }
 
     /**
@@ -112,7 +112,7 @@ public class MemberController {
     @DeleteMapping
     public void delete(@LoginMember Member loginMember) {
         // 회원탈퇴
-        memberService.deleteMember(loginMember.getId());
+        memberService.deleteMember(loginMember);
     }
 
     @GetMapping("/profiles/{filename}")

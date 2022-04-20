@@ -93,13 +93,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll();
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web
-                .ignoring()
-                .mvcMatchers(
-                        "/configuration/**",
-                        "/swagger*/**",
-                        "/webjars/**");
-    }
 }

@@ -31,11 +31,6 @@ public class MemberService {
     private final RoleRepository roleRepository;
     private final ProfileRepository profileRepository;
 
-    public Member findById(Long id) {
-        return memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("멤버를 찾지 못했습니다."));
-    }
-
     public List<MemberResponse> findMembers(Pageable pageable) {
         return memberRepository.findMembers(pageable);
     }
@@ -71,35 +66,36 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMember(Long memberId, MemberUpdateInfoRequest request, Profile uploadProfile) {
+    public void updateMember(Member loginMember, MemberUpdateInfoRequest request, Profile uploadProfile) {
         if (uploadProfile != null && !profileRepository.existsByFilename(uploadProfile.getFilename())) {
             profileRepository.save(uploadProfile);
         }
 
-        Member member = findById(memberId);
+        loginMember.updateMember(request, uploadProfile);
 
-        member.updateMember(request, uploadProfile);
+        memberRepository.save(loginMember);
     }
 
     @Transactional
-    public void updatePassword(Long memberId, MemberUpdatePasswordRequest request) {
+    public void updatePassword(Member loginMember, MemberUpdatePasswordRequest request) {
         String passwordBefore = request.getPasswordBefore();
-        Member member = findById(memberId);
 
         // 비밀번호 검증
-        String encodedPassword = member.getPassword().getValue();
+        String encodedPassword = loginMember.getPassword().getValue();
         if (!isValidPassword(passwordBefore, encodedPassword)) {
             throw new IllegalStateException("이전 패스워드가 일치하지 않습니다.");
         }
 
-        Password password = member.getPassword();
+        Password password = loginMember.getPassword();
         password.updatePassword(request.getPasswordAfter());
+
+        memberRepository.save(loginMember);
     }
 
     @Transactional
-    public void deleteMember(Long memberId) {
+    public void deleteMember(Member loginMember) {
         // 회원 탈퇴
-        memberRepository.deleteById(memberId);
+        memberRepository.delete(loginMember);
     }
 
     public boolean isDuplicateUsername(String username) {
