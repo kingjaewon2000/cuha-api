@@ -47,11 +47,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String username = jwtProvider.getUsernameFromToken(token);
 
         if (username != null) {
-            List<Member> members = memberRepository.findByUsername(username);
-            if (members.size() <= 0) {
+            Member member = memberRepository.findByUsername(username);
+            if (member == null) {
                 throw new UsernameNotFoundException("계정을 찾을 수 없습니다." + username);
             }
-            Member member = members.get(0);
 
             PrincipalDetails principalDetails = new PrincipalDetails(member);
             Authentication authentication =

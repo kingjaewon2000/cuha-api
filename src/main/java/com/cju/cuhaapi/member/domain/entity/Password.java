@@ -1,10 +1,11 @@
 package com.cju.cuhaapi.member.domain.entity;
 
-import com.cju.cuhaapi.member.dto.MemberDto.UpdatePasswordRequest;
 import com.cju.cuhaapi.commons.utils.PasswordEncoderUtils;
+import com.cju.cuhaapi.member.dto.MemberUpdatePasswordRequest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.Column;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @Embeddable
 public class Password {
+
     public static final int INIT_FAIL_COUNT = 0;
     public static final int MAX_FAIL_COUNT = 5;
     private static PasswordEncoderUtils passwordEncoderUtils = PasswordEncoderUtils.getInstance();
@@ -28,13 +30,11 @@ public class Password {
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 
+    @CreatedDate
+    private LocalDateTime lastLoginAttemptDate;
+
     @Builder
     public Password(String value) {
-        this.value = passwordEncoderUtils.encode(value);
-    }
-
-    //== 수정자 메서드 ==//
-    private void setValue(String value) {
         this.value = passwordEncoderUtils.encode(value);
     }
 
@@ -51,7 +51,7 @@ public class Password {
         this.failCount = 0;
     }
 
-    public void updatePassword(UpdatePasswordRequest request) {
-        setValue(request.getPasswordAfter());
+    public void updatePassword(String value) {
+        this.value = passwordEncoderUtils.encode(value);
     }
 }

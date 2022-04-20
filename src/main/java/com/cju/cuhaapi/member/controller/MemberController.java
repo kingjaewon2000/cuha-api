@@ -1,15 +1,17 @@
 package com.cju.cuhaapi.member.controller;
 
-import com.cju.cuhaapi.commons.annotation.CurrentMember;
-import com.cju.cuhaapi.member.dto.MemberDto.*;
+import com.cju.cuhaapi.commons.annotation.LoginMember;
 import com.cju.cuhaapi.member.domain.entity.Member;
 import com.cju.cuhaapi.member.domain.entity.Profile;
+import com.cju.cuhaapi.member.dto.*;
 import com.cju.cuhaapi.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +22,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,60 +35,51 @@ public class MemberController {
     private String uploadPath;
 
     /**
-     * 멤버 조회
+     * 멤버 조회 sort(score)
      */
     @GetMapping
-    public List<MemberResponse> members(@RequestParam(defaultValue = "0") Integer page,
-                                        @RequestParam(defaultValue = "100") Integer size) {
-        return memberService.getMembers(page, size).stream()
-                .map(member -> MemberResponse.of(member))
-                .collect(Collectors.toList());
+    public List<MemberResponse> members(Pageable pageable) {
+        return memberService.findMembers(pageable);
     }
 
     /**
-     * 멤버 조회(점수 기반)
+     * 단건 멤버 조회
      */
-    @GetMapping("/ranking")
-    public List<MemberResponse> membersByScore(@RequestParam(defaultValue = "0") Integer page,
-                                               @RequestParam(defaultValue = "100") Integer size) {
-        return memberService.getMembersOrderByScore(page, size).stream()
-                .map(member -> MemberResponse.of(member))
-                .collect(Collectors.toList());
+    @GetMapping("/info/{username}")
+    public MemberResponse info(@PathVariable String username) {
+        return memberService.findMember(username);
     }
 
     /**
-     * 내 랭킹 출력
+     * 현재 로그인한 계정 조회
      */
-    @GetMapping("/ranking/me")
-    public RankingResponse rankingMe(@CurrentMember Member authMember) {
-        Long authMemberId = authMember.getId();
-        Long ranking = memberService.ranking(authMemberId);
-
-        return RankingResponse.of(ranking, authMember.getUsername());
+    @GetMapping("/info")
+    public MemberInfoResponse myInfo(@LoginMember Member authMember) {
+        return memberService.myInfo(authMember.getId());
     }
 
     /**
-     * 로그인한 멤버 조회
+     * 내 랭킹 조회
      */
-    @GetMapping("/me")
-    public MemberResponse info(@CurrentMember Member authMember) {
-        return MemberResponse.of(authMember);
+    @GetMapping("/rank")
+    public MemberRankInfoResponse myRank(@LoginMember Member loginMember) {
+        return memberService.myRank(loginMember.getId());
     }
 
     /**
      * 회원가입
      */
     @PostMapping("/join")
-    public void join(@RequestBody JoinRequest request) {
-        memberService.saveMember(request);
+    public MemberJoinResponse join(@RequestBody MemberJoinRequest request) {
+        return memberService.saveMember(request);
     }
 
     /**
      * 멤버 정보 변경
      */
     @PatchMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
-    public void updateMember(@CurrentMember Member authMember,
-                             @RequestPart("json") UpdateMemberRequest request,
+    public void updateMember(@LoginMember Member loginMember,
+                             @RequestPart("json") MemberUpdateInfoRequest request,
                              @RequestPart(required = false) MultipartFile profileFile) throws IOException {
         // 프로필 업로드
         Profile profile = null;
@@ -102,25 +94,25 @@ public class MemberController {
             profile = Profile.createProfile(originalFilename, filename, size);
         }
 
-        memberService.updateMember(request, authMember, profile);
+        memberService.updateMember(loginMember.getId(), request, profile);
     }
 
     /**
      * 비밀번호 변경
      */
     @PatchMapping("/password")
-    public void updatePassword(@CurrentMember Member authMember,
-                               @RequestBody UpdatePasswordRequest request) {
-        memberService.updatePassword(request, authMember);
+    public void updatePassword(@LoginMember Member loginMember,
+                               @RequestBody MemberUpdatePasswordRequest request) {
+        memberService.updatePassword(loginMember.getId(), request);
     }
 
     /**
      * 회원탈퇴
      */
     @DeleteMapping
-    public void delete(@CurrentMember Member authMember) {
+    public void delete(@LoginMember Member loginMember) {
         // 회원탈퇴
-        memberService.deleteMember(authMember);
+        memberService.deleteMember(loginMember.getId());
     }
 
     @GetMapping("/profiles/{filename}")

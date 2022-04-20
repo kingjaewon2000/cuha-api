@@ -1,15 +1,13 @@
 package com.cju.cuhaapi.commons;
 
 import com.cju.cuhaapi.member.domain.entity.*;
-import com.cju.cuhaapi.member.domain.entity.etc.DefaultProfile;
-import com.cju.cuhaapi.member.domain.entity.etc.DefaultRole;
+import com.cju.cuhaapi.member.domain.repository.MemberRepository;
+import com.cju.cuhaapi.member.domain.repository.ProfileRepository;
+import com.cju.cuhaapi.member.domain.repository.RoleRepository;
 import com.cju.cuhaapi.post.domain.entity.Category;
 import com.cju.cuhaapi.post.domain.entity.Comment;
 import com.cju.cuhaapi.post.domain.entity.Post;
 import com.cju.cuhaapi.post.domain.entity.PostLike;
-import com.cju.cuhaapi.member.domain.repository.MemberRepository;
-import com.cju.cuhaapi.member.domain.repository.ProfileRepository;
-import com.cju.cuhaapi.member.domain.repository.RoleRepository;
 import com.cju.cuhaapi.post.domain.repository.CategoryRepository;
 import com.cju.cuhaapi.post.domain.repository.CommentRepository;
 import com.cju.cuhaapi.post.domain.repository.PostLikeRepository;
@@ -77,7 +75,7 @@ public class TestDataInit {
                     .username("member" + i)
                     .password(new Password("member" + i))
                     .name("테스트계정" + i)
-                    .isMale(true)
+                    .gender(Gender.MALE)
                     .studentId(String.valueOf(i))
                     .department(Department.DIGITAL_SECURITY)
                     .role(role)
@@ -119,7 +117,7 @@ public class TestDataInit {
                 .username("root")
                 .password(new Password("root"))
                 .name("김태형")
-                .isMale(true)
+                .gender(Gender.MALE)
                 .studentId("2019010109")
                 .department(Department.DIGITAL_SECURITY)
                 .role(role)
@@ -132,14 +130,14 @@ public class TestDataInit {
     }
 
     private Profile initProfile() {
-        Profile profile = DefaultProfile.getProfile();
+        Profile profile = profileRepository.defaultProfile();
         profileRepository.save(profile);
 
         return profile;
     }
 
     private Role initRole() {
-        Role role = DefaultRole.getRole();
+        Role role = roleRepository.defaultRole();
         roleRepository.save(role);
 
         return role;

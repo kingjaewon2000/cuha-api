@@ -1,8 +1,13 @@
 package com.cju.cuhaapi;
 
-import com.cju.cuhaapi.member.dto.MemberDto.JoinRequest;
+import com.cju.cuhaapi.member.domain.entity.Gender;
 import com.cju.cuhaapi.member.domain.entity.Member;
 import com.cju.cuhaapi.entity.member.QMember;
+import com.cju.cuhaapi.member.domain.entity.Profile;
+import com.cju.cuhaapi.member.domain.entity.Role;
+import com.cju.cuhaapi.member.domain.repository.ProfileRepository;
+import com.cju.cuhaapi.member.domain.repository.RoleRepository;
+import com.cju.cuhaapi.member.dto.MemberJoinRequest;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 
 import static com.cju.cuhaapi.member.domain.entity.Department.DIGITAL_SECURITY;
+import static com.cju.cuhaapi.member.domain.entity.Gender.MALE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -24,36 +30,33 @@ public class QueryDslTest {
 
     private JPAQueryFactory queryFactory;
 
+    @Autowired
+    RoleRepository roleRepository;
+
+    @Autowired
+    ProfileRepository profileRepository;
+
     @BeforeEach
     void before() {
         queryFactory = new JPAQueryFactory(em);
 
-        JoinRequest request = JoinRequest.builder()
+        MemberJoinRequest request = MemberJoinRequest.builder()
                 .username("memberA")
                 .password("memberA")
                 .name("홍길동")
-                .isMale(true)
+                .gender(MALE)
                 .email("test@test.com")
                 .phoneNumber("010-1234-5678")
                 .studentId("0000")
                 .department(DIGITAL_SECURITY)
                 .build();
 
-        Member member = Member.join(request);
+        Role role = roleRepository.defaultRole();
+        Profile profile = profileRepository.defaultProfile();
+
+
+        Member member = Member.join(request, role, profile);
         em.persist(member);
     }
 
-    @Test
-    void querydsl() {
-        QMember m = QMember.member;
-
-        Member memberA = queryFactory
-                .select(m)
-                .from(m)
-                .where(m.username.eq("memberA"))
-                .fetchOne();
-
-        assertThat(memberA.getUsername()).isEqualTo("memberA");
-        assertThat(memberA.getName()).isEqualTo("홍길동");
-    }
 }

@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.post.controller;
 
-import com.cju.cuhaapi.commons.annotation.CurrentMember;
+import com.cju.cuhaapi.commons.annotation.LoginMember;
 import com.cju.cuhaapi.post.dto.CommentDto;
 import com.cju.cuhaapi.member.domain.entity.Member;
 import com.cju.cuhaapi.post.dto.PostDto;
@@ -62,7 +62,7 @@ public class PostController {
      * 게시글 작성
      */
     @PostMapping("/{categoryName}")
-    public void save(@CurrentMember Member authMember,
+    public void save(@LoginMember Member authMember,
                      @PathVariable String categoryName,
                      @RequestBody PostDto.SaveRequest request) {
         postService.savePost(categoryName, request, authMember);
@@ -72,7 +72,7 @@ public class PostController {
      * 게시글 수정
      */
     @PatchMapping("/{categoryName}/{postId}")
-    public void update(@CurrentMember Member authMember,
+    public void update(@LoginMember Member authMember,
                        @PathVariable String categoryName,
                        @PathVariable Long postId,
                        @RequestBody PostDto.UpdateRequest request) {
@@ -83,21 +83,21 @@ public class PostController {
      * 게시글 삭제
      */
     @DeleteMapping("/{categoryName}/{postId}")
-    public void delete(@CurrentMember Member authMember,
+    public void delete(@LoginMember Member authMember,
                        @PathVariable String categoryName,
                        @PathVariable Long postId) {
         postService.deletePost(categoryName, postId, authMember);
     }
 
     @GetMapping("/{categoryName}/{postId}/like")
-    public boolean likePostMe(@CurrentMember Member authMember,
+    public boolean likePostMe(@LoginMember Member authMember,
                               @PathVariable String categoryName,
                               @PathVariable Long postId) {
         return postService.isClickLike(categoryName, postId, authMember);
     }
 
     @PostMapping("/{categoryName}/{postId}/like")
-    public void likePost(@CurrentMember Member authMember,
+    public void likePost(@LoginMember Member authMember,
                          @PathVariable String categoryName,
                          @PathVariable Long postId) {
         postService.likePost(categoryName, postId, authMember);
@@ -125,7 +125,7 @@ public class PostController {
      * category, postId에 해당하는 게시글에 댓글 생성
      */
     @PostMapping("/{categoryName}/{postId}/comments")
-    public void saveComment(@CurrentMember Member authMember,
+    public void saveComment(@LoginMember Member authMember,
                             @PathVariable String categoryName,
                             @PathVariable Long postId,
                             @RequestBody CommentDto.SaveRequest request) {
@@ -136,7 +136,7 @@ public class PostController {
      * category, postId에 해당하는 게시글에 commentId에 해당하는 댓글 수정
      */
     @PatchMapping("/{categoryName}/{postId}/comments/{commentId}")
-    public void updateComment(@CurrentMember Member authMember,
+    public void updateComment(@LoginMember Member authMember,
                               @PathVariable String categoryName,
                               @PathVariable Long postId,
                               @PathVariable Long commentId,
@@ -149,7 +149,7 @@ public class PostController {
      * category, postId에 해당하는 게시글에 commentId에 해당하는 댓글 삭제
      */
     @DeleteMapping("/{categoryName}/{postId}/comments/{commentId}")
-    public void deleteComment(@CurrentMember Member authMember,
+    public void deleteComment(@LoginMember Member authMember,
                               @PathVariable String categoryName,
                               @PathVariable Long postId,
                               @PathVariable Long commentId) {
@@ -157,7 +157,7 @@ public class PostController {
     }
 
     @GetMapping("/{categoryName}/{postId}/comments/like")
-    public List<Boolean> likeCommentMe(@CurrentMember Member authMember,
+    public List<Boolean> likeCommentMe(@LoginMember Member authMember,
                                        @PathVariable String categoryName,
                                        @PathVariable Long postId,
                                        @RequestParam(defaultValue = "0") Integer page,
@@ -166,7 +166,7 @@ public class PostController {
     }
 
     @PostMapping("/{categoryName}/{postId}/comments/{commentId}/like")
-    public void likeComment(@CurrentMember Member authMember,
+    public void likeComment(@LoginMember Member authMember,
                             @PathVariable String categoryName,
                             @PathVariable Long postId,
                             @PathVariable Long commentId) {

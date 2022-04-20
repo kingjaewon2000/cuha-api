@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.challenge.controller;
 
-import com.cju.cuhaapi.commons.annotation.CurrentMember;
+import com.cju.cuhaapi.commons.annotation.LoginMember;
 import com.cju.cuhaapi.challenge.dto.ProblemDto.CreateRequest;
 import com.cju.cuhaapi.challenge.dto.ProblemDto.ProblemResponse;
 import com.cju.cuhaapi.challenge.dto.ProblemDto.SubmitRequest;
@@ -39,27 +39,27 @@ public class ProblemController {
     }
 
     @PostMapping
-    public void create(@CurrentMember Member authMember,
+    public void create(@LoginMember Member authMember,
                        @RequestBody CreateRequest request) {
         problemService.createProblem(request, authMember);
     }
 
     @PatchMapping("/{id}")
-    public void update(@CurrentMember Member authMember,
+    public void update(@LoginMember Member authMember,
                        @PathVariable Long id,
                        @RequestBody UpdateRequest request) {
         problemService.updateProblem(id, request, authMember);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@CurrentMember Member authMember,
+    public void delete(@LoginMember Member authMember,
                        @PathVariable Long id) {
         problemService.deleteProblem(id, authMember);
     }
 
 
     @PostMapping("/submit/{id}")
-    public void submit(@CurrentMember Member authMember,
+    public void submit(@LoginMember Member authMember,
                        @PathVariable Long id,
                        @RequestBody SubmitRequest request) {
         problemService.grading(id, request.getFlag(), authMember);

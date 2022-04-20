@@ -26,11 +26,10 @@ public class PrincipalDetailsService implements UserDetailsService {
     @Transactional
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        List<Member> members = memberRepository.findByUsername(username);
-        if (members.size() <= 0) {
+        Member member = memberRepository.findByUsername(username);
+        if (member == null) {
             throw new UsernameNotFoundException("계정을 찾을 수 없습니다." + username);
         }
-        Member member = members.get(0);
 
         Password password = member.getPassword();
         /**

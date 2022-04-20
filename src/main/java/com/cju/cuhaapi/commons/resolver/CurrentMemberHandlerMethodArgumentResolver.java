@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.commons.resolver;
 
-import com.cju.cuhaapi.commons.annotation.CurrentMember;
+import com.cju.cuhaapi.commons.annotation.LoginMember;
 import com.cju.cuhaapi.member.domain.entity.Member;
 import com.cju.cuhaapi.commons.security.auth.PrincipalDetails;
 import org.springframework.core.MethodParameter;
@@ -16,7 +16,7 @@ public class CurrentMemberHandlerMethodArgumentResolver implements HandlerMethod
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(CurrentMember.class);
+        return parameter.hasParameterAnnotation(LoginMember.class);
     }
 
     @Override

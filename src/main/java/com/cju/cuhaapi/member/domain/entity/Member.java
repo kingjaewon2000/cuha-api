@@ -1,17 +1,19 @@
 package com.cju.cuhaapi.member.domain.entity;
 
-import com.cju.cuhaapi.member.dto.MemberDto.JoinRequest;
-import com.cju.cuhaapi.member.dto.MemberDto.UpdateMemberRequest;
 import com.cju.cuhaapi.commons.entity.BaseTimeEntity;
+import com.cju.cuhaapi.member.dto.MemberJoinRequest;
+import com.cju.cuhaapi.member.dto.MemberUpdateInfoRequest;
 import com.cju.cuhaapi.post.domain.entity.Post;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 
 @DynamicInsert
@@ -21,6 +23,7 @@ import static javax.persistence.FetchType.LAZY;
 @Getter
 @Entity
 public class Member extends BaseTimeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -35,8 +38,8 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private Boolean isMale;
+    @Enumerated(STRING)
+    private Gender gender;
 
     @ColumnDefault("'example@cju.ac.kr'")
     @Column(nullable = false)
@@ -49,7 +52,7 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String studentId;
 
-    @Column(nullable = false)
+    @Enumerated(STRING)
     private Department department;
 
     private int score;
@@ -73,12 +76,12 @@ public class Member extends BaseTimeEntity {
         this.password = password;
     }
 
-    private void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    private void setMale(Boolean male) {
-        isMale = male;
+    private void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     private void setEmail(String email) {
@@ -102,26 +105,28 @@ public class Member extends BaseTimeEntity {
     }
 
     //== 생성 메서드 ==//
-    public static Member join(JoinRequest request) {
+    public static Member join(MemberJoinRequest request, Role role, Profile profile) {
         return Member.builder()
                 .username(request.getUsername())
                 .password(new Password(request.getPassword()))
                 .name(request.getName())
-                .isMale(request.getIsMale())
+                .gender(request.getGender())
                 .email(request.getEmail())
                 .phoneNumber(request.getPhoneNumber())
                 .studentId(request.getStudentId())
                 .department(request.getDepartment())
+                .role(role)
+                .profile(profile)
                 .build();
     }
 
-    public void updateMember(UpdateMemberRequest request, Profile profile) {
+    public void updateMember(MemberUpdateInfoRequest request, Profile profile) {
         if (profile != null) {
             setProfile(profile);
         }
 
         setName(request.getName());
-        setMale(request.getIsMale());
+        setGender(request.getGender());
         setEmail(request.getEmail());
         setPhoneNumber(request.getPhoneNumber());
         setStudentId(request.getStudentId());

@@ -1,6 +1,6 @@
 package com.cju.cuhaapi.challenge.controller;
 
-import com.cju.cuhaapi.commons.annotation.CurrentMember;
+import com.cju.cuhaapi.commons.annotation.LoginMember;
 import com.cju.cuhaapi.challenge.dto.SolutionDto.CreateRequest;
 import com.cju.cuhaapi.challenge.dto.SolutionDto.UpdateRequest;
 import com.cju.cuhaapi.challenge.dto.SolutionDto.SolutionResponse;
@@ -24,21 +24,21 @@ public class SolutionController {
     }
 
     @PostMapping("/{problemId}/solution")
-    public void create(@CurrentMember Member member,
+    public void create(@LoginMember Member member,
                        @PathVariable Long problemId,
                        @RequestBody CreateRequest request) {
         solutionService.createSolution(problemId, request, member);
     }
 
     @PatchMapping("/{problemId}/solution")
-    public void update(@CurrentMember Member member,
+    public void update(@LoginMember Member member,
                        @PathVariable Long problemId,
                        @RequestBody UpdateRequest request) {
         solutionService.updateSolution(problemId, request, member);
     }
 
     @DeleteMapping("/{problemId}/solution")
-    public void delete(@CurrentMember Member member,
+    public void delete(@LoginMember Member member,
                        @PathVariable Long problemId) {
         solutionService.deleteSolution(problemId, member);
     }

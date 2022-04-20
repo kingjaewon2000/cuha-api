@@ -1,11 +1,11 @@
 package com.cju.cuhaapi.commons.security.jwt;
 
 import com.cju.cuhaapi.commons.security.auth.PrincipalDetails;
-import com.cju.cuhaapi.member.dto.MemberDto.LoginRequest;
 import com.cju.cuhaapi.member.domain.repository.MemberRepository;
 import com.cju.cuhaapi.member.domain.entity.Member;
 import com.cju.cuhaapi.member.domain.entity.Password;
 import com.cju.cuhaapi.commons.security.jwt.JwtResponseDto.Token;
+import com.cju.cuhaapi.member.dto.MemberLoginRequest;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +52,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         log.info("JwtAuthenticationFilter");
 
-        LoginRequest loginRequest = inputStreamToLoginRequest(request);
+        MemberLoginRequest loginRequest = inputStreamToLoginRequest(request);
         request.setAttribute("loginRequest", loginRequest);
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
@@ -107,25 +107,24 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         // 최적화 할 수 있는 방법이 더 없을까?
-        LoginRequest loginRequest = (LoginRequest) request.getAttribute("loginRequest");
+        MemberLoginRequest loginRequest = (MemberLoginRequest) request.getAttribute("loginRequest");
         String username = loginRequest.getUsername();
 
-        List<Member> members = memberRepository.findByUsername(username);
-        if (members.size() <= 0) {
+        Member member = memberRepository.findByUsername(username);
+        if (member == null) {
             throw new UsernameNotFoundException("계정을 찾을 수 없습니다." + username);
         }
-        Member findMember = members.get(0);
 
-        Password password = findMember.getPassword();
+        Password password = member.getPassword();
         password.addFailCount();
-        memberRepository.save(findMember);
+        memberRepository.save(member);
 
         throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
     }
 
-    private LoginRequest inputStreamToLoginRequest(HttpServletRequest request) {
+    private MemberLoginRequest inputStreamToLoginRequest(HttpServletRequest request) {
         try {
-            LoginRequest loginRequest = objectMapper.readValue(request.getInputStream(), LoginRequest.class);
+            MemberLoginRequest loginRequest = objectMapper.readValue(request.getInputStream(), MemberLoginRequest.class);
             log.info("MemberDto.loginReq = {}", loginRequest);
 
             return loginRequest;

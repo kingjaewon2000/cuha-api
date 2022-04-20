@@ -1,5 +1,6 @@
 package com.cju.cuhaapi.member.service;
 
+import com.cju.cuhaapi.member.domain.entity.Role;
 import com.cju.cuhaapi.member.domain.repository.ProfileRepository;
 import com.cju.cuhaapi.member.domain.entity.Member;
 import com.cju.cuhaapi.member.domain.entity.Password;
@@ -7,42 +8,55 @@ import com.cju.cuhaapi.member.domain.entity.Profile;
 import com.cju.cuhaapi.member.domain.repository.MemberRepository;
 import com.cju.cuhaapi.commons.error.exception.DuplicateUsernameException;
 import com.cju.cuhaapi.commons.utils.PasswordEncoderUtils;
+import com.cju.cuhaapi.member.domain.repository.RoleRepository;
+import com.cju.cuhaapi.member.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import static com.cju.cuhaapi.member.dto.MemberDto.*;
+import javax.persistence.EntityManager;
+import java.util.List;
+import java.util.Optional;
+
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final RoleRepository roleRepository;
     private final ProfileRepository profileRepository;
 
-    public Page<Member> getMembers(Integer page, Integer size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
-
-        return memberRepository.findAll(pageRequest);
-    }
-
-    public Page<Member> getMembersOrderByScore(Integer page, Integer size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("totalScore").descending());
-
-        return memberRepository.findAll(pageRequest);
-    }
-
-    public Member getMember(Long id) {
+    public Member findById(Long id) {
         return memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("ID값이 잘못 지정되었습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("멤버를 찾지 못했습니다."));
     }
 
-    public void saveMember(JoinRequest request) {
-        Member member = Member.join(request);
+    public List<MemberResponse> findMembers(Pageable pageable) {
+        return memberRepository.findMembers(pageable);
+    }
+
+    public MemberResponse findMember(String username) {
+        return memberRepository.findMember(username);
+    }
+
+    public MemberInfoResponse myInfo(Long id) {
+        return memberRepository.memberInfo(id);
+    }
+
+    public MemberRankInfoResponse myRank(Long id) {
+        return memberRepository.memberRank(id);
+    }
+
+    @Transactional
+    public MemberJoinResponse saveMember(MemberJoinRequest request) {
+        Role role = roleRepository.defaultRole();
+        Profile profile = profileRepository.defaultProfile();
+        Member member = Member.join(request, role, profile);
 
         // 아이디 중복 체크
         String username = member.getUsername();
@@ -51,44 +65,43 @@ public class MemberService {
         }
 
         // 회원가입 로직
-        memberRepository.save(member);
+        Member savedMember = memberRepository.save(member);
+
+        return new MemberJoinResponse(savedMember.getId(), savedMember.getUsername());
     }
 
-    public void updateMember(UpdateMemberRequest request, Member currentMember, Profile uploadProfile) {
-        currentMember.updateMember(request, uploadProfile);
-
+    @Transactional
+    public void updateMember(Long memberId, MemberUpdateInfoRequest request, Profile uploadProfile) {
         if (uploadProfile != null && !profileRepository.existsByFilename(uploadProfile.getFilename())) {
             profileRepository.save(uploadProfile);
         }
 
-        memberRepository.save(currentMember);
+        Member member = findById(memberId);
+
+        member.updateMember(request, uploadProfile);
     }
 
-    public void updatePassword(UpdatePasswordRequest request, Member currentMember) {
+    @Transactional
+    public void updatePassword(Long memberId, MemberUpdatePasswordRequest request) {
         String passwordBefore = request.getPasswordBefore();
+        Member member = findById(memberId);
 
         // 비밀번호 검증
-        String encodedPassword = currentMember.getPassword().getValue();
+        String encodedPassword = member.getPassword().getValue();
         if (!isValidPassword(passwordBefore, encodedPassword)) {
             throw new IllegalStateException("이전 패스워드가 일치하지 않습니다.");
         }
 
-        Password password = currentMember.getPassword();
-        password.updatePassword(request);
-
-        memberRepository.save(currentMember);
+        Password password = member.getPassword();
+        password.updatePassword(request.getPasswordAfter());
     }
 
-    public void deleteMember(Member member) {
+    @Transactional
+    public void deleteMember(Long memberId) {
         // 회원 탈퇴
-        memberRepository.delete(member);
+        memberRepository.deleteById(memberId);
     }
 
-    public Long ranking(Long id) {
-        return memberRepository.ranking(id);
-    }
-
-    //== 도우미 메서드 ==//
     public boolean isDuplicateUsername(String username) {
         return memberRepository.existsByUsername(username);
     }
