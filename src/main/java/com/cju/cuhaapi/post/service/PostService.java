@@ -76,6 +76,7 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    @Transactional
     public void likePost(String categoryName, Long id, Member authMember) {
         Post post = findPost(categoryName, id);
 
@@ -83,7 +84,7 @@ public class PostService {
             throw new IllegalArgumentException("이미 추천하신 게시글 입니다.");
         }
 
-        PostLike like = PostLike.createLike(authMember, post);
+        PostLike like = PostLike.createLike(post, authMember);
 
         postLikeRepository.save(like);
     }

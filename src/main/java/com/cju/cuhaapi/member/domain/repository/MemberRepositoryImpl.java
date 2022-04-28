@@ -35,7 +35,7 @@ public class MemberRepositoryImpl implements MemberQueryRepository {
 
         List<Member> members = queryFactory
                 .selectFrom(member)
-                .join(member.profile, profile)
+                .join(member.profile, profile).fetchJoin()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(orderByScore(score))
@@ -48,7 +48,7 @@ public class MemberRepositoryImpl implements MemberQueryRepository {
     public Member findMember(String username) {
         return queryFactory
                 .selectFrom(member)
-                .join(member.profile, profile)
+                .join(member.profile, profile).fetchJoin()
                 .where(member.username.eq(username))
                 .fetchOne();
     }

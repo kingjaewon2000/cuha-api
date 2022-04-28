@@ -20,12 +20,17 @@ public class CommentLike extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
-
-    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "comment_id", nullable = false)
     private Comment comment;
 
-    //== 수정 메서드//
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
+    public static CommentLike createLike(Comment comment, Member member) {
+        return CommentLike.builder()
+                .comment(comment)
+                .member(member)
+                .build();
+    }
 }

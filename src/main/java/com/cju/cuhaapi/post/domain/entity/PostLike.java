@@ -20,18 +20,18 @@ public class PostLike extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
-
-    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
     //== 수정 메서드==//
-    public static PostLike createLike(Member member, Post post) {
+    public static PostLike createLike(Post post, Member member) {
         return PostLike.builder()
-                .member(member)
                 .post(post)
+                .member(member)
                 .build();
     }
 }

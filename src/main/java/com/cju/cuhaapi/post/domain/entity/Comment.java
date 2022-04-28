@@ -1,7 +1,9 @@
 package com.cju.cuhaapi.post.domain.entity;
 
-import com.cju.cuhaapi.member.domain.entity.Member;
 import com.cju.cuhaapi.commons.entity.BaseTimeEntity;
+import com.cju.cuhaapi.member.domain.entity.Member;
+import com.cju.cuhaapi.post.dto.CommentSaveRequest;
+import com.cju.cuhaapi.post.dto.CommentUpdateRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -35,21 +37,16 @@ public class Comment extends BaseTimeEntity {
     @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
     private List<CommentLike> commentLikes = new ArrayList<>();
 
-    //== 수정 메서드 ==//
-    private void setBody(String body) {
-        this.body = body;
+    //== 생성 메서드 ==//
+    public static Comment saveComment(CommentSaveRequest request, Post post, Member member) {
+        return Comment.builder()
+                .body(request.getBody())
+                .post(post)
+                .member(member)
+                .build();
     }
 
-    //== 생성 메서드 ==//
-//    public static Comment saveComment(SaveRequest request, Post post, Member member) {
-//        return Comment.builder()
-//                .body(request.getBody())
-//                .post(post)
-//                .member(member)
-//                .build();
-//    }
-//
-//    public void updateComment(UpdateRequest request) {
-//        setBody(request.getBody());
-//    }
+    public void updateComment(CommentUpdateRequest request) {
+        this.body = request.getBody();
+    }
 }
