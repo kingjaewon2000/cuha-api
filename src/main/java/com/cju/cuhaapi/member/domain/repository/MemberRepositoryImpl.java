@@ -30,10 +30,24 @@ public class MemberRepositoryImpl implements MemberQueryRepository {
     }
 
     @Override
-    public MemberResponse findMember(String username) {
+    public List<Member> findMembers(Pageable pageable) {
+        Sort.Order score = pageable.getSort().getOrderFor("score");
+
+        List<Member> members = queryFactory
+                .selectFrom(member)
+                .join(member.profile, profile)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(orderByScore(score))
+                .fetch();
+
+        return members;
+    }
+
+    @Override
+    public Member findMember(String username) {
         return queryFactory
-                .select(new QMemberResponse(member.username, member.name, member.score, member.profile.filename))
-                .from(member)
+                .selectFrom(member)
                 .join(member.profile, profile)
                 .where(member.username.eq(username))
                 .fetchOne();
@@ -80,27 +94,6 @@ public class MemberRepositoryImpl implements MemberQueryRepository {
 //                .fetchOne();
 
         return new MemberRankInfoResponse("test", "test", 100, "test", "test", 1);
-    }
-
-    @Override
-    public List<MemberResponse> findMembers(Pageable pageable) {
-        Sort.Order score = pageable.getSort().getOrderFor("score");
-
-        List<MemberResponse> members = queryFactory
-                .select(new QMemberResponse(
-                        member.username,
-                        member.name,
-                        member.score,
-                        member.profile.filename
-                ))
-                .from(member)
-                .join(member.profile, profile)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .orderBy(orderByScore(score))
-                .fetch();
-
-        return members;
     }
 
     private OrderSpecifier<?> orderByScore(Sort.Order score) {

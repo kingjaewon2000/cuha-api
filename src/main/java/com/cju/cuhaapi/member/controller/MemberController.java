@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,7 +31,10 @@ public class MemberController {
      */
     @GetMapping
     public List<MemberResponse> members(Pageable pageable) {
-        return memberService.findMembers(pageable);
+        return memberService.findMembers(pageable)
+                .stream()
+                .map(MemberResponse::new)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -38,7 +42,11 @@ public class MemberController {
      */
     @GetMapping("/info/{username}")
     public MemberResponse info(@PathVariable String username) {
-        return memberService.findMember(username);
+        Member member = memberService.findMember(username);
+
+        MemberResponse response = new MemberResponse(member);
+
+        return response;
     }
 
     /**

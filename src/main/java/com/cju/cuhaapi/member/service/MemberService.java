@@ -31,11 +31,11 @@ public class MemberService {
     private final RoleRepository roleRepository;
     private final ProfileRepository profileRepository;
 
-    public List<MemberResponse> findMembers(Pageable pageable) {
+    public List<Member> findMembers(Pageable pageable) {
         return memberRepository.findMembers(pageable);
     }
 
-    public MemberResponse findMember(String username) {
+    public Member findMember(String username) {
         return memberRepository.findMember(username);
     }
 

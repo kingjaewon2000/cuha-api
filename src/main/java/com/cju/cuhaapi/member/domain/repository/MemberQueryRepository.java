@@ -14,8 +14,8 @@ public interface MemberQueryRepository {
     MemberRankInfoResponse memberRank(Long id);
 
     Member findByUsername(String username);
-    MemberResponse findMember(String username);
+    Member findMember(String username);
 
-    List<MemberResponse> findMembers(Pageable pageable);
+    List<Member> findMembers(Pageable pageable);
 
 }
