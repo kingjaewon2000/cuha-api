@@ -1,9 +1,9 @@
 package com.cju.cuhaapi.post.domain.entity;
 
-import com.cju.cuhaapi.post.dto.PostDto.SaveRequest;
-import com.cju.cuhaapi.post.dto.PostDto.UpdateRequest;
 import com.cju.cuhaapi.member.domain.entity.Member;
 import com.cju.cuhaapi.commons.entity.BaseTimeEntity;
+import com.cju.cuhaapi.post.dto.PostSaveRequest;
+import com.cju.cuhaapi.post.dto.PostUpdateRequest;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -35,7 +35,7 @@ public class Post extends BaseTimeEntity {
 
     @ColumnDefault("0")
     @Column(nullable = false)
-    private Long views;
+    private long views;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
@@ -65,7 +65,7 @@ public class Post extends BaseTimeEntity {
     }
 
     //== 생성 메서드==//
-    public static Post savePost(Category category, SaveRequest request, Member member) {
+    public static Post savePost(Category category, PostSaveRequest request, Member member) {
         return Post.builder()
                 .title(request.getTitle())
                 .body(request.getBody())
@@ -74,7 +74,7 @@ public class Post extends BaseTimeEntity {
                 .build();
     }
 
-    public void updatePost(UpdateRequest request) {
+    public void updatePost(PostUpdateRequest request) {
         setTitle(request.getTitle());
         setBody(request.getBody());
     }

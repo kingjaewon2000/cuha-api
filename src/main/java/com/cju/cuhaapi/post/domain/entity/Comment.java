@@ -1,7 +1,5 @@
 package com.cju.cuhaapi.post.domain.entity;
 
-import com.cju.cuhaapi.post.dto.CommentDto.SaveRequest;
-import com.cju.cuhaapi.post.dto.CommentDto.UpdateRequest;
 import com.cju.cuhaapi.member.domain.entity.Member;
 import com.cju.cuhaapi.commons.entity.BaseTimeEntity;
 import lombok.*;
@@ -43,15 +41,15 @@ public class Comment extends BaseTimeEntity {
     }
 
     //== 생성 메서드 ==//
-    public static Comment saveComment(SaveRequest request, Post post, Member member) {
-        return Comment.builder()
-                .body(request.getBody())
-                .post(post)
-                .member(member)
-                .build();
-    }
-
-    public void updateComment(UpdateRequest request) {
-        setBody(request.getBody());
-    }
+//    public static Comment saveComment(SaveRequest request, Post post, Member member) {
+//        return Comment.builder()
+//                .body(request.getBody())
+//                .post(post)
+//                .member(member)
+//                .build();
+//    }
+//
+//    public void updateComment(UpdateRequest request) {
+//        setBody(request.getBody());
+//    }
 }

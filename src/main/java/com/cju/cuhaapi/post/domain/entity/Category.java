@@ -1,7 +1,7 @@
 package com.cju.cuhaapi.post.domain.entity;
 
-import com.cju.cuhaapi.post.dto.CategoryDto.CreateRequest;
 import com.cju.cuhaapi.commons.entity.BaseTimeEntity;
+import com.cju.cuhaapi.post.dto.CategoryCreateRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,9 +25,9 @@ public class Category extends BaseTimeEntity {
     private String description;
 
     //== 생성 메서드 ==//
-    public static Category createCategory(CreateRequest request) {
+    public static Category createCategory(CategoryCreateRequest request) {
         return Category.builder()
-                .name(request.getName())
+                .name(request.getCategoryName())
                 .description(request.getDescription())
                 .build();
     }

@@ -28,4 +28,10 @@ public class PostLike extends BaseTimeEntity {
     private Post post;
 
     //== 수정 메서드==//
+    public static PostLike createLike(Member member, Post post) {
+        return PostLike.builder()
+                .member(member)
+                .post(post)
+                .build();
+    }
 }

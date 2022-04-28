@@ -1,10 +1,11 @@
 package com.cju.cuhaapi.post.controller;
 
-import com.cju.cuhaapi.post.dto.CategoryDto.CreateRequest;
-import com.cju.cuhaapi.post.dto.CategoryDto.CategoryResponse;
+import com.cju.cuhaapi.post.dto.CategoryCreateRequest;
+import com.cju.cuhaapi.post.dto.CategoryResponse;
 import com.cju.cuhaapi.post.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,15 +21,23 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public List<CategoryResponse> categories() {
-        return categoryService.getAll()
+    public List<CategoryResponse> categories(Sort sort) {
+        return categoryService.findAll(sort)
                 .stream()
-                .map(CategoryResponse::of)
+                    .map(category -> new CategoryResponse(
+                            category.getName(),
+                            category.getDescription()
+                    ))
                 .collect(Collectors.toList());
     }
 
     @PostMapping
-    public void save(@RequestBody CreateRequest request) {
-        categoryService.saveCategory(request);
+    public void create(@RequestBody CategoryCreateRequest request) {
+        categoryService.createCategory(request);
+    }
+
+    @DeleteMapping("/{categoryName}")
+    public void delete(@PathVariable String categoryName) {
+        categoryService.deleteCategory(categoryName);
     }
 }
