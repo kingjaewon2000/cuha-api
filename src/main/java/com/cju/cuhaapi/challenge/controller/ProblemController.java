@@ -1,15 +1,15 @@
 package com.cju.cuhaapi.challenge.controller;
 
+import com.cju.cuhaapi.challenge.dto.ProblemCreateRequest;
+import com.cju.cuhaapi.challenge.dto.ProblemResponse;
+import com.cju.cuhaapi.challenge.dto.ProblemUpdateRequest;
 import com.cju.cuhaapi.commons.annotation.LoginMember;
-import com.cju.cuhaapi.challenge.dto.ProblemDto.CreateRequest;
-import com.cju.cuhaapi.challenge.dto.ProblemDto.ProblemResponse;
-import com.cju.cuhaapi.challenge.dto.ProblemDto.SubmitRequest;
-import com.cju.cuhaapi.challenge.dto.ProblemDto.UpdateRequest;
 import com.cju.cuhaapi.challenge.domain.entity.Problem;
 import com.cju.cuhaapi.member.domain.entity.Member;
 import com.cju.cuhaapi.challenge.service.ProblemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,45 +23,51 @@ public class ProblemController {
 
     private final ProblemService problemService;
 
-    @GetMapping("/{id}")
-    public ProblemResponse problemById(@PathVariable Long id) {
-        Problem problem = problemService.getProblem(id);
+    @GetMapping("/{problemId}")
+    public ProblemResponse problem(@PathVariable Long problemId) {
+        Problem problem = problemService.findProblem(problemId);
 
-        return ProblemResponse.of(problem);
+        ProblemResponse response = new ProblemResponse(problem);
+
+        return response;
     }
 
     @GetMapping
-    public List<ProblemResponse> problems(@RequestParam(defaultValue = "0") Integer page,
-                                          @RequestParam(defaultValue = "100") Integer size) {
-        return problemService.getProblems(page, size).stream()
-                .map(problem -> ProblemResponse.of(problem))
+    public List<ProblemResponse> problems(Pageable pageable) {
+        return problemService.findProblems(pageable)
+                .stream()
+                .map(ProblemResponse::new)
                 .collect(Collectors.toList());
     }
 
     @PostMapping
-    public void create(@LoginMember Member authMember,
-                       @RequestBody CreateRequest request) {
-        problemService.createProblem(request, authMember);
+    public ProblemResponse create(@LoginMember Member authMember,
+                       @RequestBody ProblemCreateRequest request) {
+        Problem problem = problemService.createProblem(request, authMember);
+
+        ProblemResponse response = new ProblemResponse(problem);
+
+        return response;
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{problemId}")
     public void update(@LoginMember Member authMember,
-                       @PathVariable Long id,
-                       @RequestBody UpdateRequest request) {
-        problemService.updateProblem(id, request, authMember);
+                       @PathVariable Long problemId,
+                       @RequestBody ProblemUpdateRequest request) {
+        problemService.updateProblem(problemId, request, authMember);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{problemId}")
     public void delete(@LoginMember Member authMember,
-                       @PathVariable Long id) {
-        problemService.deleteProblem(id, authMember);
+                       @PathVariable Long problemId) {
+        problemService.deleteProblem(problemId, authMember);
     }
 
 
-    @PostMapping("/submit/{id}")
-    public void submit(@LoginMember Member authMember,
-                       @PathVariable Long id,
-                       @RequestBody SubmitRequest request) {
-        problemService.grading(id, request.getFlag(), authMember);
-    }
+//    @PostMapping("/submit/{id}")
+//    public void submit(@LoginMember Member authMember,
+//                       @PathVariable Long id,
+//                       @RequestBody SubmitRequest request) {
+//        problemService.grading(id, request.getFlag(), authMember);
+//    }
 }

@@ -13,7 +13,7 @@ public class CommentResponse {
     private Long like;
     private String username;
     private String name;
-    private String profileImage;
+    private String profileUrl;
     private String createdAt;
 
     public CommentResponse(Comment comment) {
@@ -24,7 +24,7 @@ public class CommentResponse {
         this.like = 0L;;
         this.username = comment.getMember().getUsername();
         this.name = comment.getMember().getName();
-        this.profileImage = comment.getMember().getProfile().getFilename();
+        this.profileUrl = comment.getMember().getProfile().getFilename();
         this.createdAt = comment.getCreatedAt().toString();
     }
 

@@ -1,9 +1,10 @@
 package com.cju.cuhaapi.challenge.controller;
 
+import com.cju.cuhaapi.challenge.domain.entity.Solution;
+import com.cju.cuhaapi.challenge.dto.SolutionCreateRequest;
+import com.cju.cuhaapi.challenge.dto.SolutionResponse;
+import com.cju.cuhaapi.challenge.dto.SolutionUpdateRequest;
 import com.cju.cuhaapi.commons.annotation.LoginMember;
-import com.cju.cuhaapi.challenge.dto.SolutionDto.CreateRequest;
-import com.cju.cuhaapi.challenge.dto.SolutionDto.UpdateRequest;
-import com.cju.cuhaapi.challenge.dto.SolutionDto.SolutionResponse;
 import com.cju.cuhaapi.member.domain.entity.Member;
 import com.cju.cuhaapi.challenge.service.SolutionService;
 import lombok.RequiredArgsConstructor;
@@ -20,20 +21,24 @@ public class SolutionController {
 
     @GetMapping("/{problemId}/solution")
     public SolutionResponse solution(@PathVariable Long problemId) {
-        return SolutionResponse.of(solutionService.getSolution(problemId));
+        Solution solution = solutionService.findSolution(problemId);
+
+        SolutionResponse response = new SolutionResponse(solution);
+
+        return response;
     }
 
     @PostMapping("/{problemId}/solution")
     public void create(@LoginMember Member member,
                        @PathVariable Long problemId,
-                       @RequestBody CreateRequest request) {
+                       @RequestBody SolutionCreateRequest request) {
         solutionService.createSolution(problemId, request, member);
     }
 
     @PatchMapping("/{problemId}/solution")
     public void update(@LoginMember Member member,
                        @PathVariable Long problemId,
-                       @RequestBody UpdateRequest request) {
+                       @RequestBody SolutionUpdateRequest request) {
         solutionService.updateSolution(problemId, request, member);
     }
 

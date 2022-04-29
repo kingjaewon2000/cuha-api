@@ -1,7 +1,7 @@
 package com.cju.cuhaapi.challenge.domain.entity;
 
-import com.cju.cuhaapi.challenge.dto.SolutionDto.CreateRequest;
-import com.cju.cuhaapi.challenge.dto.SolutionDto.UpdateRequest;
+import com.cju.cuhaapi.challenge.dto.SolutionCreateRequest;
+import com.cju.cuhaapi.challenge.dto.SolutionUpdateRequest;
 import com.cju.cuhaapi.member.domain.entity.Member;
 import com.cju.cuhaapi.commons.entity.BaseTimeEntity;
 import lombok.*;
@@ -24,31 +24,23 @@ public class Solution extends BaseTimeEntity {
 
     private String body;
 
+    @OneToOne(fetch = LAZY, mappedBy = "solution")
+    private Problem problem;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToOne(fetch = LAZY, mappedBy = "solution")
-    private Problem problem;
-
-    //== 수정 메서드 ==//
-    private void setBody(String body) {
-        this.body = body;
-    }
-
-    //== 비지니스 메서드 ==//
-
-
     //== 생성 메서드 ==//
-    public static Solution createSolution(CreateRequest request, Member member, Problem problem) {
+    public static Solution createSolution(SolutionCreateRequest request, Problem problem, Member member) {
         return Solution.builder()
                 .body(request.getBody())
-                .member(member)
                 .problem(problem)
+                .member(member)
                 .build();
     }
 
-    public void updateSolution(UpdateRequest request) {
-        setBody(request.getBody());
+    public void updateSolution(SolutionUpdateRequest request) {
+        this.body = request.getBody();
     }
 }
