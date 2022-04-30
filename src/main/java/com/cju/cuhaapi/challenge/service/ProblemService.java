@@ -1,17 +1,16 @@
 package com.cju.cuhaapi.challenge.service;
 
-import com.cju.cuhaapi.challenge.domain.repository.SubmitRepository;
 import com.cju.cuhaapi.challenge.domain.entity.Problem;
+import com.cju.cuhaapi.challenge.domain.entity.ProblemType;
+import com.cju.cuhaapi.challenge.domain.entity.Tier;
 import com.cju.cuhaapi.challenge.domain.repository.ProblemRepository;
+import com.cju.cuhaapi.challenge.domain.repository.SubmitRepository;
 import com.cju.cuhaapi.challenge.dto.ProblemCreateRequest;
 import com.cju.cuhaapi.challenge.dto.ProblemUpdateRequest;
 import com.cju.cuhaapi.member.domain.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,8 +31,8 @@ public class ProblemService {
         return problemRepository.findProblem(id);
     }
 
-    public List<Problem> findProblems(Pageable pageable) {
-        return problemRepository.findProblems(pageable);
+    public List<Problem> findProblems(Pageable pageable, String title, ProblemType[] problemTypes, Tier[] tiers) {
+        return problemRepository.findProblems(pageable, title, problemTypes, tiers);
     }
 
     @Transactional
@@ -82,4 +81,5 @@ public class ProblemService {
 //        Submit submit = Submit.createSubmit(answer, flag, problem, authMember);
 //        submitRepository.save(submit);
 //    }
+
 }
